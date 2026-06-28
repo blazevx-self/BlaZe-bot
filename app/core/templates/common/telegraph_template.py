@@ -1,3 +1,4 @@
+# шаблон для статьи(решено вынести в templates, так как статья будет одна)
 def build_help_telegraph() -> str:
     return """
 <p><b><blockquote>📌 Информация:</blockquote></b></p> 

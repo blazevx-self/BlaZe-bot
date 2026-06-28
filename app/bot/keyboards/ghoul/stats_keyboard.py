@@ -3,7 +3,7 @@ from aiosqlite import Row
 
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import InlineKeyboardMarkup
-from app.core.constants.game import STATS_KEYBOARD
+from app.core.constants.game.stats import STATS_KEYBOARD
 
 from app.utils.calculate_stats import can_upgrade_amount
 

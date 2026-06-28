@@ -4,7 +4,7 @@ from pathlib import Path
 from rich.logging import RichHandler
 from logging.handlers import TimedRotatingFileHandler
 
-from app.core.constants.paths import LOGS_DIR
+from app.core.constants.system.paths import LOGS_DIR
 
 # Форматтеры для файлов и красивого цветного терминала
 FILE_FORMATTER = logging.Formatter("[%(asctime)s] %(levelname)s | %(message)s", datefmt="%H:%M:%S")

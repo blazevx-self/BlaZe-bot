@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery
 
-from app.config import cfg
+from app.configs.yaml import cfg
 from app.core.enums.quiz_status import QuizStatus
 
 from app.services.game.quiz_service import quiz_service

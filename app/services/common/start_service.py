@@ -3,10 +3,10 @@ import aiogram.exceptions
 from aiogram import Bot
 from aiogram.enums import ChatMemberStatus
 
-from app.config import cfg
+from app.configs.yaml import cfg
 
 from app.database.repositories.users_repository import user_repository
-from app.utils.state import update_user
+from app.utils.user import update_user
 
 # noinspection PyUnusedLocal
 # noinspection PyMethodMayBeStatic

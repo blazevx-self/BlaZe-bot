@@ -1,5 +1,5 @@
-from app.core.constants.telegram import ALLOWED_CALLBACK_PREFIXES
-from app.core.constants.audit import (
+from app.core.constants.input.callbacks import ALLOWED_CALLBACK_PREFIXES
+from app.core.constants.system.limits import (
     MAX_MESSAGE_LENGTH,
     MAX_CALLBACK_LENGTH,
     SLOW_REQUEST_MS,
@@ -8,8 +8,19 @@ from app.core.constants.audit import (
 from app.utils.logger import security_logger
 
 class SecurityService:
+    """
+    Сервис проверки подозрительной активности пользователя.
+
+    Отвечает за:
+    - длину сообщений и callback'ов
+    - невалидные callback-префиксы
+    - медленные запросы
+    """
+
     @staticmethod
     def log_long_message(user_info: str, text: str) -> None:
+        """Проверяет длину сообщения на подозрительную активность."""
+
         if len(text) > MAX_MESSAGE_LENGTH:
              security_logger.warning(f"[SUSPICIOUS MESSAGE] {user_info} | length={len(text)} chars")
 
@@ -20,6 +31,8 @@ class SecurityService:
 
     @staticmethod
     def log_invalid_callback(user_info: str, callback_data: str) -> None:
+        """Проверяет callback на допустимые префиксы."""
+
         if not callback_data.startswith(ALLOWED_CALLBACK_PREFIXES):
             security_logger.warning(f"[INVALID CALLBACK] {user_info} | callback={callback_data}")
 
@@ -29,6 +42,8 @@ class SecurityService:
             process_time: float,
             event_name: str
     ) -> None:
+        """Фиксирует медленные операции (performance monitoring)."""
+
         if process_time > SLOW_REQUEST_MS:
             security_logger.warning(f"[SLOW REQUEST] {user_info} | ping={process_time}ms | event={event_name}")
 

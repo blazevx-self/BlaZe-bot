@@ -3,7 +3,7 @@ from typing import Literal, cast
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 
-from app.config import cfg
+from app.configs.yaml import cfg
 from app.bot.filters.ghoul_filters import GhoulRequired
 
 from app.services.ghouls.stats_service import stats_service

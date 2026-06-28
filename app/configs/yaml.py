@@ -1,6 +1,6 @@
 import yaml
 
-from app.core.constants.paths import YAML_PATH
+from app.core.constants.system.paths import YAML_PATH
 
 def load_config() -> dict:
     if not YAML_PATH.exists():

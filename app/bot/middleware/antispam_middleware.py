@@ -1,9 +1,10 @@
-from typing import Any, Callable, Dict, Awaitable
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject, CallbackQuery
+
+from typing import Any, Callable, Dict, Awaitable
 from cachetools import TTLCache
 
-from app.config import cfg
+from app.configs.yaml import cfg
 from app.utils.logger import security_logger
 
 class AntiSpamGhoulMiddleware(BaseMiddleware):

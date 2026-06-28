@@ -1,5 +1,5 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from app.config import cfg
+from app.configs.yaml import cfg
 
 def get_help_menu():
     builder = InlineKeyboardBuilder()

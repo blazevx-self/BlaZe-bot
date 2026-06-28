@@ -1,8 +1,9 @@
-from app.config import cfg
+from app.configs.yaml import cfg
 
 from aiogram.utils.markdown import html_decoration as hd
 from app.utils.format_num import format_num
 
+# шалон топ по балику
 def build_top_text(data: dict) -> str:
     top_users = data["top_users"]
     rank = data["rank"]

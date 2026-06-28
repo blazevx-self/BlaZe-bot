@@ -1,14 +1,14 @@
 import random
 import time
 
-from app.config import cfg
+from app.configs.yaml import cfg
 from app.core.enums.click_status import ClickStatus
 
 from app.database.repositories.users_repository import user_repository
 from app.database.repositories.ghouls_repository import ghouls_repository
 
 from app.utils.format_num import format_num
-from app.utils.state import update_user
+from app.utils.user import update_user
 
 # noinspection PyUnusedLocal
 # noinspection PyMethodMayBeStatic

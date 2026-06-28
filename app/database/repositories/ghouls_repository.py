@@ -1,6 +1,6 @@
 from aiosqlite import Row
 from app.database.base import DatabaseManager
-from app.core.constants.game import ALLOWED_STATS
+from app.core.constants.game.stats import ALLOWED_STATS
 
 # noinspection PyMethodMayBeStatic
 class GhoulRepository:

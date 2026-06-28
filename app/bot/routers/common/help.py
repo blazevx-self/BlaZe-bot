@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery, LinkPreviewOptions
 
-from app.config import cfg
+from app.configs.yaml import cfg
 from app.core.templates.common.help_template import build_help_text
 
 from app.bot.keyboards.common.start_keyboard import start_keyboard

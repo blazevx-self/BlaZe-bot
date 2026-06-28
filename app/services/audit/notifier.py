@@ -1,6 +1,16 @@
 from typing import Any
 
 class NotifierService:
+    """
+    Сервис уведомления администратора о критических ошибках.
+
+    Отправляет подробный отчёт в Telegram админа:
+    - пользователь
+    - событие
+    - время выполнения
+    - ошибка и traceback
+    """
+
     @staticmethod
     async def notify_admin(
         bot: Any,
@@ -11,6 +21,13 @@ class NotifierService:
         error: str,
         traceback_text: str
     ) -> None:
+        """
+        Отправляет уведомление администратору при возникновении ошибки.
+
+        Используется для:
+        - мониторинга боевых ошибок
+        - быстрого реагирования на падения бота
+        """
 
         error_text = (
             f"🚨 ERROR\n\n"

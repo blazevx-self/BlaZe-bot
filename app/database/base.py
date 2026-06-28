@@ -1,6 +1,6 @@
 import aiosqlite
 from contextlib import asynccontextmanager
-from app.core.constants.paths import DB_PATH
+from app.core.constants.system.paths import DB_PATH
 
 class DatabaseManager:
 

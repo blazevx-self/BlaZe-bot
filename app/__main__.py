@@ -1,7 +1,7 @@
 import asyncio
 
 from aiogram import Bot, Dispatcher
-from app.configs.sqlalchemy_cfg import settings
+from app.configs.settings import settings
 
 from app.bot.routers.routes import all_routers
 

@@ -1,7 +1,11 @@
 from typing import Optional
-from app.database.repositories.users_repository import user_repository
 
-from app.config import cfg
+from app.configs.yaml import cfg
+from app.core.constants.game.stats import STATUS_FIELDS, POWER_FIELDS
+from app.core.constants.game.kagune import KAGUNE_MULTIPLIER
+from app.core.constants.game.ranks import DANGER_RANKS
+
+from app.database.repositories.users_repository import user_repository
 
 # noinspection PyMethodMayBeStatic
 class GhoulService:
@@ -26,16 +30,18 @@ class GhoulService:
         return bool(user and user.get('kagune_was_obtained'))
 
     @staticmethod
-    # расчёт стоимости апа кагуне
     def get_price(level: int) -> int:
+        """Расчёт стоимости улучшения кагуне."""
+
         base = cfg['economy']['kagune']['start_price']
         multiplier = cfg['economy']['kagune']['price_multiplier']
 
         return int(base * (multiplier ** (level - 1)))
+
     @staticmethod
-    # За достижение определённых уровней кагуне
-    # игрок получает новую анимацию развития кагуне.
     def get_kagune_gif(level: int) -> str:
+        """За достижение определённых уровней кагуне - игрок получает новую анимацию развития кагуне."""
+
         gifs = cfg['message']['kagune']['gifs']
 
         current_gif = gifs[1]
@@ -53,33 +59,30 @@ class GhoulService:
         """Подсчёт боевой мощи.
           Складывает текущие статы из бд и уровень кагуне
         """
-        base_power = (
-            user.get('strength', 0)
-            + user.get('agility', 0)
-            + user.get("speed", 0)
-            + user.get("hp", 0)
-            + user.get("regen", 0)
-            + user.get("kagune_lvl", 1)
-        )
+
+        base_power = sum(user.get(field, 0) for field in POWER_FIELDS)
+        base_power += user.get("kagune_lvl", 1)
 
         # Определяем тип кагуне.
         kagune_type = user.get('kagune_type', '').lower().strip()
-        multiplier = 1.0
-
-        if 'укаку' in kagune_type:
-            multiplier = 1.15
-        elif 'коукаку' in kagune_type:
-            multiplier = 1.20
-        elif 'ринкаку' in kagune_type:
-            multiplier = 1.25
-        elif 'бикаку' in kagune_type:
-            multiplier = 1.10
+        multiplier = KAGUNE_MULTIPLIER.get(kagune_type, 1.0)
 
         # Проверяем форму Какуджа (на будущее)
         if user.get('kakuja_activated'):
             multiplier += 0.50
 
         return int(base_power * multiplier)
+
+    @staticmethod
+    def get_danger_rank(power: int) -> str:
+        """Определение ранга угрозы
+        на основе вычисленной суммарной мощи гуля
+        """
+        for limit, rank in DANGER_RANKS:
+            if power < limit:
+                return rank
+
+        return "SSS+"
 
     @staticmethod
     def get_rank(level: int) -> str:
@@ -96,30 +99,6 @@ class GhoulService:
         return current_rank
 
     @staticmethod
-    def get_danger_rank(power: int) -> str:
-        """Определение ранга угрозы
-        на основе вычисленной суммарной мощи гуля
-        """
-        if power < 500:
-            return "F"
-        elif power < 1000:
-            return "D"
-        elif power < 1500:
-            return "C"
-        elif power < 2000:
-            return "B"
-        elif power < 3500:
-            return "A"
-        elif power < 5000:
-            return "S"
-        elif power < 7500:
-            return "SS"
-        elif power < 10000:
-            return "SSS"
-
-        return "SSS+"
-
-    @staticmethod
     def get_status(user: dict) -> str:
         """Вычисление экономико-боевого статуса гуля
            на основе суммарного power_level из конфига
@@ -128,16 +107,9 @@ class GhoulService:
         statuses = cfg['economy']['ranks']['statuses']
 
         # вычисление общего power level пользователя на основе активности
-        power_level = (
-            (user.get("money") or 0) * weights['money']
-            + (user.get("clicks") or 0) * weights['clicks']
-            + (user.get("coffee_total") or 0) * weights['coffee']
-            + (user.get("kagune_lvl") or 1) * weights['kagune_lvl']
-            + (user.get('strength') or 1) * weights['strength']
-            + (user.get('agility') or 1) * weights['agility']
-            + (user.get('speed') or 1) * weights['speed']
-            + (user.get('hp') or 1) * weights['hp']
-            + (user.get('regen') or 1) * weights['regen']
+        power_level = sum(
+            (user.get(field, 0) * weights[weight])
+            for field, weight in STATUS_FIELDS.items()
         )
 
         current_status = "Новенький"

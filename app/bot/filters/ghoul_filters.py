@@ -4,7 +4,7 @@ from aiogram.types import Message, CallbackQuery
 from app.utils.logger import security_logger
 
 from app.services.ghoul_service import ghoul_service
-from app.config import cfg
+from app.configs.yaml import cfg
 
 class GhoulRequired(BaseFilter):
     async def __call__(

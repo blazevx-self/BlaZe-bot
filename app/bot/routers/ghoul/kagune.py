@@ -1,14 +1,14 @@
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery, InputMediaAnimation
 
-from app.config import cfg
+from app.configs.yaml import cfg
 from app.core.enums.kagune_status import KaguneStatus
 
 from app.services.ghouls.kagune_service import kagune_service
 from app.bot.keyboards.ghoul.kagune_keyboard import get_grow_kagune_kb, get_open_kagune_kb
 
 from app.utils.format_num import format_num
-from app.utils.state import update_user
+from app.utils.user import update_user
 
 router = Router()
 

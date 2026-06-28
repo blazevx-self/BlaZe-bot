@@ -1,9 +1,9 @@
 from math import floor
 from typing import Literal
 
-from app.core.constants.game import STAT_LIMITS, UNLOCK_LEVELS
-from app.core.responses import error, success
-from app.config import cfg
+from app.core.constants.game.stats import STAT_LIMITS, UNLOCK_LEVELS
+from app.core.result import error, success
+from app.configs.yaml import cfg
 
 UpgradeAmount = Literal[1, 3, 5]
 
@@ -32,7 +32,7 @@ def calculate_upgrade(
     current_stat: int,
     amount: UpgradeAmount,
     money: int
-) -> dict:
+) -> dict[str, object]:
 
     """Проверка лимитов, расчёт финальной стоимости и валидация баланса"""
     if stat not in STAT_LIMITS:

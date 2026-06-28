@@ -1,4 +1,3 @@
-# СТАТЫ
 STATS_KEYBOARD = {
     "strength": "💪",
     "agility": "🤸",
@@ -37,12 +36,22 @@ ALLOWED_STATS = (
     "regen"
 )
 
-GAME_COMMAND = {
-    "качаца",
-    "распрофиль",
-    "растить кагуне",
-    "пить кофе",
-    "профиль",
-    "щелк"
+STATUS_FIELDS = {
+    "money": "money",
+    "clicks": "clicks",
+    "coffee_total": "coffee",
+    "kagune_lvl": "kagune_lvl",
+    "strength": "strength",
+    "agility": "agility",
+    "speed": "speed",
+    "hp": "hp",
+    "regen": "regen",
 }
 
+POWER_FIELDS = (
+    "strength",
+    "agility",
+    "speed",
+    "hp",
+    "regen",
+)

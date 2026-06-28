@@ -1,5 +1,6 @@
-from app.config import cfg
+from app.configs.yaml import cfg
 
+# шаблон викторины
 def quiz_result_text(
         question: str,
         correct_answer: str,

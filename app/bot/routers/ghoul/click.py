@@ -1,7 +1,7 @@
 from aiogram import Router, F
 from aiogram.types import Message
 
-from app.config import cfg
+from app.configs.yaml import cfg
 from app.core.enums.click_status import ClickStatus
 from app.bot.filters.ghoul_filters import GhoulRequired
 

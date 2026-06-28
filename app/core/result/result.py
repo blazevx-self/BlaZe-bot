@@ -1,4 +1,5 @@
 def success(**kwargs) -> dict:
+    """Формирует успешный результат выполнения функции"""
     return {
         "success": True,
         **kwargs
@@ -11,6 +12,7 @@ def error(
         reason=None,
         **kwargs
 ) -> dict:
+    """Возвращает унифицированный словарь ошибки для сервисов"""
     result = {
         "success": False,
         "show_alert": show_alert

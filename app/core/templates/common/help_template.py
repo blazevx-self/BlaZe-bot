@@ -1,7 +1,8 @@
-from app.config import cfg
+from app.configs.yaml import cfg
 
 HELP_TEXT = cfg['message']['help']['help_text']
 
+# шалон для /help
 def build_help_text() -> str:
     link = cfg['settings']['guide_link']
 

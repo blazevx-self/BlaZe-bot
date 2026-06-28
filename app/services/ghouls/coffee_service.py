@@ -1,13 +1,13 @@
 import time
 import random
 
-from app.config import cfg
+from app.configs.yaml import cfg
 from app.core.enums.coffee_status import CoffeeStatus
 
 from app.database.repositories.ghouls_repository import ghouls_repository
 
 from app.utils.format_num import format_num
-from app.utils.state import update_user
+from app.utils.user import update_user
 
 # noinspection PyUnusedLocal
 # noinspection PyMethodMayBeStatic

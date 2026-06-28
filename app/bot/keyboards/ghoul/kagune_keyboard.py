@@ -1,7 +1,7 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from app.utils.format_num import format_num
-from app.config import cfg
+from app.configs.yaml import cfg
 
 def get_open_kagune_kb() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[

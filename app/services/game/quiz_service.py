@@ -1,6 +1,6 @@
 import random
 
-from app.config import cfg
+from app.configs.yaml import cfg
 from app.core.templates.game.quiz_template import quiz_result_text
 
 from app.database.repositories.quiz_repository import quiz_repository

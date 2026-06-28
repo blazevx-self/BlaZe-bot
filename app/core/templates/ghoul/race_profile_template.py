@@ -1,6 +1,6 @@
-from app.core.constants.game import STAT_LIMITS
+from app.core.constants.game.stats import STAT_LIMITS
 
-# РАСОВЫЙ ПРОФИЛЬ
+# шаблон для расового профиля гуля
 def race_profile_text(
     user: dict,
     user_link: str,

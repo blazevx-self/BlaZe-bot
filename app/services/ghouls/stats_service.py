@@ -1,10 +1,10 @@
 from typing import Literal
 
-from app.config import cfg
+from app.configs.yaml import cfg
 
 from app.core.templates.ghoul.stats_template import stats_text
-from app.core.constants.game import STAT_NAMES
-from app.core.responses import success, error
+from app.core.constants.game.stats import STAT_NAMES
+from app.core.result import success, error
 
 from app.database.repositories.ghouls_repository import ghouls_repository
 from app.database.repositories.users_repository import user_repository

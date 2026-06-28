@@ -5,15 +5,36 @@ from app.services.audit.logger import logger_service
 from app.services.audit.notifier import notifier_service
 from app.services.audit.security import security_service
 
-from app.config import cfg
+from app.configs.yaml import cfg
 
 class AuditService:
+    """
+    Центральный фасад аудита.
+
+    Объединяет:
+    - логирование действий (LoggerService)
+    - security проверки (SecurityService)
+    - уведомления админа (NotifierService)
+
+    Используется в middleware для единой точки аудита событий.
+    """
+
     @staticmethod
     def handle_message(
             user_info: str,
             message: Message,
             process_time: float
     ) -> None:
+        """
+        Обрабатывает входящее текстовое сообщение.
+
+        Выполняет:
+        - логирование команды
+        - security проверки
+        - фильтрацию системных сообщений
+        - контроль производительности
+        """
+
         text = message.text or "NOT TEXT"
         chat_type = message.chat.type
 
@@ -44,6 +65,15 @@ class AuditService:
             callback: CallbackQuery,
             process_time: float
     ) -> None:
+        """
+        Обрабатывает callback-запрос.
+
+        Выполняет:
+        - логирование callback действий
+        - security проверки
+        - контроль скорости обработки
+        """
+
         callback_data = callback.data or "NOT DATA"
 
         logger_service.log_callback(
@@ -78,6 +108,14 @@ class AuditService:
             error: Exception,
             traceback_text: str
     ) -> None:
+        """
+        Обрабатывает исключения в middleware/хендлерах.
+
+        Выполняет:
+        - логирование ошибки
+        - уведомление администратора
+        """
+
         logger_service.log_error(
             user_info=user_info,
             event_name=event_name,

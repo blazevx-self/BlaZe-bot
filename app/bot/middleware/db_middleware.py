@@ -5,7 +5,6 @@ from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
 
 from app.database.repositories.users_repository import user_repository
-
 from app.utils.logger import system_logger
 
 class DatabaseMiddleware(BaseMiddleware):

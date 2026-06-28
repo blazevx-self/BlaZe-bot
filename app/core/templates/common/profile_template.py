@@ -1,4 +1,4 @@
-# ПРОФИЛЬ (ОБЫЧНЫЙ)
+# Шаблон обычного профиля
 def profile_text(
         user_link: str,
         level: int,
