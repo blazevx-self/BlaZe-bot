@@ -1,0 +1,32 @@
+from typing import Any, Callable, Dict, Awaitable
+from aiogram import BaseMiddleware
+from aiogram.types import TelegramObject, CallbackQuery
+from cachetools import TTLCache
+
+from app.config import cfg
+from app.utils.logger import security_logger
+
+class AntiSpamGhoulMiddleware(BaseMiddleware):
+    def __init__(self, time_limit: float = 0.7) -> None:
+        self.cache = TTLCache(maxsize=10_000, ttl=time_limit)
+
+    async def __call__(
+            self,
+            handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+            event: TelegramObject,
+            data: Dict[str, Any],
+    ) -> Any:
+            # защита от ручного спама по кнопкам
+            if isinstance(event, CallbackQuery):
+                user_id = event.from_user.id
+
+                # защита от повторных нажатий кнопок (callback spam)
+                if user_id in self.cache:
+                    security_logger.warning(f"[SPAM CALLBACK BLOCKED] user_id={user_id} | callback={event.data}")
+
+                    return await event.answer(cfg['message']['middleware_text_antispam'], show_alert=False)
+
+                self.cache[user_id] = True
+
+            return await handler(event, data)
+
