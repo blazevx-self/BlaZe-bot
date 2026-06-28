@@ -2,6 +2,7 @@ from math import floor
 from typing import Literal
 
 from app.core.constants.game import STAT_LIMITS, UNLOCK_LEVELS
+from app.core.responses import error, success
 from app.config import cfg
 
 UpgradeAmount = Literal[1, 3, 5]
@@ -32,32 +33,21 @@ def calculate_upgrade(
     amount: UpgradeAmount,
     money: int
 ) -> dict:
+
     """Проверка лимитов, расчёт финальной стоимости и валидация баланса"""
     if stat not in STAT_LIMITS:
-        return {
-            "success": False,
-            "reason": "invalid_stat"
-        }
+        return error(reason="invalid_stat")
 
     if amount not in (1, 3, 5):
-        return {
-            "success": False,
-            "reason": "invalid_amount"
-        }
+        return error(reason="invalid_amount")
 
     stat_limit = STAT_LIMITS[stat]
 
     if not can_upgrade_amount(current_stat, amount):
-        return {
-            "success": False,
-            "reason": "locked"
-        }
+        return error(reason="locked")
 
     if current_stat >= stat_limit:
-        return {
-            "success": False,
-            "reason": "maxed"
-        }
+        return error(reason="maxed")
 
     remaining_points = stat_limit - current_stat
     upgrade_amount = min(int(amount), remaining_points)
@@ -68,15 +58,13 @@ def calculate_upgrade(
     )
 
     if money < price:
-        return {
-            "success": False,
-            "reason": "not_enough_money",
-            "missing": price - money
-        }
+        return error(
+            reason="not_enough_money",
+            missing=price - money
+        )
 
-    return {
-        "success": True,
-        "price": price,
-        "upgrade_amount": upgrade_amount,
-        "new_value": current_stat + upgrade_amount
-    }
+    return success(
+        price=price,
+        upgrade_amount=upgrade_amount,
+        new_value=current_stat + upgrade_amount
+    )
