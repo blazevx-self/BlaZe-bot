@@ -15,16 +15,4 @@ BlaZe Bot is built using a modular service-oriented architecture.
 
 ## Request Flow
 
-User
-    ↓
-Telegram Bot
-    ↓
-Router
-    ↓
-Middleware
-    ↓
-Service
-    ↓
-Repository
-    ↓
-Database
+User → Telegram Bot → Router → Middleware → Service → Repository → Database
