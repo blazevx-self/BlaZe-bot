@@ -1,5 +1,6 @@
 from aiosqlite import Row
 from app.database.base import DatabaseManager
+from app.core.exceptions.database import EntityNotFoundError
 
 # noinspection PyMethodMayBeStatic
 
@@ -34,7 +35,9 @@ class UserRepository:
 
             async with db.execute(sql, (user_id,)) as cursor:
                 row = await cursor.fetchone()
-                return dict(row) if row else None
+                if not row:
+                    raise EntityNotFoundError("User not found")
+
 
     # Бонус (подписка на канал)
     async def activate_subscribed_bonus(self ,user_id: int, bonus: int) -> None:

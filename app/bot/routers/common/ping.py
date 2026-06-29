@@ -14,7 +14,7 @@ async def check_bot(message: Message):
         phrases = [
         'Я тут, мой маленький гуль',
         'Чо тебе бездарь нищий',
-        'динахуй ебанище'
+        'шо ты хотел?'
         ]
 
     response = random.choice(phrases)

@@ -1,6 +1,7 @@
 from aiosqlite import Row
 from app.database.base import DatabaseManager
 from app.core.constants.game.stats import ALLOWED_STATS
+from app.core.exceptions.game import InvalidStatError
 
 # noinspection PyMethodMayBeStatic
 class GhoulRepository:
@@ -74,7 +75,7 @@ class GhoulRepository:
     async def upgrade_stat(self, user_id: int, stat: str, amount: int, price: int) -> bool:
         # Валидация прямо на входе, чтобы защититься от SQL-инъекций, так как имя столбца подставляется через f-строку
         if stat not in ALLOWED_STATS:
-            raise ValueError(f"Invalid stat: {stat}")
+            raise InvalidStatError(f"Invalid stat: {stat}")
 
         async with DatabaseManager.connect() as db:
             async with db.execute("SELECT money FROM users WHERE user_id = ?", (user_id,)) as cursor:
