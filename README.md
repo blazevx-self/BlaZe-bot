@@ -26,10 +26,10 @@ Players develop their characters through interactive commands, unlock abilities,
 
 ## Tech Stack
 
-- Python 3.14+
+- Python 3.13+
 - aiogram 3.x
 - asyncio
-- PostgreSQL / SQLite(aiosqlite)
+- PostgreSQL(production) / SQLite(development)
 - SQLAlchemy
 - Docker
 
@@ -131,6 +131,11 @@ The architecture is continuously evolving to support long-term scalability and n
 - Expanded combat mechanics and balance rework  
 - UI/UX improvements for in-game interactions  
 - Telegram Mini App integration (future expansion)
+- Admin panel
+- Daily rewards
+- Inventory
+- Items
+- Craft / Alchemy
 
 ---
 
