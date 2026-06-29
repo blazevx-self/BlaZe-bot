@@ -4,7 +4,14 @@ from app.core.templates.ghoul.race_profile_template import race_profile_text
 # noinspection PyMethodMayBeStatic
 
 class RaceProfileService:
+    """Сервис формирования расового профиля игрока."""
+
     async def build_race_profile(self, user: dict):
+        """Формирует расовый профиль гуля.
+
+        Вычисляет суммарную мощь, ранг угрозы и собирает текст профиля.
+        """
+
         power = ghoul_service.calculate_power(user)
         danger_rank = ghoul_service.get_danger_rank(power)
 

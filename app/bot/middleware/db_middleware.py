@@ -8,12 +8,19 @@ from app.database.repositories.users_repository import user_repository
 from app.utils.logger import system_logger
 
 class DatabaseMiddleware(BaseMiddleware):
+    """Middleware синхронизации пользователя.
+
+    Загружает пользователя из базы данных, создаёт нового
+    при первом обращении и обновляет изменённые данные Telegram.
+    """
+
     async def __call__(
             self,
             handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
             event: TelegramObject,
             data: Dict[str, Any],
     ) -> Any:
+        """Подготавливает объект пользователя и передаёт его в handler."""
 
         tg_user = data.get('event_from_user')
 

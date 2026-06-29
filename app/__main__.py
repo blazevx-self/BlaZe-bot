@@ -13,7 +13,7 @@ from app.bot.middleware.db_middleware import DatabaseMiddleware
 from app.utils.logger import system_logger
 from app.database.init_db import init_db
 
-bot = Bot(token=settings.TOKEN)
+bot = Bot(token=settings.BOT_TOKEN.get_secret_value())
 dp = Dispatcher()
 
 async def on_startup():

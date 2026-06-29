@@ -9,11 +9,18 @@ from app.core.enums.quiz_status import QuizStatus
 
 # noinspection PyMethodMayBeStatic
 class QuizService:
+    """Сервис логики викторины."""
+
     async def process_quiz_start(self, user: dict):
+        """Подготавливает новую викторину для пользователя.
+
+        Проверяет доступные попытки, выбирает случайный вопрос,
+        сохраняет прогресс и возвращает данные для отображения.
+        """
+
         user_id = user['user_id']
         access = await quiz_repository.get_quiz_access(user_id)
 
-        # проверка доступных попыток
         if not access['can_play'] or access['left'] <= 0:
             return {"status": QuizStatus.LIMIT}
 
@@ -38,6 +45,11 @@ class QuizService:
             question_id: int,
             user_choice: str
     ):
+        """Обрабатывает ответ пользователя.
+
+        Проверяет правильность ответа, начисляет награду,
+        уменьшает количество попыток и возвращает результат.
+        """
 
         user_id = user['user_id']
         access = await quiz_repository.get_quiz_access(user_id)

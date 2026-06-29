@@ -4,7 +4,11 @@ from app.core.templates.common.profile_template import profile_text
 
 # noinspection PyMethodMayBeStatic
 class ProfileService:
+    """Сервис формирования обычного профиля пользователя"""
+
     async def build_profile(self, user: dict) -> dict:
+        """Формирует текст профиля с текущими характеристиками пользователя"""
+
         user_id = user['user_id']
         first_name = user['name']
         level = user['level']

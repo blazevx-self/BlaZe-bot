@@ -13,7 +13,11 @@ from app.utils.user import update_user
 # noinspection PyUnusedLocal
 # noinspection PyMethodMayBeStatic
 class KaguneService:
+    """Сервис игровой механики развитие кагуне"""
+
     async def process_kagune_open(self, user: dict):
+        """Выдаёт пользователю первое кагуне случайного типа."""
+
         user_id = user['user_id']
 
         chances = cfg['economy']['kagune']['types_chance']
@@ -23,6 +27,12 @@ class KaguneService:
         return kagune_type
 
     async def process_kagune(self, user: dict):
+        """Обрабатывает улучшения кагуне.
+
+        Проверяет кулдаун, баланс пользователя, повышает уровень кагуне
+        и возвращает результат выполнения
+        """
+
         user_id = user['user_id']
 
         if not user.get('kagune_was_obtained'):

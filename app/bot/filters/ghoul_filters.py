@@ -7,10 +7,18 @@ from app.services.ghoul_service import ghoul_service
 from app.configs.yaml import cfg
 
 class GhoulRequired(BaseFilter):
+    """Фильтр доступа.
+
+    Разрешает выполнение обработчика только пользователем,
+    получившим кагуне.
+    """
+
     async def __call__(
             self, event: Message | CallbackQuery,
             **kwargs
     ) -> bool:
+        """Проверяет, является ли пользователь гулем."""
+
         if not event.from_user:
             return False
 

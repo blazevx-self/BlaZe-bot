@@ -16,7 +16,17 @@ UpgradeAmount = Literal[1, 3, 5]
 
 # noinspection PyMethodMayBeStatic
 class StatsService:
+    """Сервис управления характеристиками гуля.
+
+    Отвечает за отображения меню характеристик и обработку их улучшения.
+    """
+
     async def get_stats_menu(self, user: dict) -> dict:
+        """Формирует меню характеристик игрока.
+
+        Получает текущие характеристики пользователя и возвращает текст вместе с клавиатурой
+        """
+
         stats = await ghouls_repository.get_stats(user["user_id"])
 
         if not stats:
@@ -35,10 +45,15 @@ class StatsService:
             stat: str,
             amount: UpgradeAmount
     ) -> dict:
+        """Обрабатывает улучшения выбранной характеристики.
+
+        Проверяет возможность прокачки, рассчитывает стоимость,
+        обновляет данные в базе и возвращает новый интерфейс.
+        """
 
         user_id = user['user_id']
-
         current_user_db = await user_repository.get_user_by_id(user_id)
+
         if not current_user_db:
             return error("Пользователь не найден")
 

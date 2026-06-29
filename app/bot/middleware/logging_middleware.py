@@ -9,12 +9,19 @@ from app.services.audit.audit_service import audit_service
 from app.services.audit.formatters import build_user_info
 
 class LoggingMiddleware(BaseMiddleware):
+    """Middleware для логирования событий.
+
+    Логирует входящие сообщения, callback-запросы,
+    время обработки и необработанные исключения.
+    """
+
     async def __call__(
             self,
             handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
             event: TelegramObject,
             data: Dict[str, Any]
     ) -> Any:
+        """Передаёт событие обработчику и выполняет аудит."""
 
         start_time = time.perf_counter()
         from_user = getattr(event, "from_user", None)

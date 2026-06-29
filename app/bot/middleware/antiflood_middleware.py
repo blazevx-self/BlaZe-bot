@@ -8,6 +8,11 @@ from typing import Any, Callable, Dict, Awaitable
 from app.utils.logger import security_logger
 
 class AntifloodMiddleware(BaseMiddleware):
+    """Middleware защиты от флуда.
+
+    Ограничивает количество запросов пользователя за заданный интервал времени.
+    """
+
     def __init__(
             self,
             limit_seconds: int = 5,
@@ -25,6 +30,7 @@ class AntifloodMiddleware(BaseMiddleware):
             event: TelegramObject,
             data: Dict[str, Any]
     ) -> Any:
+        """Контролирует частоту входящих событий пользователя."""
 
         from_user = getattr(event, 'from_user', None)
         if not from_user:
@@ -32,8 +38,10 @@ class AntifloodMiddleware(BaseMiddleware):
 
         user_id = from_user.id
         now = time.monotonic()
+
         # Получаем историю запросов пользователя за ttl-окно
         requests = self.user_requests.get(user_id, [])
+
         # Оставляем только актуальные запросы внутри limit_seconds
         requests = [
             t for t in requests

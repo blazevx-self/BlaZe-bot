@@ -13,7 +13,15 @@ from app.utils.user import update_user
 # noinspection PyUnusedLocal
 # noinspection PyMethodMayBeStatic
 class ClickService:
+    """Сервис игровой механики щелчков"""
+
     async def process_click(self, user: dict):
+        """Обрабатывает выполнение команды <Щелк>.
+
+        Проверяет кулдаун, начисляет награду, обновляет статистику пользователя
+        и возвращает результат.
+        """
+
         user_id = user['user_id']
         now = int(time.time())
         cooldown_time = cfg['economy']['click']['cooldown']

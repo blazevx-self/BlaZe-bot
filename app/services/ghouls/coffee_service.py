@@ -12,7 +12,15 @@ from app.utils.user import update_user
 # noinspection PyUnusedLocal
 # noinspection PyMethodMayBeStatic
 class CoffeeService:
+    """Сервис игровой механики употребления кофе."""
+
     async def process_coffee(self, user: dict) -> dict:
+        """Обрабатывает употребления кофе.
+
+        Проверяет ограничения, выдаёт награду, обновляет данные игрока
+        и возвращает результат
+        """
+
         user_id = user['user_id']
 
         now = int(time.time())

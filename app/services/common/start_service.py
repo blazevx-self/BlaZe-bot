@@ -11,7 +11,15 @@ from app.utils.user import update_user
 # noinspection PyUnusedLocal
 # noinspection PyMethodMayBeStatic
 class StartService:
+    """Сервис обработки команды /start."""
+
     async def process_start(self, user: dict, bot: Bot) -> str:
+        """Проверяет подписку пользователя и выдаёт стартовый бонус.
+
+        Если бонус уже был получен или пользователь не подписан,
+        возвращает стандартное приветственное сообщение.
+        """
+
         user_id = user['user_id']
 
         is_subscribed = False

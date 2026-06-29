@@ -8,6 +8,12 @@ from app.configs.yaml import cfg
 from app.utils.logger import security_logger
 
 class AntiSpamGhoulMiddleware(BaseMiddleware):
+    """Middleware защиты от спама callback-кнопками.
+
+    Блокирует слишком частые повторные нажатия
+    в течение короткого промежутка времени.
+    """
+
     def __init__(self, time_limit: float = 0.7) -> None:
         self.cache = TTLCache(maxsize=10_000, ttl=time_limit)
 
@@ -17,7 +23,8 @@ class AntiSpamGhoulMiddleware(BaseMiddleware):
             event: TelegramObject,
             data: Dict[str, Any],
     ) -> Any:
-            # защита от ручного спама по кнопкам
+            """Проверяет частоту callback-запросов пользователя."""
+
             if isinstance(event, CallbackQuery):
                 user_id = event.from_user.id
 
