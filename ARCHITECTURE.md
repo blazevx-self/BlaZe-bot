@@ -2,17 +2,29 @@
 
 ## System Design
 
-BlaZe | Bot - is built using a modular service-based architecture.
+BlaZe Bot is built using a modular service-oriented architecture.
 
 ### Layers
 
-- Bot Layer → Telegram interaction (handlers, middleware)
-- Service Layer → Game logic and mechanics
-- Database Layer → Data storage and repositories
-- Core Layer → Shared system components
+- Bot Layer → Telegram handlers, routers, middlewares
+- Service Layer → Business logic and game mechanics
+- Database Layer → Repositories, models and persistence
+- Core Layer → Shared components, constants, templates and utilities
 
 ---
 
-## Flow
+## Request Flow
 
-User → Bot → Router → Middleware → Service → Repository → Database
+User
+    ↓
+Telegram Bot
+    ↓
+Router
+    ↓
+Middleware
+    ↓
+Service
+    ↓
+Repository
+    ↓
+Database
