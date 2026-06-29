@@ -15,4 +15,4 @@ BlaZe | Bot - is built using a modular service-based architecture.
 
 ## Flow
 
-User → Bot → Router → Service → Database → Response
+User → Bot → Router → Middleware → Service → Repository → Database
