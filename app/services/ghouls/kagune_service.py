@@ -2,7 +2,8 @@ import time
 import random
 
 from app.configs.yaml import cfg
-from app.core.enums.kagune_status import KaguneStatus
+from app.core.enums import KaguneStatus, ResultStatus
+from app.core.result import result
 
 from app.database.repositories.ghouls_repository import ghouls_repository
 from app.services.ghoul_service import ghoul_service
@@ -21,10 +22,17 @@ class KaguneService:
         user_id = user['user_id']
 
         chances = cfg['economy']['kagune']['types_chance']
-        kagune_type = random.choices(list(chances.keys()), weights=list(chances.values()), k=1)[0]
+        kagune_type = random.choices(
+            list(chances.keys()),
+            weights=list(chances.values()),
+            k=1
+        )[0]
 
         await ghouls_repository.init_kagune(user_id=user_id, k_type=kagune_type)
-        return kagune_type
+        return result(
+            ResultStatus.SUCCESS,
+            kagune_type=kagune_type
+        )
 
     async def process_kagune(self, user: dict):
         """Обрабатывает улучшения кагуне.
@@ -36,7 +44,10 @@ class KaguneService:
         user_id = user['user_id']
 
         if not user.get('kagune_was_obtained'):
-            return {"status": KaguneStatus.NOT_OPENED}
+            return result(
+                ResultStatus.ERROR,
+                kagune_status=KaguneStatus.NOT_OPENED
+            )
 
         now = int(time.time())
         cooldown = cfg['economy']['kagune']['cooldown']
@@ -44,10 +55,11 @@ class KaguneService:
         # ограничение скорости прокачки (ап раз в 15 минут)
         if now - user.get('kagune_last_grow', 0) < cooldown:
             remaining = cooldown - (now - user['kagune_last_grow'])
-            return {
-                "status": KaguneStatus.COOLDOWN,
-                "remaining": remaining
-            }
+            return result(
+                ResultStatus.COOLDOWN,
+                kagune_status=KaguneStatus.COOLDOWN,
+                remaining=remaining
+            )
 
         current_money = user['money']
         level = int(user['kagune_lvl'])
@@ -55,10 +67,13 @@ class KaguneService:
 
         # проверка баланса перед апом
         if current_money < price:
-            return {
-                "status": KaguneStatus.NOT_ENOUGH_MONEY,
-                "missing": price - current_money
-            }
+            return result(
+                ResultStatus.INSUFFICIENT_FUNDS,
+                kagune_status=KaguneStatus.NOT_ENOUGH_MONEY,
+                notification=cfg['message']['error_kagune']['not_enough_money'].format(
+                    money=format_num(price - current_money)
+                )
+            )
 
         new_level = level + 1
 
@@ -69,6 +84,11 @@ class KaguneService:
             timestamp=now,
         )
 
+        text = cfg['message']['kagune']['kagune_up'].format(
+            new_lvl=new_level,
+            price=format_num(price)
+        )
+
         user = update_user(
             user,
             money=current_money - price,
@@ -76,15 +96,10 @@ class KaguneService:
             kagune_last_grow=now
         )
 
-        text = cfg['message']['kagune']['kagune_up'].format(
-            new_lvl=new_level,
-            price=format_num(price)
+        return result(
+            ResultStatus.SUCCESS,
+            text=text,
+            gif=ghoul_service.get_kagune_gif(new_level)
         )
-
-        return {
-            "status": KaguneStatus.SUCCESS,
-            "text": text,
-            "gif": ghoul_service.get_kagune_gif(new_level)
-        }
 
 kagune_service = KaguneService()

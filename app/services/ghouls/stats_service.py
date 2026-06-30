@@ -4,7 +4,8 @@ from app.configs.yaml import cfg
 
 from app.core.templates.ghoul.stats_template import stats_text
 from app.core.constants.game.stats import STAT_NAMES
-from app.core.result import success, error
+from app.core.enums import ResultStatus
+from app.core.result import result
 
 from app.database.repositories.ghouls_repository import ghouls_repository
 from app.database.repositories.users_repository import user_repository
@@ -30,11 +31,15 @@ class StatsService:
         stats = await ghouls_repository.get_stats(user["user_id"])
 
         if not stats:
-            return error("Статы не найдены")
+            return result (
+                ResultStatus.NOT_FOUND,
+                notification="Статы не найдены"
+            )
 
         text = stats_text(user, stats)
 
-        return success(
+        return result(
+            ResultStatus.SUCCESS,
             text=text,
             keyboard=builds_stats_keyboard(stats)
         )
@@ -55,50 +60,61 @@ class StatsService:
         current_user_db = await user_repository.get_user_by_id(user_id)
 
         if not current_user_db:
-            return error("Пользователь не найден")
+            return result(
+                ResultStatus.NOT_FOUND,
+                notification="Пользователь не найден"
+            )
 
         stats = await ghouls_repository.get_stats(user_id)
 
         if not stats:
-           return error("Статы не найдены")
+           return result(
+               ResultStatus.NOT_FOUND,
+               notification="Статы не найдены"
+           )
 
         current_stat = stats[stat]
 
-        result = calculate_upgrade(
+        calc_result = calculate_upgrade(
             stat=stat,
             current_stat=current_stat,
             amount=amount,
             money=current_user_db['money']
         )
 
-        if not result['success']:
-            reason = result["reason"]
+        if not calc_result['success']:
+            reason = calc_result["reason"]
+            notification=cfg['message']['notifications'].get(
+                reason,
+                "Ошибка прокачки статов"
+            )
 
-            return error(
-                notification=cfg['message']['notifications'].get(
-                    reason,
-                    "Ошибка прокачки статов"
-                )
+            return result(
+                ResultStatus.ERROR,
+                notification=notification
             )
 
         updated = await ghouls_repository.upgrade_stat(
             user_id=user_id,
             stat=stat,
-            amount=result['upgrade_amount'],
-            price=result['price']
+            amount=calc_result['upgrade_amount'],
+            price=calc_result['price']
         )
 
         if not updated:
-            return error("Недостаточно BC на балике (Ошибка транзакции)")
+            return result(
+                ResultStatus.INSUFFICIENT_FUNDS,
+                notification="Недостаточно BC на балике"
+            )
 
         updated_user = await user_repository.get_user_by_id(user_id)
         updated_stats = await ghouls_repository.get_stats(user_id)
 
-        return success(
+        return result(
+            ResultStatus.SUCCESS,
             text=stats_text(updated_user, updated_stats),
             keyboard=builds_stats_keyboard(updated_stats),
-            notification=f"{STAT_NAMES[stat]} улучшен на +{result['upgrade_amount']}",
-            show_alert=False
+            notification=f"{STAT_NAMES[stat]} улучшен на +{calc_result['upgrade_amount']}"
         )
 
 stats_service = StatsService()

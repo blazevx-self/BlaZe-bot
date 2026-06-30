@@ -1,1 +1,1 @@
-from .result import success, error
+from .result import result
