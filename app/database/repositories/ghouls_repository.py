@@ -1,7 +1,6 @@
 from aiosqlite import Row
 from app.database.base import DatabaseManager
 from app.core.constants.game.stats import ALLOWED_STATS
-from app.core.exceptions.game import InvalidStatError
 
 # noinspection PyMethodMayBeStatic
 class GhoulRepository:
@@ -41,8 +40,15 @@ class GhoulRepository:
 
     async def init_kagune(self ,user_id: int, k_type: str) -> None:
         async with DatabaseManager.connect() as db:
+            cursor = await db.execute("SELECT kagune_was_obtained FROM ghouls WHERE user_id = ?", (user_id,))
+            row = await cursor.fetchone()
+
+            if row and row[0]:
+                return
+
             await db.execute("""
                 UPDATE ghouls SET kagune_type = ?, kagune_lvl = 1, kagune_was_obtained = 1 WHERE user_id = ?
+                AND kagune_was_obtained = 0
             """, (k_type, user_id))
 
             await db.commit()
@@ -73,9 +79,8 @@ class GhoulRepository:
                 return await cursor.fetchone()
 
     async def upgrade_stat(self, user_id: int, stat: str, amount: int, price: int) -> bool:
-        # Валидация прямо на входе, чтобы защититься от SQL-инъекций, так как имя столбца подставляется через f-строку
         if stat not in ALLOWED_STATS:
-            raise InvalidStatError(f"Invalid stat: {stat}")
+            raise False
 
         async with DatabaseManager.connect() as db:
             async with db.execute("SELECT money FROM users WHERE user_id = ?", (user_id,)) as cursor:
@@ -84,7 +89,6 @@ class GhoulRepository:
                 if not user_row or user_row['money'] < price:
                     return False
 
-            # Всё внутри одного контекста соединения
             await db.execute("UPDATE users SET money = money - ? WHERE user_id = ?", (price, user_id))
             await db.execute(f"UPDATE ghouls SET {stat} = {stat} + ? WHERE user_id = ?", (amount, user_id))
             await db.commit()

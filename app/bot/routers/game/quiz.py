@@ -3,7 +3,7 @@ from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery
 
 from app.configs.yaml import cfg
-from app.core.enums.quiz_status import QuizStatus
+from app.core.enums import ResultStatus
 
 from app.services.game.quiz_service import quiz_service
 from app.bot.keyboards.game.quiz_keyboard import get_quiz_again_kb
@@ -21,15 +21,19 @@ async def quiz(message: Message, user: dict):
     )
     result = await quiz_service.process_quiz_start(user=user)
 
-    if result['status'] == QuizStatus.LIMIT:
+    if result.status == ResultStatus.LIMIT:
         await message.reply(cfg['message']['quiz']['quiz_limit'])
         return
 
-    if result['status'] == QuizStatus.NO_QUESTIONS:
+    if result.status == ResultStatus.NO_QUESTIONS:
         await message.reply(cfg['message']['quiz']['no_questions'], parse_mode="HTML")
         return
 
-    await send_question_ui(message_or_call=message, q=result['question'], left=result['left'])
+    await send_question_ui(
+        message_or_call=message,
+        q=result.question,
+        left=result.left
+    )
 
 @router.callback_query(F.data.startswith(f"q_"))
 async def quiz_handler(callback: CallbackQuery, user: dict):
@@ -43,7 +47,7 @@ async def quiz_handler(callback: CallbackQuery, user: dict):
         user_choice=user_choice
     )
 
-    if result['status'] == QuizStatus.LIMIT:
+    if result.status == ResultStatus.LIMIT:
         text = cfg['message']['quiz']['quiz_naebalovo_user']
 
         await callback.answer(text=text, show_alert=True)
@@ -51,26 +55,40 @@ async def quiz_handler(callback: CallbackQuery, user: dict):
 
         return
 
-    if result['status'] == QuizStatus.LIMIT_REACHED:
-        await callback.message.edit_text(text=result['text'], parse_mode='HTML', reply_markup=get_quiz_again_kb())
+    user['money'] = result.new_money
+
+    if result.status == ResultStatus.LIMIT_REACHED:
+        await callback.message.edit_text(
+            text=result.text,
+            parse_mode='HTML',
+            reply_markup=get_quiz_again_kb()
+        )
         await callback.answer()
 
         return
 
-    await callback.message.edit_text(text=result['text'], parse_mode="HTML", reply_markup=get_quiz_again_kb())
+    await callback.message.edit_text(
+        text=result.text,
+        parse_mode="HTML",
+        reply_markup=get_quiz_again_kb()
+    )
     await callback.answer()
 
 @router.callback_query(F.data == "quiz_again")
 async def quiz_again(callback: CallbackQuery, user: dict):
     result = await quiz_service.process_quiz_start(user=user)
 
-    if result['status'] == QuizStatus.LIMIT:
+    if result.status == ResultStatus.LIMIT:
         await callback.answer(cfg['message']['quiz']['quiz_limit'], show_alert=True)
         return
 
-    if result['status'] == QuizStatus.NO_QUESTIONS:
+    if result.status == ResultStatus.NO_QUESTIONS:
         await callback.answer(cfg['message']['quiz']['no_questions_callback'], show_alert=False)
         return
 
-    await send_question_ui(message_or_call=callback, q=result['question'], left=result['left'])
+    await send_question_ui(
+        message_or_call=callback,
+        q=result.question,
+        left=result.left
+    )
     await callback.answer()

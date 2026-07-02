@@ -2,19 +2,17 @@ import time
 import random
 
 from app.configs.yaml import cfg
-from app.core.enums.coffee_status import CoffeeStatus
-
+from app.core.enums import ResultStatus
+from app.types.services_types.ghoul import CoffeeResult
 from app.database.repositories.ghouls_repository import ghouls_repository
 
 from app.utils.format_num import format_num
-from app.utils.user import update_user
 
-# noinspection PyUnusedLocal
 # noinspection PyMethodMayBeStatic
 class CoffeeService:
     """Сервис игровой механики употребления кофе."""
 
-    async def process_coffee(self, user: dict) -> dict:
+    async def process_coffee(self, user: dict) -> CoffeeResult:
         """Обрабатывает употребления кофе.
 
         Проверяет ограничения, выдаёт награду, обновляет данные игрока
@@ -22,19 +20,18 @@ class CoffeeService:
         """
 
         user_id = user['user_id']
-
         now = int(time.time())
         required_clicks = cfg['economy']['coffee']['required_clicks']
 
         # проверка требования кликов для кофе
         if user.get('clicks', 0) < required_clicks:
             needed = required_clicks - user['clicks']
+            text = cfg['message']['coffee']['not_coffee'].format(needed=needed)
 
-            return {
-                "status": CoffeeStatus.NOT_ENOUGH_CLICKS,
-                "text": cfg['message']['coffee']['not_coffee'].format(needed=needed),
-                "animation": None
-            }
+            return CoffeeResult(
+                status=ResultStatus.NOT_ENOUGH_CLICKS,
+                text=text,
+            )
 
         cooldown = user.get('coffee_cooldown')
         is_cooldown = cooldown and now < cooldown
@@ -44,11 +41,13 @@ class CoffeeService:
             hours = remaining // 3600
             minutes = (remaining % 3600 // 60)
 
-            return {
-                "status": CoffeeStatus.OVERDOSE_COOLDOWN,
-                "text": cfg['message']['coffee']['overdose_2'].format(hours=hours, minutes=minutes),
-                "animation": None,
-            }
+            return CoffeeResult(
+                status=ResultStatus.OVERDOSE_COOLDOWN,
+                text=cfg['message']['coffee']['overdose_2'].format(
+                    hours=hours,
+                    minutes=minutes
+                )
+            )
 
         wait_time = cfg['economy']['coffee']['cooldown']
         overdose_time = cfg['economy']['coffee']['overdose_cooldown']
@@ -63,13 +62,11 @@ class CoffeeService:
                 cooldown_timestamp=cooldown_time
             )
 
-            user['coffee_cooldown'] = cooldown_time
-
-            return {
-                "status": CoffeeStatus.OVERDOSE,
-                "text": cfg['message']['coffee']['overdose_1'],
-                "animation": None
-            }
+            return CoffeeResult(
+                status=ResultStatus.OVERDOSE,
+                text=cfg['message']['coffee']['overdose_1'],
+                new_coffee_cooldown=cooldown_time
+            )
 
         reward_min, reward_max = cfg['economy']['coffee']['reward']
         money = random.randint(reward_min, reward_max)
@@ -80,26 +77,24 @@ class CoffeeService:
             current_time=now
         )
 
-        user = update_user(
-            user,
-            money=user.get('money', 0) + money,
-            coffee_total=user.get('coffee_total', 0) + 1,
-            coffee_last_time=now,
-            coffee_cooldown=0
-        )
+        new_money = user.get('money', 0) + money
+        new_coffe_total = user.get('coffee_total', 0) + 1
 
         text = cfg['message']['coffee']['coffee_up'].format(
             money=format_num(money),
-            coffee_total=format_num(user['coffee_total'])
+            coffee_total=format_num(new_coffe_total)
         )
 
         coffee_gif = random.choice(cfg['message']['coffee']['gifs'])
 
-        return {
-            "status": CoffeeStatus.SUCCESS,
-            "text": text,
-            "animation": coffee_gif
-        }
+        return CoffeeResult(
+            status=ResultStatus.SUCCESS,
+            text=text,
+            gif=coffee_gif,
+            new_money=new_money,
+            new_coffee_total=new_coffe_total,
+            new_coffee_cooldown=0
+        )
 
 coffee_service = CoffeeService()
 

@@ -28,7 +28,7 @@ class GhoulRequired(BaseFilter):
         if is_ghoul:
             return True
 
-        security_logger.warning(f"[GHOUL ACCESS DENIED] user_id: {event.from_user.id} | event: {event.__class__.__name__}")
+        security_logger.warning(f"[GHOUL ACCESS DENIED] user_id={event.from_user.id} | event={event.__class__.__name__}")
 
         if isinstance(event, Message):
             await event.reply(cfg['message']['not_ghoul']['not_ghoul_message'], parse_mode="HTML")

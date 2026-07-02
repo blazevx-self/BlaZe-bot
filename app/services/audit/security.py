@@ -1,8 +1,7 @@
 from app.core.constants.input.callbacks import ALLOWED_CALLBACK_PREFIXES
 from app.core.constants.system.limits import (
-    MAX_MESSAGE_LENGTH,
     MAX_CALLBACK_LENGTH,
-    SLOW_REQUEST_MS,
+    SLOW_REQUEST_MS
 )
 
 from app.utils.logger import security_logger
@@ -12,17 +11,10 @@ class SecurityService:
     Сервис проверки подозрительной активности пользователя.
 
     Отвечает за:
-    - длину сообщений и callback'ов
+    - длину callback'ов
     - невалидные callback-префиксы
     - медленные запросы
     """
-
-    @staticmethod
-    def log_long_message(user_info: str, text: str) -> None:
-        """Проверяет длину сообщения на подозрительную активность."""
-
-        if len(text) > MAX_MESSAGE_LENGTH:
-             security_logger.warning(f"[SUSPICIOUS MESSAGE] {user_info} | length={len(text)} chars")
 
     @staticmethod
     def log_long_callback(user_info: str, callback_data: str) -> None:

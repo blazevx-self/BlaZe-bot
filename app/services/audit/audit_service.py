@@ -48,11 +48,6 @@ class AuditService:
             process_time=process_time
         )
 
-        security_service.log_long_message(
-            user_info=user_info,
-            text=text
-        )
-
         security_service.log_slow_request(
             user_info=user_info,
             process_time=process_time,

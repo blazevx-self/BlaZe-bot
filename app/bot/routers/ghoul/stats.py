@@ -12,19 +12,19 @@ router = Router()
 
 @router.message(F.text.lower() == "качаца", F.chat.type == "private", GhoulRequired())
 async def stats_menu(message: Message, user: dict):
-    result_data = await stats_service.get_stats_menu(user)
+    result = await stats_service.get_stats_menu(user)
 
-    if not result_data["success"] != ResultStatus.SUCCESS:
+    if result.status != ResultStatus.SUCCESS:
         await message.reply(
-            result_data.get("notification", "Ошибка"),
+            result.notification or "handler call error",
             parse_mode='HTML'
         )
         return
 
     await message.reply(
-        text=result_data["text"],
+        text=result.text,
         parse_mode='HTML',
-        reply_markup=result_data["keyboard"]
+        reply_markup=result.keyboard
     )
 
 @router.callback_query(F.data.startswith("stat:"))
@@ -32,26 +32,27 @@ async def stats(callback: CallbackQuery, user: dict):
     _, stat, amount = callback.data.split(":")
     amount = cast(Literal[1, 3, 5], int(amount))
 
-    result_data = await stats_service.process_stats_upgrade(user, stat, amount)
+    result = await stats_service.process_stats_upgrade(user, stat, amount)
 
-    if not result_data["success"] != ResultStatus.SUCCESS:
+    if result.status != ResultStatus.SUCCESS:
         await callback.answer(
-            result_data.get("notification", "Ошибка"),
+            result.notification or "handler call error",
             show_alert=False,
             parse_mode='HTML'
         )
         return
 
     await callback.message.edit_text(
-        text=result_data["text"],
-        reply_markup=result_data["keyboard"],
+        text=result.text,
+        reply_markup=result.keyboard,
         parse_mode='HTML'
     )
     await callback.answer(
-        result_data.get("notification", "Ошибка"),
+        result.notification or "Ошибка",
         show_alert=False
     )
 
 @router.callback_query(F.data == "locked")
 async def locked(callback: CallbackQuery):
     await callback.answer("🔒 Этот уровень недоступен", show_alert=False)
+

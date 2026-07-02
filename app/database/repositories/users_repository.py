@@ -1,9 +1,7 @@
 from aiosqlite import Row
 from app.database.base import DatabaseManager
-from app.core.exceptions.database import EntityNotFoundError
 
 # noinspection PyMethodMayBeStatic
-
 class UserRepository:
     # Создание юзера
     async def create_user(self ,user_id: int, name: str, username: str |None):
@@ -14,7 +12,6 @@ class UserRepository:
             await db.execute("""
                 INSERT OR IGNORE INTO ghouls (user_id, ghoul_nickname) VALUES (?, ?)
             """, (user_id, name))
-
             await db.commit()
 
     # ID юзера
@@ -36,8 +33,8 @@ class UserRepository:
             async with db.execute(sql, (user_id,)) as cursor:
                 row = await cursor.fetchone()
                 if not row:
-                    raise EntityNotFoundError("User not found")
-
+                    return None
+                return dict(row)
 
     # Бонус (подписка на канал)
     async def activate_subscribed_bonus(self ,user_id: int, bonus: int) -> None:

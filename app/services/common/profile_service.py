@@ -1,12 +1,15 @@
-from app.utils.format_num import format_num
-from app.services.ghoul_service import ghoul_service
 from app.core.templates.common.profile_template import profile_text
+from app.core.enums import ResultStatus
+from app.types.services_types.common import ProfileResult
+
+from app.services.ghoul_service import ghoul_service
+from app.utils.format_num import format_num
 
 # noinspection PyMethodMayBeStatic
 class ProfileService:
     """Сервис формирования обычного профиля пользователя"""
 
-    async def build_profile(self, user: dict) -> dict:
+    async def build_profile(self, user: dict) -> ProfileResult:
         """Формирует текст профиля с текущими характеристиками пользователя"""
 
         user_id = user['user_id']
@@ -32,6 +35,9 @@ class ProfileService:
             coffee=coffee
         )
 
-        return {'text': text}
+        return ProfileResult(
+            status=ResultStatus.SUCCESS,
+            text=text
+        )
 
 profile_service = ProfileService()

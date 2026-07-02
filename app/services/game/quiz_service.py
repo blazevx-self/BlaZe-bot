@@ -2,16 +2,19 @@ import random
 
 from app.configs.yaml import cfg
 from app.core.templates.game.quiz_template import quiz_result_text
+from app.core.enums import ResultStatus
+from app.types.services_types.game import (
+    QuizStartResult,
+    QuizAnswerResult
+)
 
 from app.database.repositories.quiz_repository import quiz_repository
-
-from app.core.enums.quiz_status import QuizStatus
 
 # noinspection PyMethodMayBeStatic
 class QuizService:
     """Сервис логики викторины."""
 
-    async def process_quiz_start(self, user: dict):
+    async def process_quiz_start(self, user: dict) -> QuizStartResult:
         """Подготавливает новую викторину для пользователя.
 
         Проверяет доступные попытки, выбирает случайный вопрос,
@@ -22,29 +25,29 @@ class QuizService:
         access = await quiz_repository.get_quiz_access(user_id)
 
         if not access['can_play'] or access['left'] <= 0:
-            return {"status": QuizStatus.LIMIT}
+            return QuizStartResult(status=ResultStatus.LIMIT)
 
         questions = await quiz_repository.get_random_questions(user_id=user_id, limit=1)
 
         if not questions:
-            return {"status": QuizStatus.NO_QUESTIONS}
+            return QuizStartResult(status=ResultStatus.NO_QUESTIONS)
 
         question = questions[0]
 
         await quiz_repository.save_quiz_progress(user_id=user_id, question_id=question['id'])
 
-        return {
-            "status": QuizStatus.SUCCESS,
-            "question": question,
-            "left": access['left'] - 1
-        }
+        return QuizStartResult(
+            status=ResultStatus.SUCCESS,
+            question=question,
+            left=access['left'] - 1
+        )
 
     async def process_quiz_answer(
             self,
             user: dict,
             question_id: int,
             user_choice: str
-    ):
+    ) -> QuizAnswerResult:
         """Обрабатывает ответ пользователя.
 
         Проверяет правильность ответа, начисляет награду,
@@ -55,7 +58,7 @@ class QuizService:
         access = await quiz_repository.get_quiz_access(user_id)
 
         if not access['can_play'] or access['left'] <= 0:
-            return {"status": QuizStatus.LIMIT}
+            return QuizAnswerResult(status=ResultStatus.LIMIT)
 
         question = await quiz_repository.get_question_by_id(question_id)
         is_correct = question['correct'].strip().lower() == user_choice.strip().lower()
@@ -65,7 +68,7 @@ class QuizService:
 
         await quiz_repository.use_question_charge(user_id=user_id, earned_money=earned)
 
-        user['money'] = user.get('money', 0) + earned
+        new_money = user.get('money', 0) + earned
         questions_left = access['left'] - 1
 
         result_text = quiz_result_text(
@@ -76,15 +79,12 @@ class QuizService:
             earned=earned
         )
 
-        if questions_left <= 0:
-            return {
-                "status": QuizStatus.LIMIT_REACHED,
-                "text": result_text,
-            }
+        status = ResultStatus.LIMIT_REACHED if questions_left <= 0 else ResultStatus.SUCCESS
 
-        return {
-            "status": QuizStatus.SUCCESS,
-            "text": result_text
-        }
+        return QuizAnswerResult(
+            status=status,
+            text=result_text,
+            new_money=new_money
+        )
 
 quiz_service = QuizService()

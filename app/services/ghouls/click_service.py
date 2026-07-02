@@ -2,20 +2,19 @@ import random
 import time
 
 from app.configs.yaml import cfg
-from app.core.enums.click_status import ClickStatus
+from app.core.enums import ResultStatus
+from app.types.services_types.ghoul import ClickResult
 
 from app.database.repositories.users_repository import user_repository
 from app.database.repositories.ghouls_repository import ghouls_repository
 
 from app.utils.format_num import format_num
-from app.utils.user import update_user
 
-# noinspection PyUnusedLocal
 # noinspection PyMethodMayBeStatic
 class ClickService:
     """Сервис игровой механики щелчков"""
 
-    async def process_click(self, user: dict):
+    async def process_click(self, user: dict) -> ClickResult:
         """Обрабатывает выполнение команды <Щелк>.
 
         Проверяет кулдаун, начисляет награду, обновляет статистику пользователя
@@ -32,10 +31,10 @@ class ClickService:
             remaining = cooldown_time - (now - last_click)
 
             if remaining > 0:
-                return {
-                    "status": ClickStatus.COOLDOWN,
-                    "remaining": remaining
-                }
+                return ClickResult(
+                    status=ResultStatus.COOLDOWN,
+                    remaining=remaining
+                )
 
         reward_min, reward_max = cfg['economy']['click']['reward']
         money = random.randint(reward_min, reward_max)
@@ -44,23 +43,21 @@ class ClickService:
         await ghouls_repository.add_click(user_id)
         await ghouls_repository.update_last_click(user_id, now)
 
-        user = update_user(
-            user,
-            money=user.get('money', 0) + money,
-            clicks=user.get('clicks', 0) + 1,
-            last_click=now
+        new_money = user.get('money', 0) + money
+        new_clicks = user.get('clicks', 0) + 1
+
+        text = cfg['message']['click']['click_up'].format(
+            money_won=format_num(money),
+            total_clicks=format_num(new_clicks)
         )
-
-        money_won = format_num(money)
-        total_clicks = format_num(user['clicks'])
-
-        text = cfg['message']['click']['click_up'].format(money_won=money_won, total_clicks=total_clicks)
         click_gif = random.choice(cfg['message']['click']['gifs'])
 
-        return {
-            "status": ClickStatus.SUCCESS,
-            "text": text,
-            "gif": click_gif
-        }
+        return ClickResult(
+            status=ResultStatus.SUCCESS,
+            text=text,
+            gif=click_gif,
+            new_money=new_money,
+            new_clicks=new_clicks
+        )
 
 click_service = ClickService()

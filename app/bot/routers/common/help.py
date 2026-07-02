@@ -20,6 +20,7 @@ async def help_me(message: Message) -> None:
         f"[COMMAND] name=\"{message.from_user.first_name}\" | user_id={message.from_user.id} | "
         f"chat={message.chat.type} | command=\"/help\""
     )
+
     await message.reply(
         text=build_help_text(),
         parse_mode="HTML",

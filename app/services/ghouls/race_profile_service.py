@@ -1,12 +1,15 @@
-from app.services.ghoul_service import ghoul_service
+from app.core.enums import ResultStatus
+from app.types.services_types.ghoul import RaceProfileResult
 from app.core.templates.ghoul.race_profile_template import race_profile_text
+
+from app.services.ghoul_service import ghoul_service
 
 # noinspection PyMethodMayBeStatic
 
 class RaceProfileService:
     """Сервис формирования расового профиля игрока."""
 
-    async def build_race_profile(self, user: dict):
+    async def build_race_profile(self, user: dict) -> RaceProfileResult:
         """Формирует расовый профиль гуля.
 
         Вычисляет суммарную мощь, ранг угрозы и собирает текст профиля.
@@ -29,6 +32,9 @@ class RaceProfileService:
             kagune_lvl=user["kagune_lvl"]
         )
 
-        return {"text": text}
+        return RaceProfileResult(
+            status=ResultStatus.SUCCESS,
+            text=text
+        )
 
 race_service = RaceProfileService()

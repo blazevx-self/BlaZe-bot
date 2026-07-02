@@ -15,7 +15,18 @@ async def cmd_start(message: Message, bot: Bot, user: dict):
         f"[COMMAND] name=\"{message.from_user.first_name}\" | user_id={message.from_user.id} | "
         f"chat={message.chat.type} | command=\"/start\""
     )
-    text = await start_service.process_start(user=user, bot=bot)
 
-    await message.reply(text=text, parse_mode="HTML", reply_markup=start_keyboard())
+    result = await start_service.process_start(user=user, bot=bot)
+
+    if result.new_money:
+        user['money'] = result.new_money
+
+    if result.is_subscribed:
+        user['is_subscribed'] = 1
+
+    await message.reply(
+        text=result.text,
+        parse_mode="HTML",
+        reply_markup=start_keyboard()
+    )
 

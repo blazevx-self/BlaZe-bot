@@ -34,7 +34,7 @@ class NotifierService:
             f"👤 User: {user_info}\n"
             f"📦 Event: {event_name}\n"
             f"⏱ Time: {process_time}ms\n\n"
-            f"💥 Error:\n"
+            f"Error:\n"
             f"{error}\n\n"
             f"{traceback_text[-1500:]}"
         )
