@@ -1,3 +1,4 @@
+import asyncio
 from typing import Literal
 
 from app.configs.yaml import cfg
@@ -106,8 +107,10 @@ class StatsService:
                 notification="Ошибка транзакции балика"
             )
 
-        updated_user = await user_repository.get_user_by_id(user_id)
-        updated_stats = await ghouls_repository.get_stats(user_id)
+        updated_user, updated_stats = await asyncio.gather(
+            user_repository.get_user_by_id(user_id),
+            ghouls_repository.get_stats(user_id)
+        )
 
         return StatsResult(
             status=ResultStatus.SUCCESS,
