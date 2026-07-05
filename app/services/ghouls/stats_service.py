@@ -12,7 +12,7 @@ from app.database.repositories.ghouls_repository import ghouls_repository
 from app.database.repositories.users_repository import user_repository
 
 from app.bot.keyboards.ghoul.stats_keyboard import builds_stats_keyboard
-from app.utils.calculate_stats import calculate_upgrade
+from app.services.calculate_stats_service import calculate_upgrade
 
 UpgradeAmount = Literal[1, 3, 5]
 

@@ -41,7 +41,7 @@ class DatabaseMiddleware(BaseMiddleware):
 
         except Exception as e:
             system_logger.exception(
-                f"[DATABASE MIDDLEWARE ERROR] user_id={tg_user.id} | error={str(e)}",
+                f"[DB] Middleware error | user_id={tg_user.id} | error={str(e)}",
                 exc_info=True
             )
             return None
@@ -57,11 +57,11 @@ class DatabaseMiddleware(BaseMiddleware):
                 name=tg_user.first_name,
                 username=tg_user.username,
             )
-            system_logger.info(f"[USER CREATED] id={tg_user.id}")
+            system_logger.info(f"[DB] User created | id={tg_user.id}")
 
         except Exception as e:
             system_logger.error(
-                f"[CREATE USER ERROR] id={tg_user.id}, error={e}",
+                f"[DB] User created error | id={tg_user.id}, error={e}",
                 exc_info=True
             )
             raise
@@ -102,10 +102,10 @@ class DatabaseMiddleware(BaseMiddleware):
                 name=name,
                 username=username
             )
-            system_logger.info(f"[USER UPDATED] id={user_id}")
+            system_logger.info(f"[DB] User updated | id={user_id}")
         except Exception as e:
             system_logger.exception(
-                f"[USER UPDATED ERROR] id={user_id}, error={e}",
+                f"[DB] User update error | id={user_id}, error={e}",
                 exc_info=True
             )
 

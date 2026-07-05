@@ -1,4 +1,4 @@
-from app.utils.calculate_stats import calculate_price, STAT_LIMITS
+from app.services.calculate_stats_service import calculate_price, STAT_LIMITS
 from app.utils.format_num import format_num
 
 from app.configs.yaml import cfg

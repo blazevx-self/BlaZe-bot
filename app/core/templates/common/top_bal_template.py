@@ -26,10 +26,10 @@ def build_top_text(result):
     text += "<b>╰─────────────────╯</b>\n"
 
     if user["money"] <= 0:
-        text += cfg['message']['tops']['rank_messages']["5"]
+        text += cfg['message']['tops']['rank_messages']['5']
     elif str(rank) in rank_message:
         text += rank_message[str(rank)]
     else:
-        text += rank_message.get(str(rank)), rank_message["4"].format(rank=rank)
+        text += rank_message.get(str(rank)), rank_message['4'].format(rank=rank)
 
     return text

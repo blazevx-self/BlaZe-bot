@@ -2,17 +2,18 @@ from math import floor
 from typing import Literal
 
 from app.core.constants.game.stats import STAT_LIMITS, UNLOCK_LEVELS
-from app.types.services_types.ghoul import UpgradeCalcResult
 from app.core.enums import ResultStatus
-from app.configs.yaml import cfg
+
+from app.types.services_types.ghoul import UpgradeCalcResult
+from app.configs.game import game_cfg
 
 UpgradeAmount = Literal[1, 3, 5]
 
 def calculate_price(current_stat: int, amount: int) -> int:
     """Расчёт стоимости улучшений с учётом экспоненциального роста"""
-    price_cfg = cfg['economy']['stats_price']
-    base_price = price_cfg['base_price']
-    multiplier = price_cfg['price_multiplier']
+    price_cfg = game_cfg.stats_price
+    base_price = price_cfg.base_price
+    multiplier = price_cfg.price_multiplier
 
     total_price = 0
     temp_stat = current_stat

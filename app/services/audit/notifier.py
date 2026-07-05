@@ -1,4 +1,5 @@
 from typing import Any
+from app.utils.logger import system_logger
 
 class NotifierService:
     """
@@ -39,6 +40,9 @@ class NotifierService:
             f"{traceback_text[-1500:]}"
         )
 
-        await bot.send_message(admin_id, error_text)
+        try:
+            await bot.send_message(admin_id, error_text)
+        except Exception as e:
+            system_logger.error(f"[NOTIFIER] Failed to send error to admin: {e}")
 
 notifier_service = NotifierService()

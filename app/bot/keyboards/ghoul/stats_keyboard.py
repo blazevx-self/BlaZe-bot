@@ -5,7 +5,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import InlineKeyboardMarkup
 from app.core.constants.game.stats import STATS_KEYBOARD
 
-from app.utils.calculate_stats import can_upgrade_amount
+from app.services.calculate_stats_service import can_upgrade_amount
 
 UpgradeAmount = Literal[1, 3, 5]
 UPGRADE_AMOUNTS: tuple[UpgradeAmount, ...] = (1, 3, 5)

@@ -30,7 +30,7 @@ class AntiSpamGhoulMiddleware(BaseMiddleware):
 
                 # защита от повторных нажатий кнопок (callback spam)
                 if user_id in self.cache:
-                    security_logger.warning(f"[SPAM CALLBACK BLOCKED] user_id={user_id} | callback={event.data}")
+                    security_logger.warning(f"[SECURITY] Spam callback blocked | user_id={user_id} | callback={event.data[:50]}")
 
                     return await event.answer(cfg['message']['middleware_text_antispam'], show_alert=False)
 

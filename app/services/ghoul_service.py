@@ -1,6 +1,8 @@
 from typing import Optional
 
+from app.configs.game import game_cfg
 from app.configs.yaml import cfg
+
 from app.core.constants.game.stats import STATUS_FIELDS, POWER_FIELDS
 from app.core.constants.game.kagune import KAGUNE_MULTIPLIER
 from app.core.constants.game.ranks import DANGER_RANKS
@@ -33,8 +35,8 @@ class GhoulService:
     def get_price(level: int) -> int:
         """Расчёт стоимости улучшения кагуне."""
 
-        base = cfg['economy']['kagune']['start_price']
-        multiplier = cfg['economy']['kagune']['price_multiplier']
+        base = game_cfg.kagune.start_price
+        multiplier = game_cfg.kagune.price_multiplier
 
         return int(base * (multiplier ** (level - 1)))
 
@@ -42,7 +44,7 @@ class GhoulService:
     def get_kagune_gif(level: int) -> str:
         """За достижение определённых уровней кагуне - игрок получает новую анимацию развития кагуне."""
 
-        gifs = cfg['message']['kagune']['gifs']
+        gifs = cfg['assets']['kagune']['gifs']
 
         current_gif = gifs[1]
 
@@ -86,8 +88,7 @@ class GhoulService:
 
     @staticmethod
     def get_rank(level: int) -> str:
-        # приводим ключи к int потому что YAML может прочитать как строку или инты в зависимости от парсера.
-        ghoul_ranks = {int(k): v for k, v in cfg['economy']['ranks']['ghoul_ranks'].items()}
+        ghoul_ranks = game_cfg.ranks.ghoul_ranks
         current_rank = "E"
 
         for threshold in sorted(ghoul_ranks):
@@ -103,21 +104,20 @@ class GhoulService:
         """Вычисление экономико-боевого статуса гуля
            на основе суммарного power_level из конфига
         """
-        weights = cfg['economy']['ranks']['weights']
-        statuses = cfg['economy']['ranks']['statuses']
+        weights = game_cfg.ranks.weights
+        statuses = game_cfg.ranks.statuses
 
         # вычисление общего power level пользователя на основе активности
         power_level = sum(
-            (user.get(field, 0) * weights[weight])
+            (user.get(field, 0) * getattr(weights, weight))
             for field, weight in STATUS_FIELDS.items()
         )
 
         current_status = "Новенький"
-        sorted_statuses = {int(k): v for k, v in statuses.items()}
 
-        for threshold in sorted(sorted_statuses):
+        for threshold in sorted(statuses):
             if power_level >= threshold:
-                current_status = sorted_statuses[threshold]
+                current_status = statuses[threshold]
             else:
                 break
 

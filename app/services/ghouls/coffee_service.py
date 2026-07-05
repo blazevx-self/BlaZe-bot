@@ -2,6 +2,8 @@ import time
 import random
 
 from app.configs.yaml import cfg
+from app.configs.game import game_cfg
+
 from app.core.enums import ResultStatus
 from app.types.services_types.ghoul import CoffeeResult
 from app.database.repositories.ghouls_repository import ghouls_repository
@@ -21,7 +23,7 @@ class CoffeeService:
 
         user_id = user['user_id']
         now = int(time.time())
-        required_clicks = cfg['economy']['coffee']['required_clicks']
+        required_clicks = game_cfg.coffee.required_clicks
 
         # проверка требования кликов для кофе
         if user.get('clicks', 0) < required_clicks:
@@ -49,8 +51,8 @@ class CoffeeService:
                 )
             )
 
-        wait_time = cfg['economy']['coffee']['cooldown']
-        overdose_time = cfg['economy']['coffee']['overdose_cooldown']
+        wait_time = game_cfg.coffee.cooldown
+        overdose_time = game_cfg.coffee.overdose_cooldown
         last_drink = user.get('coffee_last_time', 0)
 
         # частое употребление кофе (кофе можно пить 1 раз в 30 минут)
@@ -68,7 +70,7 @@ class CoffeeService:
                 new_coffee_cooldown=cooldown_time
             )
 
-        reward_min, reward_max = cfg['economy']['coffee']['reward']
+        reward_min, reward_max = game_cfg.coffee.reward
         money = random.randint(reward_min, reward_max)
 
         await ghouls_repository.drink_coffee_success(
@@ -85,7 +87,7 @@ class CoffeeService:
             coffee_total=format_num(new_coffe_total)
         )
 
-        coffee_gif = random.choice(cfg['message']['coffee']['gifs'])
+        coffee_gif = random.choice(cfg['assets']['coffee']['gifs'])
 
         return CoffeeResult(
             status=ResultStatus.SUCCESS,

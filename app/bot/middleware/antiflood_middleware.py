@@ -53,7 +53,8 @@ class AntifloodMiddleware(BaseMiddleware):
         self.user_requests[user_id] = requests
 
         if len(requests) > self.max_requests:
-            security_logger.warning(f"[FLOOD BLOCKED] user_id={user_id} | Rate limit exceeded={len(requests)} req/{self.limit_seconds}s.")
+            security_logger.warning(
+                f"[SECURITY] Flood blocked | user_id={user_id} | {len(requests)} req/{self.limit_seconds}s.")
             return None
 
         return await handler(event, data)

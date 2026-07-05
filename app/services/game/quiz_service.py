@@ -1,8 +1,10 @@
 import random
 
-from app.configs.yaml import cfg
+from app.configs.game import game_cfg
+
 from app.core.templates.game.quiz_template import quiz_result_text
 from app.core.enums import ResultStatus
+
 from app.types.services_types.game import (
     QuizStartResult,
     QuizAnswerResult
@@ -63,7 +65,7 @@ class QuizService:
         question = await quiz_repository.get_question_by_id(question_id)
         is_correct = question['correct'].strip().lower() == user_choice.strip().lower()
 
-        reward_min, reward_max = cfg['economy']['quiz']['reward']
+        reward_min, reward_max = game_cfg.quiz.reward
         earned = random.randint(reward_min, reward_max) if is_correct else 0
 
         await quiz_repository.use_question_charge(user_id=user_id, earned_money=earned)

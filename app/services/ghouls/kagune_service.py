@@ -1,7 +1,8 @@
 import time
-import random
 
+from app.configs.game import game_cfg
 from app.configs.yaml import cfg
+
 from app.core.enums import ResultStatus
 from app.types.services_types.ghoul import KaguneResult
 
@@ -18,12 +19,7 @@ class KaguneService:
         """Выдаёт пользователю первое кагуне случайного типа."""
 
         user_id = user['user_id']
-        chances = cfg['economy']['kagune']['types_chance']
-        kagune_type = random.choices(
-            list(chances.keys()),
-            weights=list(chances.values()),
-            k=1
-        )[0]
+        kagune_type = game_cfg.kagune.random_type()
 
         await ghouls_repository.init_kagune(user_id=user_id, k_type=kagune_type)
 
@@ -45,7 +41,7 @@ class KaguneService:
             return KaguneResult(status=ResultStatus.ERROR)
 
         now = int(time.time())
-        cooldown = cfg['economy']['kagune']['cooldown']
+        cooldown = game_cfg.kagune.cooldown
 
         # ограничение скорости прокачки (ап раз в 15 минут)
         if now - user.get('kagune_last_grow', 0) < cooldown:

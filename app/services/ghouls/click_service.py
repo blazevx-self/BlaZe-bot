@@ -2,6 +2,8 @@ import random
 import time
 
 from app.configs.yaml import cfg
+from app.configs.game import game_cfg
+
 from app.core.enums import ResultStatus
 from app.types.services_types.ghoul import ClickResult
 
@@ -23,7 +25,7 @@ class ClickService:
 
         user_id = user['user_id']
         now = int(time.time())
-        cooldown_time = cfg['economy']['click']['cooldown']
+        cooldown_time = game_cfg.click.cooldown
         last_click = user.get('last_click', 0)
 
         # проверка кулдауна щелка
@@ -36,7 +38,7 @@ class ClickService:
                     remaining=remaining
                 )
 
-        reward_min, reward_max = cfg['economy']['click']['reward']
+        reward_min, reward_max = game_cfg.click.reward
         money = random.randint(reward_min, reward_max)
 
         await user_repository.add_money(user_id, money)
@@ -50,7 +52,7 @@ class ClickService:
             money_won=format_num(money),
             total_clicks=format_num(new_clicks)
         )
-        click_gif = random.choice(cfg['message']['click']['gifs'])
+        click_gif = random.choice(cfg['assets']['click']['gifs'])
 
         return ClickResult(
             status=ResultStatus.SUCCESS,
