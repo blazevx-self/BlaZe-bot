@@ -6,7 +6,7 @@ ALLOWED_CALLBACK_PREFIXES = (
     "up",
     "q",
     "open",
-    "top",
+    "money_top",
     "help",
     "stat",
     "locked"

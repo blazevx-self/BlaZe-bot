@@ -71,6 +71,9 @@ class AuditService:
 
         callback_data = callback.data or "NOT DATA"
 
+        if callback_data.startswith(("q_", "quiz_again")):
+            return
+
         logger_service.log_callback(
             user_info=user_info,
             callback_data=callback_data,
@@ -115,7 +118,6 @@ class AuditService:
             user_info=user_info,
             event_name=event_name,
             process_time=process_time,
-            error=error
         )
 
         admin_id = cfg['settings']['admin_id']

@@ -4,14 +4,9 @@ from pathlib import Path
 from rich.logging import RichHandler
 from logging.handlers import TimedRotatingFileHandler
 
-from app.core.constants.system.paths import LOGS_DIR
-
 # Форматтеры для файлов и красивого цветного терминала
 FILE_FORMATTER = logging.Formatter("[%(asctime)s] %(levelname)s | %(message)s", datefmt="%H:%M:%S")
 CONSOLE_FORMATTER = logging.Formatter("%(message)s")
-
-for path in LOGS_DIR:
-    Path(path).mkdir(parents=True, exist_ok=True)
 
 def setup_file_logger(
         name: str,
@@ -31,8 +26,14 @@ def setup_file_logger(
     logger.setLevel(level)
     logger.propagate = False
 
+    log_path = Path(file_path)
+    log_path.parent.mkdir(
+        parents=True,
+        exist_ok=True
+    )
+
     file_handler = TimedRotatingFileHandler(
-        filename=file_path,
+        filename=log_path,
         when="midnight",
         interval=1,
         backupCount=30,
@@ -40,6 +41,7 @@ def setup_file_logger(
         errors="ignore",
         delay=True
     )
+
     file_handler.setFormatter(FILE_FORMATTER)
     file_handler.setLevel(level)
 
@@ -55,47 +57,25 @@ def setup_file_logger(
 
     return logger
 
-bot_logger = setup_file_logger(
-    "bot",
-    "logs/bot/bot.log", logging.INFO
-)
+def get_logger(name: str, folder: str, level=logging.INFO):
+    return setup_file_logger(
+        name=name,
+        file_path=f"logs/{folder}/{name}.log",
+        level=level
+    )
 
-error_logger = setup_file_logger(
-    "errors",
-    "logs/errors/errors.log", logging.ERROR
-)
+bot_logger = get_logger("bot", "bot")
+callback_logger = get_logger("callbacks", "callbacks")
+system_logger = get_logger("system", "system")
 
-callback_logger = setup_file_logger(
-    "callbacks",
-    "logs/callbacks/callbacks.log", logging.INFO
-)
+security_logger = get_logger("security", "security")
+error_logger = get_logger("errors", "errors")
 
-security_logger = setup_file_logger(
-    "security",
-    "logs/security/security.log", logging.WARNING
-)
+start_logger = get_logger("start", "game")
 
-system_logger = setup_file_logger(
-    "system",
-    "logs/system/system.log", logging.INFO
-)
+quiz_logger = get_logger("quiz", "game")
 
-service_logger = setup_file_logger(
-    "service",
-    "logs/service/service.log", logging.INFO
-)
-
-performance_logger = setup_file_logger(
-    "performance",
-    "logs/performance/performance.log", logging.WARNING
-)
-
-__all__ = (
-    "bot_logger",
-    "callback_logger",
-    "error_logger",
-    "security_logger",
-    "system_logger",
-    "service_logger",
-    "performance_logger"
-)
+click_logger = get_logger("click", "game")
+coffee_logger = get_logger("coffee", "game")
+kagune_logger = get_logger("kagune", "game")
+stats_logger = get_logger("stats", "game")

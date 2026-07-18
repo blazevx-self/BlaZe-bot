@@ -47,7 +47,7 @@ class RankConfig:
 class KaguneConfig:
     start_price: int = 150
     price_multiplier: float = 1.07
-    cooldown: int = 900
+    cooldown: int = 15 * 60
 
     types_chance: dict[str, int] = field(default_factory=lambda: {
         "Укаку": 45,
@@ -71,20 +71,33 @@ class StatsPriceConfig:
 @dataclass(slots=True, frozen=True)
 class CoffeeConfig:
     reward: tuple[int, int] = (1500, 2000)
-    cooldown: int = 1800
-    overdose_cooldown: int = 18000
+    cooldown: int = 30 * 60
+    overdose_cooldown: int = 5 * 60 * 60
     required_clicks: int = 100
 
 @dataclass(slots=True, frozen=True)
 class ClickConfig:
     reward: tuple[int, int] = (500, 1000)
-    cooldown: int = 600
+    cooldown: int = 10 * 60
 
 @dataclass(slots=True, frozen=True)
 class QuizConfig:
     day_limit: int = 15
     reward: tuple[int, int] = (1500, 2500)
     reset_time: str = "00:00"
+
+@dataclass(slots=True, frozen=True)
+class TopsConfig:
+    money_limit: int = 15
+    clicks_limit: int = 20
+    kagune_limit: int = 10
+
+    def get_limit(self, top_type: str) -> int:
+        return {
+            "money": self.money_limit,
+            "clicks": self.clicks_limit,
+            "kagune": self.kagune_limit,
+        }[top_type]
 
 @dataclass(slots=True, frozen=True)
 class EconomyConfig:
@@ -94,5 +107,6 @@ class EconomyConfig:
     coffee: CoffeeConfig = field(default_factory=CoffeeConfig)
     click: ClickConfig = field(default_factory=ClickConfig)
     quiz: QuizConfig = field(default_factory=QuizConfig)
+    tops: TopsConfig = field(default_factory=TopsConfig)
 
 game_cfg = EconomyConfig()

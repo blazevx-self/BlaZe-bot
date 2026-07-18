@@ -69,3 +69,5 @@ class LoggingMiddleware(BaseMiddleware):
                 error=e,
                 traceback_text=tb
             )
+
+            raise

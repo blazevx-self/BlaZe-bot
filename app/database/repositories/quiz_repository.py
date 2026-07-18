@@ -3,7 +3,6 @@ from app.database.base import DatabaseManager
 from aiosqlite import Row
 
 # noinspection PyMethodMayBeStatic
-
 class QuizRepository:
     async def get_quiz_access(self, user_id: int) -> dict:
         async with DatabaseManager.connect() as db:
@@ -58,7 +57,7 @@ class QuizRepository:
             async with db.execute(sql, (user_id, today, limit)) as cursor:
                 return await cursor.fetchall()
 
-    async def get_question_by_id(self, question_id: int) -> Row:
+    async def get_question_by_id(self, question_id: int) -> Row | None:
         async with DatabaseManager.connect() as db:
             async with db.execute("SELECT * FROM quiz_questions WHERE id = ?", (question_id,)) as cursor:
                 return await cursor.fetchone()

@@ -6,28 +6,32 @@ from app.configs.game import game_cfg
 
 from app.core.enums import ResultStatus
 from app.types.services_types.ghoul import CoffeeResult
+from app.types.entities import UserData
+
 from app.database.repositories.ghouls_repository import ghouls_repository
 
 from app.utils.format_num import format_num
+from app.utils.time import format_duration
+from app.utils.logger import coffee_logger
 
 # noinspection PyMethodMayBeStatic
 class CoffeeService:
     """Сервис игровой механики употребления кофе."""
 
-    async def process_coffee(self, user: dict) -> CoffeeResult:
+    async def process_coffee(self, user: UserData) -> CoffeeResult:
         """Обрабатывает употребления кофе.
 
         Проверяет ограничения, выдаёт награду, обновляет данные игрока
         и возвращает результат
         """
 
-        user_id = user['user_id']
+        user_id = user.user_id
         now = int(time.time())
         required_clicks = game_cfg.coffee.required_clicks
 
         # проверка требования кликов для кофе
-        if user.get('clicks', 0) < required_clicks:
-            needed = required_clicks - user['clicks']
+        if user.clicks < required_clicks:
+            needed = required_clicks - user.clicks
             text = cfg['message']['coffee']['not_coffee'].format(needed=needed)
 
             return CoffeeResult(
@@ -35,25 +39,22 @@ class CoffeeService:
                 text=text,
             )
 
-        cooldown = user.get('coffee_cooldown')
+        cooldown = user.coffee_cooldown
         is_cooldown = cooldown and now < cooldown
 
         if is_cooldown:
             remaining = cooldown - now
-            hours = remaining // 3600
-            minutes = (remaining % 3600 // 60)
 
             return CoffeeResult(
                 status=ResultStatus.OVERDOSE_COOLDOWN,
                 text=cfg['message']['coffee']['overdose_2'].format(
-                    hours=hours,
-                    minutes=minutes
+                    time=format_duration(remaining)
                 )
             )
 
         wait_time = game_cfg.coffee.cooldown
         overdose_time = game_cfg.coffee.overdose_cooldown
-        last_drink = user.get('coffee_last_time', 0)
+        last_drink = user.coffee_last_time
 
         # частое употребление кофе (кофе можно пить 1 раз в 30 минут)
         if last_drink != 0 and (now - last_drink) < wait_time:
@@ -73,14 +74,21 @@ class CoffeeService:
         reward_min, reward_max = game_cfg.coffee.reward
         money = random.randint(reward_min, reward_max)
 
-        await ghouls_repository.drink_coffee_success(
-            user_id=user_id,
-            amount=money,
-            current_time=now
-        )
+        try:
+            await ghouls_repository.drink_coffee_success(
+                user_id=user_id,
+                amount=money,
+                current_time=now
+            )
 
-        new_money = user.get('money', 0) + money
-        new_coffe_total = user.get('coffee_total', 0) + 1
+        except Exception:
+            coffee_logger.exception(f"[COFFEE] Reward issuing failed | user_id={user_id} | reward={money}")
+            raise
+
+        new_money = user.money + money
+        new_coffe_total = user.coffee_total + 1
+
+        coffee_logger.info(f"[COFFEE] Success drink | user_id={user_id} | reward={money} | total={new_coffe_total}")
 
         text = cfg['message']['coffee']['coffee_up'].format(
             money=format_num(money),

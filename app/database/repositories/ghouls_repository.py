@@ -80,7 +80,7 @@ class GhoulRepository:
 
     async def upgrade_stat(self, user_id: int, stat: str, amount: int, price: int) -> bool:
         if stat not in ALLOWED_STATS:
-            raise False
+            raise ValueError(f"Unknown strat: {stat}")
 
         async with DatabaseManager.connect() as db:
             async with db.execute("SELECT money FROM users WHERE user_id = ?", (user_id,)) as cursor:

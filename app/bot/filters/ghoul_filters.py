@@ -1,8 +1,6 @@
 from aiogram.filters import BaseFilter
 from aiogram.types import Message, CallbackQuery
 
-from app.utils.logger import security_logger
-
 from app.services.ghoul_service import ghoul_service
 from app.configs.yaml import cfg
 
@@ -14,7 +12,8 @@ class GhoulRequired(BaseFilter):
     """
 
     async def __call__(
-            self, event: Message | CallbackQuery,
+            self,
+            event: Message | CallbackQuery,
             **kwargs
     ) -> bool:
         """Проверяет, является ли пользователь гулем."""
@@ -27,8 +26,6 @@ class GhoulRequired(BaseFilter):
 
         if is_ghoul:
             return True
-
-        security_logger.warning(f"[GHOUL ACCESS DENIED] user_id={event.from_user.id} | event={event.__class__.__name__}")
 
         if isinstance(event, Message):
             await event.reply(cfg['message']['not_ghoul']['not_ghoul_message'], parse_mode="HTML")

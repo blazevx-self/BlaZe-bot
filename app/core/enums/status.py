@@ -12,6 +12,8 @@ class ResultStatus(StrEnum):
     OVERDOSE_COOLDOWN = "overdose_cooldown"
     NOT_ENOUGH_CLICKS="not_enough_clicks"
 
+    NO_KAGUNE = "no_kagune"
+
     LIMIT = "limit"
     NO_QUESTIONS = "no_questions"
     LIMIT_REACHED = "limit_reached"

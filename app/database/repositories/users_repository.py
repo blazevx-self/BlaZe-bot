@@ -1,5 +1,7 @@
-from aiosqlite import Row
 from app.database.base import DatabaseManager
+
+from app.types.entities import UserData
+from app.database.mappers.user_mapper import row_to_user
 
 # noinspection PyMethodMayBeStatic
 class UserRepository:
@@ -15,7 +17,7 @@ class UserRepository:
             await db.commit()
 
     # ID юзера
-    async def get_user_by_id(self ,user_id: int) -> dict | None:
+    async def get_user_by_id(self ,user_id: int) -> UserData | None:
         async with DatabaseManager.connect() as db:
             sql = """
             SELECT 
@@ -32,9 +34,11 @@ class UserRepository:
 
             async with db.execute(sql, (user_id,)) as cursor:
                 row = await cursor.fetchone()
+
                 if not row:
                     return None
-                return dict(row)
+
+                return row_to_user(row)
 
     # Бонус (подписка на канал)
     async def activate_subscribed_bonus(self ,user_id: int, bonus: int) -> None:
@@ -60,24 +64,5 @@ class UserRepository:
         async with DatabaseManager.connect() as db:
             await db.execute("UPDATE users SET money = money + ? WHERE user_id = ?", (amount, user_id))
             await db.commit()
-
-    # ТОП
-    async def get_user_top(self ,limit: int = 15) -> list[Row]:
-        async with DatabaseManager.connect() as db:
-            sql = "SELECT user_id, name, money FROM users WHERE money > 0 ORDER BY money DESC LIMIT ?"
-
-            async with db.execute(sql, (limit,)) as cursor:
-                return await cursor.fetchall()
-
-    async def get_user_rank(self, user_id: int) -> int:
-        async with DatabaseManager.connect() as db:
-            sql = """
-                WITH ranked_users AS (SELECT user_id, ROW_NUMBER() OVER (ORDER BY money DESC) as rank FROM users)
-                SELECT rank FROM ranked_users WHERE user_id = ?
-            """
-
-            async with db.execute(sql, (user_id,)) as cursor:
-                row = await cursor.fetchone()
-                return row['rank'] if row else None
 
 user_repository = UserRepository()

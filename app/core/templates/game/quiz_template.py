@@ -22,7 +22,7 @@ def quiz_result_text(
         f"<b>Твой выбор</b>: {user_choice}\n\n"
         f"<b>Статус</b>: {status_text}\n"
         f"<b>╰──────────────────╯</b>\n\n"
-        f"<tg-emoji emoji-id=\"5864068125112144897\">💸</tg-emoji> <b>Получено бабла</b>: {earned} BlazeCoin"
+        f"<tg-emoji emoji-id=\"5864068125112144897\">💸</tg-emoji> <b>Получено деняк</b>: {earned} BlazeCoin"
     )
 
     return result_text

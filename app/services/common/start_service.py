@@ -5,22 +5,25 @@ from aiogram.enums import ChatMemberStatus
 
 from app.configs.yaml import cfg
 from app.core.enums import ResultStatus
+
 from app.types.services_types.common import StartResult
+from app.types.entities import UserData
 
 from app.database.repositories.users_repository import user_repository
+from app.utils.logger import start_logger
 
 # noinspection PyMethodMayBeStatic
 class StartService:
     """Сервис обработки команды /start."""
 
-    async def process_start(self, user: dict, bot: Bot) -> StartResult:
+    async def process_start(self, user: UserData, bot: Bot) -> StartResult:
         """Проверяет подписку пользователя и выдаёт стартовый бонус.
 
         Если бонус уже был получен или пользователь не подписан,
         возвращает стандартное приветственное сообщение.
         """
 
-        user_id = user['user_id']
+        user_id = user.user_id
         is_subscribed = False
 
         #Проверка подписки на канал через Telegram API
@@ -37,14 +40,17 @@ class StartService:
             ):
                 is_subscribed = True
 
-        except aiogram.exceptions.TelegramAPIError:
+        except aiogram.exceptions.TelegramAPIError as e:
             is_subscribed = False
+            start_logger.warning(f"[START] Subscription check failed | user_id={user_id} | error={e}")
 
-        if is_subscribed and not user.get('is_subscribed'):
+        if is_subscribed and not user.is_subscribed:
             bonus = cfg['settings']['bonus_amount']
-            await user_repository.activate_subscribed_bonus(user_id, bonus)
 
-            new_money = user.get('money', 0) + bonus
+            await user_repository.activate_subscribed_bonus(user_id, bonus)
+            start_logger.info(f"[START] Subscription bonus issued | user_id={user_id} | bonus={bonus}")
+
+            new_money = user.money + bonus
 
             return StartResult(
                 status=ResultStatus.SUCCESS,

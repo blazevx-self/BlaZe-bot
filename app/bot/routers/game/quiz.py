@@ -7,6 +7,7 @@ from app.core.enums import ResultStatus
 
 from app.services.game.quiz_service import quiz_service
 from app.bot.keyboards.game.quiz_keyboard import get_quiz_again_kb
+from app.types.entities import UserData
 
 from app.bot.ui.quiz_ui import send_question_ui
 from app.utils.logger import bot_logger
@@ -14,11 +15,12 @@ from app.utils.logger import bot_logger
 router = Router()
 
 @router.message(Command("quiz"))
-async def quiz(message: Message, user: dict):
+async def quiz(message: Message, user: UserData):
     bot_logger.info(
         f"[COMMAND] name=\"{message.from_user.first_name}\" | user_id={message.from_user.id} | "
         f"chat={message.chat.type} | command=\"/quiz\""
     )
+
     result = await quiz_service.process_quiz_start(user=user)
 
     if result.status == ResultStatus.LIMIT:
@@ -36,7 +38,7 @@ async def quiz(message: Message, user: dict):
     )
 
 @router.callback_query(F.data.startswith(f"q_"))
-async def quiz_handler(callback: CallbackQuery, user: dict):
+async def quiz_handler(callback: CallbackQuery, user: UserData):
     data = callback.data.split("_")
     question_id = int(data[1])
     user_choice = "_".join(data[2:])
@@ -55,7 +57,7 @@ async def quiz_handler(callback: CallbackQuery, user: dict):
 
         return
 
-    user['money'] = result.new_money
+    user.money = result.new_money
 
     if result.status == ResultStatus.LIMIT_REACHED:
         await callback.message.edit_text(
@@ -75,7 +77,7 @@ async def quiz_handler(callback: CallbackQuery, user: dict):
     await callback.answer()
 
 @router.callback_query(F.data == "quiz_again")
-async def quiz_again(callback: CallbackQuery, user: dict):
+async def quiz_again(callback: CallbackQuery, user: UserData):
     result = await quiz_service.process_quiz_start(user=user)
 
     if result.status == ResultStatus.LIMIT:

@@ -7,6 +7,7 @@ from app.core.constants.game.stats import STATUS_FIELDS, POWER_FIELDS
 from app.core.constants.game.kagune import KAGUNE_MULTIPLIER
 from app.core.constants.game.ranks import DANGER_RANKS
 
+from app.types.entities import UserData
 from app.database.repositories.users_repository import user_repository
 
 # noinspection PyMethodMayBeStatic
@@ -16,7 +17,7 @@ class GhoulService:
     async def check_ghoul(
             self,
             user_id: int,
-            cached_user: Optional[dict] = None
+            cached_user: Optional[UserData] = None
     ) -> bool:
         """Проверка: получил ли юзер кагуне
            Если данные уже прилетели из мидлвара
@@ -29,7 +30,7 @@ class GhoulService:
         if user is None:
             user = await user_repository.get_user_by_id(user_id)
 
-        return bool(user and user.get('kagune_was_obtained'))
+        return bool(user and user.kagune_was_obtained)
 
     @staticmethod
     def get_price(level: int) -> int:
@@ -57,20 +58,20 @@ class GhoulService:
         return current_gif
 
     @staticmethod
-    def calculate_power(user: dict) -> int:
+    def calculate_power(user: UserData) -> int:
         """Подсчёт боевой мощи.
           Складывает текущие статы из бд и уровень кагуне
         """
 
-        base_power = sum(user.get(field, 0) for field in POWER_FIELDS)
-        base_power += user.get("kagune_lvl", 1)
+        base_power = sum(getattr(user, field, 0) for field in POWER_FIELDS)
+        base_power += user.kagune_lvl or 1
 
         # Определяем тип кагуне.
-        kagune_type = user.get('kagune_type', '').lower().strip()
+        kagune_type = (user.kagune_type or "").lower().strip()
         multiplier = KAGUNE_MULTIPLIER.get(kagune_type, 1.0)
 
         # Проверяем форму Какуджа (на будущее)
-        if user.get('kakuja_activated'):
+        if user.kakuja_activated:
             multiplier += 0.50
 
         return int(base_power * multiplier)
@@ -100,7 +101,7 @@ class GhoulService:
         return current_rank
 
     @staticmethod
-    def get_status(user: dict) -> str:
+    def get_status(user: UserData) -> str:
         """Вычисление экономико-боевого статуса гуля
            на основе суммарного power_level из конфига
         """
@@ -109,7 +110,7 @@ class GhoulService:
 
         # вычисление общего power level пользователя на основе активности
         power_level = sum(
-            (user.get(field, 0) * getattr(weights, weight))
+            (getattr(user, field, 0) * getattr(weights, weight))
             for field, weight in STATUS_FIELDS.items()
         )
 

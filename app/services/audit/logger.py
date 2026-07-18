@@ -56,7 +56,6 @@ class LoggerService:
             user_info: str,
             event_name: str,
             process_time: float,
-            error: Exception
     ) -> None:
         """
         Логирует исключения уровня ERROR.
@@ -66,6 +65,6 @@ class LoggerService:
         - последующего анализа через error-лог
         """
 
-        error_logger.exception(f"[ERROR] {user_info} | event=\"{event_name}\" | ping={process_time:.2f}ms | error={error}")
+        error_logger.exception(f"[ERROR] {user_info} | event=\"{event_name}\" | ping={process_time:.2f}ms")
 
 logger_service = LoggerService()

@@ -1,12 +1,13 @@
 from app.services.calculate_stats_service import calculate_price, STAT_LIMITS
 from app.utils.format_num import format_num
+from app.types.entities import UserData
 
 from app.configs.yaml import cfg
 
 # шаблон прокачки характеристик гуля
-def stats_text(user: dict, stats: dict) -> str:
+def stats_text(user: UserData, stats: dict) -> str:
     return cfg['message']['stats_text'].format(
-        money=format_num(user["money"]),
+        money=format_num(user.money),
 
         strength=stats["strength"],
         agility=stats["agility"],

@@ -33,6 +33,7 @@ class AntifloodMiddleware(BaseMiddleware):
         """Контролирует частоту входящих событий пользователя."""
 
         from_user = getattr(event, 'from_user', None)
+
         if not from_user:
             return await handler(event, data)
 
@@ -54,7 +55,9 @@ class AntifloodMiddleware(BaseMiddleware):
 
         if len(requests) > self.max_requests:
             security_logger.warning(
-                f"[SECURITY] Flood blocked | user_id={user_id} | {len(requests)} req/{self.limit_seconds}s.")
+                f"[FLOOD] User blocked | user_id={user_id} | "
+                f"requests={len(requests)} | window={self.limit_seconds}s."
+            )
             return None
 
         return await handler(event, data)

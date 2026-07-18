@@ -7,16 +7,17 @@ from app.core.enums import ResultStatus
 from app.bot.filters.ghoul_filters import GhoulRequired
 
 from app.services.ghouls.stats_service import stats_service
+from app.types.entities import UserData
 
 router = Router()
 
 @router.message(F.text.lower() == "качаца", F.chat.type == "private", GhoulRequired())
-async def stats_menu(message: Message, user: dict):
+async def stats_menu(message: Message, user: UserData):
     result = await stats_service.get_stats_menu(user)
 
     if result.status != ResultStatus.SUCCESS:
         await message.reply(
-            result.notification or "handler call error",
+            result.notification or "Error",
             parse_mode='HTML'
         )
         return
@@ -28,7 +29,7 @@ async def stats_menu(message: Message, user: dict):
     )
 
 @router.callback_query(F.data.startswith("stat:"))
-async def stats(callback: CallbackQuery, user: dict):
+async def stats(callback: CallbackQuery, user: UserData):
     _, stat, amount = callback.data.split(":")
     amount = cast(Literal[1, 3, 5], int(amount))
 
@@ -36,7 +37,7 @@ async def stats(callback: CallbackQuery, user: dict):
 
     if result.status != ResultStatus.SUCCESS:
         await callback.answer(
-            result.notification or "handler call error",
+            result.notification or "Error",
             show_alert=False,
             parse_mode='HTML'
         )
@@ -48,7 +49,7 @@ async def stats(callback: CallbackQuery, user: dict):
         parse_mode='HTML'
     )
     await callback.answer(
-        result.notification or "Ошибка",
+        result.notification or "Error",
         show_alert=False
     )
 

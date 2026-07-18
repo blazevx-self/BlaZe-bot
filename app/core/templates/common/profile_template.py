@@ -12,7 +12,7 @@ def profile_text(
     <tg-emoji emoji-id=\"5316727448644103237\">👤</tg-emoji> <b>{user_link} — обычный профиль</b>
 
  <tg-emoji emoji-id=\"4994522334992795220\">📊</tg-emoji> <b>Уровень:</b> <code>{level}</code>
- <tg-emoji emoji-id=\"6257870936293251906\">📈</tg-emoji> <b>Ранг гуля:</b> <code>{rank}</code>
+ <tg-emoji emoji-id=\"6257870936293251906\">📈</tg-emoji> <b>Ранг:</b> <code>{rank}</code>
  <tg-emoji emoji-id=\"5474613551706429302\">👋</tg-emoji> <b>Статус:</b> <code>{status}</code>
 
  🫰🏼 <b>Сломано пальцев:</b> {clicks}  

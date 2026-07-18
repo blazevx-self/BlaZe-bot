@@ -14,7 +14,7 @@ async def check_bot(message: Message):
 
     if not phrases or not isinstance(phrases, list):
         phrases = ["Ау?", "Звали?", "Слушаю", "Чего тебе?", "Чо доебались?"]
-        bot_logger.warning(f"[BOT RESPONSES FALLBACK USED] user_id={message.from_user.id} | chat={message.chat.type}")
+        bot_logger.warning(f"[BOT] Responses fallback used | user_id={message.from_user.id} | chat={message.chat.type}")
 
     response = random.choice(phrases)
     await message.reply(response)

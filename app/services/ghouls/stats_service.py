@@ -6,13 +6,17 @@ from app.configs.yaml import cfg
 from app.core.templates.ghoul.stats_template import stats_text
 from app.core.constants.game.stats import STAT_NAMES
 from app.core.enums import ResultStatus
+
 from app.types.services_types.ghoul import StatsResult
+from app.types.entities import UserData
 
 from app.database.repositories.ghouls_repository import ghouls_repository
 from app.database.repositories.users_repository import user_repository
 
-from app.bot.keyboards.ghoul.stats_keyboard import builds_stats_keyboard
 from app.services.calculate_stats_service import calculate_upgrade
+from app.bot.keyboards.ghoul.stats_keyboard import builds_stats_keyboard
+
+from app.utils.logger import stats_logger
 
 UpgradeAmount = Literal[1, 3, 5]
 
@@ -23,15 +27,18 @@ class StatsService:
     Отвечает за отображения меню характеристик и обработку их улучшения.
     """
 
-    async def get_stats_menu(self, user: dict) -> StatsResult:
+    async def get_stats_menu(self, user: UserData) -> StatsResult:
         """Формирует меню характеристик игрока.
 
         Получает текущие характеристики пользователя и возвращает текст вместе с клавиатурой
         """
+        user_id = user.user_id
 
-        stats = await ghouls_repository.get_stats(user["user_id"])
+        stats = await ghouls_repository.get_stats(user.user_id)
 
         if not stats:
+            stats_logger.warning(f"[STATS] Stats not found | user_id={user_id}")
+
             return StatsResult(
                 status=ResultStatus.NOT_FOUND,
                 notification="Статы не найдены"
@@ -47,7 +54,7 @@ class StatsService:
 
     async def process_stats_upgrade(
             self,
-            user: dict,
+            user: UserData,
             stat: str,
             amount: UpgradeAmount
     ) -> StatsResult:
@@ -57,10 +64,12 @@ class StatsService:
         обновляет данные в базе и возвращает новый интерфейс.
         """
 
-        user_id = user['user_id']
+        user_id = user.user_id
         current_user_db = await user_repository.get_user_by_id(user_id)
 
         if not current_user_db:
+            stats_logger.warning(f"[STATS] User not found | user_id={user_id}")
+
             return StatsResult(
                 status=ResultStatus.NOT_FOUND,
                 notification="Пользователь не найден"
@@ -69,6 +78,8 @@ class StatsService:
         stats = await ghouls_repository.get_stats(user_id)
 
         if not stats:
+           stats_logger.warning(f"[STATS] Stats not found | user_id={user_id}")
+
            return StatsResult(
                status=ResultStatus.NOT_FOUND,
                notification="Статы не найдены"
@@ -84,6 +95,11 @@ class StatsService:
         )
 
         if calc_result.status != ResultStatus.SUCCESS:
+            stats_logger.debug(
+             f"[STATS] Upgrade denied | user_id={user_id} | "
+             f"stat={stat} | amount={amount} | reason={calc_result.status.value}"
+            )
+
             notification=cfg['message']['notifications'].get(
                 calc_result.status,
                 "Ошибка прокачки статов"
@@ -102,10 +118,18 @@ class StatsService:
         )
 
         if not updated:
+            stats_logger.error(f"[STATS] Upgrade failed | user_id={user_id} | stat={stat} | reason=transaction_failed")
+
             return StatsResult(
                 status=ResultStatus.NOT_ENOUGH_MONEY,
                 notification="Ошибка транзакции балика"
             )
+
+        stats_logger.info(
+            f"[STATS] Upgrade completed | user_id={user_id} | stat={stat} | "
+            f"old={current_stat} | new={calc_result.new_value} | "
+            f"amount={calc_result.upgrade_amount} | price={calc_result.price}"
+        )
 
         updated_user, updated_stats = await asyncio.gather(
             user_repository.get_user_by_id(user_id),

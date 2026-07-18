@@ -4,8 +4,10 @@ from typing import Any, Awaitable, Callable, Dict
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
 
-from app.database.repositories.users_repository import user_repository
+from app.types.entities import UserData
 from app.utils.logger import system_logger
+
+from app.database.repositories.users_repository import user_repository
 
 # noinspection PyMethodMayBeStatic
 class DatabaseMiddleware(BaseMiddleware):
@@ -39,12 +41,9 @@ class DatabaseMiddleware(BaseMiddleware):
 
             data['user'] = user_data
 
-        except Exception as e:
-            system_logger.exception(
-                f"[DB] Middleware error | user_id={tg_user.id} | error={str(e)}",
-                exc_info=True
-            )
-            return None
+        except Exception:
+            system_logger.exception(f"[DB] Middleware failed | user_id={tg_user.id}")
+            raise
 
         return await handler(event, data)
 
@@ -57,21 +56,17 @@ class DatabaseMiddleware(BaseMiddleware):
                 name=tg_user.first_name,
                 username=tg_user.username,
             )
-            system_logger.info(f"[DB] User created | id={tg_user.id}")
+            system_logger.info(f"[DB] User created | user_id={tg_user.id}")
 
-        except Exception as e:
-            system_logger.error(
-                f"[DB] User created error | id={tg_user.id}, error={e}",
-                exc_info=True
-            )
+        except Exception:
+            system_logger.error(f"[DB] User created failed | user_id={tg_user.id}")
             raise
 
-    async def _sync_user_data(self, tg_user, raw_user_data) -> dict:
+    async def _sync_user_data(self, tg_user, user_data: UserData) -> UserData:
         """Синхронизирует данные юзера с Telegram."""
 
-        user_data = dict(raw_user_data)
-        db_name = user_data.get('name')
-        db_username = user_data.get('username')
+        db_name = user_data.name
+        db_username = user_data.username
 
         # Если имя изменено - обновляем в фоне БД, не тормозя хендлер
         if db_name != tg_user.first_name or db_username != tg_user.username:
@@ -83,8 +78,8 @@ class DatabaseMiddleware(BaseMiddleware):
                 )
             )
 
-            user_data['name'] = tg_user.first_name
-            user_data['username'] = tg_user.username
+            user_data.name = tg_user.first_name
+            user_data.username = tg_user.username
 
         return user_data
 
@@ -102,19 +97,18 @@ class DatabaseMiddleware(BaseMiddleware):
                 name=name,
                 username=username
             )
-            system_logger.info(f"[DB] User updated | id={user_id}")
-        except Exception as e:
-            system_logger.exception(
-                f"[DB] User update error | id={user_id}, error={e}",
-                exc_info=True
-            )
+
+            system_logger.info(f"[DB] User update | user_id={user_id}")
+
+        except Exception:
+            system_logger.exception(f"[DB] User update failed | user_id={user_id}")
 
     @staticmethod
-    def _build_new_user(tg_user) -> dict:
+    def _build_new_user(tg_user) -> UserData:
         """Собирает дефолтные данные нового юзера."""
-        return {
-            'user_id': tg_user.id,
-            'name': tg_user.first_name,
-            'username': tg_user.username,
-            'kagune_was_obtained': 0
-        }
+        return UserData(
+            user_id=tg_user.id,
+            name=tg_user.first_name,
+            username=tg_user.username,
+            kagune_was_obtained=False
+        )

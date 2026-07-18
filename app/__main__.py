@@ -14,38 +14,40 @@ from app.bot.middleware.db_middleware import DatabaseMiddleware
 from app.utils.logger import system_logger
 from app.database.init_db import init_db
 
-bot = Bot(token=settings.BOT_TOKEN.get_secret_value())
-dp = Dispatcher()
-
 async def on_startup():
     system_logger.info("[SYSTEM] Bot started | version=1.0.0 | py=%s", sys.version.split()[0])
 
 async def on_shutdown():
-    system_logger.warning("[SYSTEM] Bot stopped")
+    system_logger.info("[SYSTEM] Bot stopped")
+
+async def setup_middlewares(dp: Dispatcher) -> None:
+    dp.message.middleware(LoggingMiddleware())
+    dp.callback_query.middleware(LoggingMiddleware())
+
+    dp.message.middleware(AntifloodMiddleware(limit_seconds=5, max_requests=15))
+    dp.callback_query.middleware(AntifloodMiddleware(limit_seconds=5, max_requests=15))
+
+    dp.callback_query.middleware(AntiSpamGhoulMiddleware(time_limit=0.7))
+
+    dp.message.middleware(DatabaseMiddleware())
+    dp.callback_query.middleware(DatabaseMiddleware())
 
 async def main():
     try:
+        bot = Bot(token=settings.BOT_TOKEN.get_secret_value())
+        dp = Dispatcher()
+
         system_logger.info("[SYSTEM] Initializing database...")
         await init_db()
         system_logger.info("[SYSTEM] Database initialized")
 
-        dp.message.middleware(LoggingMiddleware())
-        dp.callback_query.middleware(LoggingMiddleware())
-
-        dp.message.middleware(AntifloodMiddleware(limit_seconds=5, max_requests=15))
-        dp.callback_query.middleware(AntifloodMiddleware(limit_seconds=5, max_requests=15))
-
-        dp.callback_query.middleware(AntiSpamGhoulMiddleware(time_limit=0.7))
-
-        dp.message.middleware(DatabaseMiddleware())
-        dp.callback_query.middleware(DatabaseMiddleware())
+        await setup_middlewares(dp)
 
         dp.include_routers(*all_routers)
+        system_logger.info("[SYSTEM] Loaded %d routers", len(all_routers))
 
-        await on_startup()
-        system_logger.info("[SYSTEM] Polling started")
-
-        await dp.start_polling(bot)
+        system_logger.info("[SYSTEM] Starting polling...")
+        await dp.start_polling(bot, on_startup=on_startup, on_shutdown=on_shutdown)
 
     except Exception as e:
         system_logger.exception(f"[SYSTEM] Fatal error: {e}")
@@ -59,4 +61,4 @@ if __name__ == '__main__':
         asyncio.run(main())
 
     except KeyboardInterrupt:
-        system_logger.info("[SYSTEM] Bot interrupted by user")
+        system_logger.info("[SYSTEM] Interrupted by (Ctrl+C)")
