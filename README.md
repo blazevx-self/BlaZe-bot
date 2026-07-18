@@ -1,97 +1,89 @@
-# BlaZe | Bot
+# BlaZe | Telegram RPG Bot
 
-## Description
+## Описание
 
-BlaZe Bot is a Telegram RPG game built around character progression, combat mechanics, and an in-game economy system.
+BlaZe | Bot — Telegram RPG-бот вдохновлённым аниме "Токийский гуль" и ботом @chestor.
 
-Players develop their characters through interactive commands, unlock abilities, evolve their Ghoul forms, and progress through a rank-based system tied to combat power.
+Игрок развивается в игровом мире, улучшает характеристики, получает кагуне, повышает свою силу и занимает место в рейтингах.
 
----
-
-## Features
-
-- Persistent character progression with long-term growth
-- Combat system based on stats, abilities, and kagune evolution
-- In-game economy (BlazeCoins) used for upgrades and progression
-- Ghoul transformation system with randomized kagune types and unique buffs
-- Coffee mechanic with risk/reward system, debuffs, and achievements
-- Achievement system tied to gameplay milestones (e.g. Coffee Master)
-- Rank system based on calculated combat power
-- Interactive stat upgrade system with direct gameplay impact
-- Modular backend structure focused on scalability and extension
-- Async Telegram bot with fast, event-driven interactions
-- Logging system for gameplay and system-level events
+Основная идея проекта — создание полноценной RPG-системы внутри Telegram с механиками развития персонажа, экономики и дальнейшего расширения игрового мира.
 
 ---
 
-## Tech Stack
+# Возможности
+
+На данный момент в боте реализованы(описана только малая часть):
+
+- система пользователей и сохранение прогресса;
+- игровая валюта BlazeCoin;
+- система характеристик персонажа;
+- развитие гуля и получение кагуне;
+- различные типы кагуне с уникальными особенностями;
+- система рангов и боевой мощности;
+- игровые механики щелк;
+- система кофе с кулдаунами и эффектами;
+- викторина;
+- рейтинги игроков:
+  - топ по внутриигровой валюте;
+  - топ по 'сломанным пальцам';
+  - топ по уровню кагуне;
+- система логирования игровых и системных событий.
+
+---
+
+# Технологии
 
 - Python 3.13+
-- aiogram 3.x
-- asyncio
-- PostgreSQL(production) / SQLite(development)
-- SQLAlchemy
-- Docker
+- Aiogram 3.x
+- Asyncio
+- SQLite (текущая разработка)
+- PostgreSQL (планируется для production)
+- SQLAlchemy (переход в процессе)
+- Docker (планируется)
 
 ---
 
-## Project Structure
+# Архитектура проекта
 
-### bot/
-Telegram interface layer:
-- routers
-- middleware
-- filters
-- keyboards
-- ui rendering
+Проект построен по модульной архитектуре с разделением ответственности между слоями.
 
-### routers/
-Feature-based routing system:
-- ghoul
-- game
-- common
-- (future: group, moderation)
+Основные компоненты:
 
-### services/
-Business logic layer:
-- game mechanics
-- ghoul system
-- shared logic
-- system processing
+app/
+├── bot/          # Telegram слой: роутеры, middleware, клавиатуры
+├── services/     # Бизнес-логика игры
+├── database/     # Работа с базой данных
+├── core/         # Константы, шаблоны, enums
+├── configs/      # Конфигурация приложения
+├── types/        # Типизированные структуры данных
+└── utils/        # Вспомогательные инструменты
+Подробнее архитектура описана в:
 
-### database/
-Data access layer:
-- models
-- repositories
-- schemas
-
-### core/
-Shared system kernel:
-- constants
-- enums
-- exceptions
-- responses
-- templates
-
-### configs/
-Application configuration files
-
+ARCHITECTURE.md
 ---
 
-## How to Run
+# Запуск
 
-```bash
+Установка зависимостей:
+```
 pip install -r requirements.txt
+```
+Запуск:
+```
 python -m app.__main__
 ```
 
 ---
 
-## Environment Variables
+# Конфигурация
 
+Для работы проекта используются:
+
+- .env
+- config.yaml
+
+Основные параметры:
 ```
-## Environment Variables
-
 - TOKEN
 - ADMIN_ID
 - DATABASE_URL
@@ -99,67 +91,46 @@ python -m app.__main__
 
 ---
 
-## Gameplay
+# Игровой мир
 
-BlaZe | Bot is a Telegram-based RPG system where players continuously develop their character, increase their strength, and shape their progression inside the game world.
+Игровая часть проекта построена вокруг развития персонажа.
 
-The core gameplay loop is built around:
+Игрок может:
 
-- earning BlazeCoins through in-game actions and commands  
-- upgrading character stats and overall power  
-- obtaining and evolving Kagune with different mechanics and bonuses  
-- participating in rankings and competitive leaderboards  
-- choosing a personal development path as a Ghoul
+- развивать своего гуля;
+- увеличивать боевую мощь и ранг опасности;
+- получать новые формы кагуне;
+- улучшать характеристики;
+- участвовать в рейтингах и PvP-сражений;
+- открывать новые игровые механики.
 
-The entire system is designed around long-term progression, where every action has a direct impact on the player's strength, status, and position in the game world.
-
----
-
-## Status
-
-The project is currently in active development.
-New features, gameplay mechanics, and system improvements are being added regularly.
-
-The architecture is continuously evolving to support long-term scalability and new game systems.
+Полное описание игрового лора находится отдельно.
 
 ---
 
-## Roadmap
+# Статус проекта
 
-- PvP combat system between players  
-- Guild / group system for social gameplay  
-- Expanded combat mechanics and balance rework  
-- UI/UX improvements for in-game interactions  
-- Telegram Mini App integration (future expansion)
-- Admin panel
-- Daily rewards
-- Inventory
-- Items
-- Craft / Alchemy
+Проект находится в активной разработке.
 
----
+В дальнейшем планируется:
 
-## Author
-
-- Developer: https://t.me/blazevx  
-- Channel: https://t.me/+H67pSJL-qYU5Y2Qy
+- переход на PostgreSQL + SQLAlchemy;
+- система кулдаунов;
+- PvP механики;
+- команды групп
+- административная панель;
+- Telegram Mini Apps.
 
 ---
 
-## Acknowledgements
+# Автор
 
-Inspired by Telegram RPG bots such as CheStor | Bot and anime universes like Tokyo Ghoul.
+Developer: https://t.me/blazevx
 
----
-
-## License
-
-This project is for personal and educational use.
+Channel: https://t.me/+H67pSJL-qYU5Y2Qy
 
 ---
 
-## Final Note
+# License
 
-BlaZe | Bot is a long-term project that will continue to evolve with new mechanics, systems, and gameplay ideas.
-
-Thank you for checking it out.
+Проект создан в образовательных и личных целях.

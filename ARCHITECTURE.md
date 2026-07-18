@@ -1,18 +1,325 @@
-# Architecture Overview
+# Архитектура Blaze Bot
 
-## System Design
+## Общее описание
 
-BlaZe Bot is built using a modular service-oriented architecture.
+Blaze Bot построен по модульной архитектуре с разделением ответственности между слоями приложения.
 
-### Layers
+Каждый модуль отвечает только за свою область:
 
-- Bot Layer → Telegram handlers, routers, middlewares
-- Service Layer → Business logic and game mechanics
-- Database Layer → Repositories, models and persistence
-- Core Layer → Shared components, constants, templates and utilities
+- Router — обработка Telegram событий;
+- Service — бизнес-логика;
+- Repository — работа с базой данных;
+- Templates — генерация текста;
+- Keyboards — создание интерфейса Telegram;
+- Middleware — общая обработка событий;
+- Utils — вспомогательные функции;
+- Types — типизированные модели данных.
 
 ---
 
-## Request Flow
+# Структура проекта
 
-User → Telegram Bot → Router → Middleware → Service → Repository → Database
+app/
+├── assets/          # Игровые ресурсы
+├── bot/             # Telegram слой
+├── configs/         # Конфигурация
+├── core/            # Константы, шаблоны, enums
+├── database/        # Работа с БД
+├── services/        # Бизнес логика
+├── types/           # Типы данных
+├── utils/           # Утилиты
+---
+
+# Детализация модулей
+
+## 1. Bot (app/bot/)
+
+Telegram-слой приложения.
+
+Содержит:
+
+- Routers
+- Middlewares
+- Keyboards
+- Filters
+- UI
+
+---
+
+### Routers (app/bot/routers/)
+
+Обрабатывают сообщения и callback-запросы Telegram.
+
+Разделены по функциональным областям:
+
+- Common
+- Ghoul
+- Game
+- Tops
+- Chat Member
+
+Роутеры практически не содержат бизнес-логики и только передают управление сервисам.
+
+---
+
+### Middlewares (app/bot/middleware/)
+
+Выполняются до обработки запроса.
+
+Используются для:
+
+- загрузки пользователя;
+- антифлуда;
+- антиспама;
+- логирования;
+- подготовки данных.
+
+---
+
+### Keyboards (app/bot/keyboards/)
+
+Создание InlineKeyboard и ReplyKeyboard.
+
+Разделены по игровым модулям.
+
+---
+
+### Filters (app/bot/filters/)
+
+Пользовательские фильтры Aiogram.
+
+Используются для проверки игровых условий.
+
+---
+
+## 2. Services (app/services/)
+
+Основной слой бизнес-логики.
+
+Каждый сервис отвечает только за одну игровую механику.
+
+Например:
+
+- ghoul_service
+- click_service
+- coffee_service
+- kagune_service
+- quiz_service
+- tops_service
+
+Сервисы работают только через Repository.
+
+---
+
+## 3. Database (app/database/)
+
+Слой работы с данными.
+
+Содержит:
+
+### Repositories
+
+Выполняют SQL-запросы.
+
+Например:
+
+- users_repository
+- ghouls_repository
+- quiz_repository
+- tops_repository
+
+Repository ничего не знает о Telegram.
+
+---
+
+### Schemas
+
+SQL-запросы.
+
+Используются Repository.
+
+---
+
+### Mappers
+
+Преобразуют строки базы данных в типизированные объекты приложения.
+
+Например:
+
+UserData.
+
+---
+
+### Models
+
+Базовые модели БД.
+
+---
+
+## 4. Core (app/core/)
+
+Общее ядро проекта.
+
+Содержит:
+
+### Templates
+
+Генерация сообщений пользователю.
+
+Полностью отделены от бизнес-логики.
+
+---
+
+### Constants
+
+Все игровые и системные константы проекта.
+
+Например:
+
+- лимиты;
+- callback-префиксы;
+- коэффициенты;
+- игровые значения.
+
+---
+
+### Enums
+
+Перечисления приложения.
+
+Например:
+
+ResultStatus.
+
+---
+
+## 5. Types (app/types/)
+
+Типизированные структуры данных приложения.
+
+Например:
+
+- UserData
+- TimeComponents
+- Result объекты сервисов
+
+Позволяют отказаться от использования обычных словарей внутри приложения.
+
+---
+
+## 6. Utils (app/utils/)
+
+Общие вспомогательные функции.
+
+Например:
+
+- форматирование чисел;
+- форматирование времени;
+- сокращение текста;
+- логирование.
+
+---
+
+## 7. Assets (app/assets/)
+
+Статические игровые ресурсы.
+
+Например:
+
+- JSON викторины;
+- игровые данные.
+
+---
+
+## 8. Configs (app/configs/)
+
+Работа с конфигурацией приложения.
+
+Используется для загрузки:
+
+- YAML;
+- игровых параметров;
+- настроек приложения.
+
+---
+
+# Логирование
+
+Проект использует отдельные логгеры для разных частей приложения.
+
+Категории логов:
+
+- Bot
+- Callback
+- Errors
+- Security
+- Game
+- System
+
+Также реализован Audit Service, объединяющий:
+
+- логирование;
+- проверку безопасности;
+- уведомления администратора.
+
+---
+
+# Поток обработки запроса
+
+Telegram
+      │
+      ▼
+Middleware
+      │
+      ▼
+Router
+      │
+      ▼
+Service
+      │
+      ▼
+Repository
+      │
+      ▼
+Database
+      │
+      ▼
+Service
+      │
+      ▼
+Template
+      │
+      ▼
+Keyboard
+      │
+      ▼
+Telegram User
+---
+
+# Принципы проекта
+
+Проект придерживается следующих принципов:
+
+- Разделение ответственности (Separation of Concerns)
+- Модульная архитектура
+- Минимум логики в Router
+- Вся бизнес-логика находится в Service
+- Работа с данными только через Repository
+- Повторно используемые компоненты вынесены в Utils
+- Типизация через dataclass и Typed Objects
+- Масштабируемая структура директорий
+
+---
+
+# Дальнейшее развитие
+
+Планируется переход на:
+
+- PostgreSQL
+- SQLAlchemy 2.0
+- Alembic
+- Docker
+- Dependency Injection
+- отдельную систему игровых кулдаунов
+- расширение игровых механик
+- улучшение кодовой базы и архитектуры
