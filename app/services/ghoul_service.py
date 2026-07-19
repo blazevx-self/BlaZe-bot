@@ -64,7 +64,7 @@ class GhoulService:
         """
 
         base_power = sum(getattr(user, field, 0) for field in POWER_FIELDS)
-        base_power += user.kagune_lvl or 1
+        base_power += user.kagune_lvl
 
         # Определяем тип кагуне.
         kagune_type = (user.kagune_type or "").lower().strip()

@@ -75,7 +75,7 @@ start_logger = get_logger("start", "game")
 
 quiz_logger = get_logger("quiz", "game")
 
-click_logger = get_logger("click", "game")
+snap_logger = get_logger("snap", "game")
 coffee_logger = get_logger("coffee", "game")
 kagune_logger = get_logger("kagune", "game")
 stats_logger = get_logger("stats", "game")

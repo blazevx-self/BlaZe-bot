@@ -73,10 +73,10 @@ class CoffeeConfig:
     reward: tuple[int, int] = (1500, 2000)
     cooldown: int = 30 * 60
     overdose_cooldown: int = 5 * 60 * 60
-    required_clicks: int = 100
+    required_snap: int = 100
 
 @dataclass(slots=True, frozen=True)
-class ClickConfig:
+class SnapConfig:
     reward: tuple[int, int] = (500, 1000)
     cooldown: int = 10 * 60
 
@@ -89,13 +89,13 @@ class QuizConfig:
 @dataclass(slots=True, frozen=True)
 class TopsConfig:
     money_limit: int = 15
-    clicks_limit: int = 20
+    snap_limit: int = 20
     kagune_limit: int = 10
 
     def get_limit(self, top_type: str) -> int:
         return {
             "money": self.money_limit,
-            "clicks": self.clicks_limit,
+            "snap": self.snap_limit,
             "kagune": self.kagune_limit,
         }[top_type]
 
@@ -105,7 +105,7 @@ class EconomyConfig:
     kagune: KaguneConfig = field(default_factory=KaguneConfig)
     stats_price: StatsPriceConfig = field(default_factory=StatsPriceConfig)
     coffee: CoffeeConfig = field(default_factory=CoffeeConfig)
-    click: ClickConfig = field(default_factory=ClickConfig)
+    snap: SnapConfig = field(default_factory=SnapConfig)
     quiz: QuizConfig = field(default_factory=QuizConfig)
     tops: TopsConfig = field(default_factory=TopsConfig)
 

@@ -7,20 +7,20 @@ from app.configs.yaml import cfg
 from app.core.enums import ResultStatus
 from app.bot.filters.ghoul_filters import GhoulRequired
 
-from app.services.ghouls.click_service import click_service
+from app.services.ghouls.snap_service import snap_service
 from app.types.entities import UserData
 from app.utils.time import format_duration
 
 router = Router()
 
 @router.message(F.text.lower() == 'щелк', GhoulRequired())
-async def click(message: Message, user: UserData):
-    result = await click_service.process_click(user=user)
+async def snap(message: Message, user: UserData):
+    result = await snap_service.process_snap(user=user)
 
     if result.status == ResultStatus.COOLDOWN:
         remaining = result.remaining
 
-        text = cfg['message']['click']['click_cooldown'].format(
+        text = cfg['message']['snap']['snap_cooldown'].format(
             time=format_duration(remaining)
         )
 
@@ -28,8 +28,8 @@ async def click(message: Message, user: UserData):
         return
 
     user.money = result.new_money
-    user.clicks = result.new_clicks
-    user.last_click = int(time.time())
+    user.snap = result.new_snap
+    user.last_snap= int(time.time())
 
     await message.reply_animation(
         animation=result.gif,

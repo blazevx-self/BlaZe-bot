@@ -22,9 +22,9 @@ def get_balance_top_money_kb() -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text="↩️ Назад", callback_data="back_to_balance", icon_custom_emoji_id="5258132936401624790")]
     ])
 
-def get_update_top_clicks_kb() -> InlineKeyboardMarkup:
+def get_update_top_snap_kb() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="Обновить топчик", callback_data="update_top_click", icon_custom_emoji_id="5260687119092817530")]
+        [InlineKeyboardButton(text="Обновить топчик", callback_data="update_top_snap", icon_custom_emoji_id="5260687119092817530")]
     ])
 
 def get_update_top_kagune_kb() -> InlineKeyboardMarkup:

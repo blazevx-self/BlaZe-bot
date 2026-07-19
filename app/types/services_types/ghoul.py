@@ -44,11 +44,11 @@ class CoffeeResult:
     new_coffee_cooldown: int | None = None
 
 @dataclass
-class ClickResult:
+class SnapResult:
     status: ResultStatus
     text: str | None = None
     gif: str | None = None
     remaining: int | None = None
     new_money: int | None = None
-    new_clicks: int | None = None
+    new_snap: int | None = None
 

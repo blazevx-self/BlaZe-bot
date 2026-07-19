@@ -54,18 +54,18 @@ class GhoulRepository:
             await db.commit()
 
     # ЩЕЛК
-    async def get_last_click(self, user_id: int) -> int:
+    async def get_last_snap(self, user_id: int) -> int:
         async with DatabaseManager.connect() as db:
             async with db.execute("SELECT last_click FROM ghouls WHERE user_id = ?", (user_id,)) as cursor:
                 row = await cursor.fetchone()
                 return row['last_click'] if row else 0
 
-    async def update_last_click(self, user_id: int, timestamp: int) -> None:
+    async def update_last_snap(self, user_id: int, timestamp: int) -> None:
         async with DatabaseManager.connect() as db:
             await db.execute("UPDATE ghouls SET last_click = ? WHERE user_id = ?", (timestamp, user_id))
             await db.commit()
 
-    async def add_click(self, user_id: int) -> None:
+    async def add_snap(self, user_id: int) -> None:
         async with DatabaseManager.connect() as db:
             await db.execute("UPDATE ghouls SET clicks = clicks + 1 WHERE user_id = ?", (user_id,))
             await db.commit()

@@ -8,8 +8,8 @@ class UserData:
     is_subscribed: bool = False
     money: int = 0
 
-    clicks: int = 0
-    last_click: int = 0
+    snap: int = 0
+    last_snap: int = 0
 
     coffee_cooldown: int = 0
     coffee_last_time: int = 0

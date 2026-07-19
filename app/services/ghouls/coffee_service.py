@@ -27,15 +27,15 @@ class CoffeeService:
 
         user_id = user.user_id
         now = int(time.time())
-        required_clicks = game_cfg.coffee.required_clicks
+        required_snap = game_cfg.coffee.required_snap
 
         # проверка требования кликов для кофе
-        if user.clicks < required_clicks:
-            needed = required_clicks - user.clicks
-            text = cfg['message']['coffee']['not_coffee'].format(needed=needed)
+        if user.snap < required_snap:
+            needed = required_snap - user.snap
+            text = cfg['message']['coffee']['coffee_snap_limit'].format(needed=needed)
 
             return CoffeeResult(
-                status=ResultStatus.NOT_ENOUGH_CLICKS,
+                status=ResultStatus.NOT_ENOUGH_SNAP,
                 text=text,
             )
 

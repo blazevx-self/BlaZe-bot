@@ -1,6 +1,6 @@
 from aiogram import Router
 
-from app.bot.routers.ghoul import kagune, click, coffee, stats, race_profile
+from app.bot.routers.ghoul import kagune, snap, coffee, stats, race_profile
 from app.bot.routers.common import start, help, ping, unknown_commands, profile, balance
 from app.bot.routers.chat_member_update import new_chat_member
 from app.bot.routers.game import quiz
@@ -19,7 +19,7 @@ all_routers = (
 
     coffee.router,
     kagune.router,
-    click.router,
+    snap.router,
 
     top_bal.router,
     top_click.router,

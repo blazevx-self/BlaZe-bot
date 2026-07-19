@@ -10,7 +10,7 @@ class TopsRepository:
                     SELECT user_id, name, money FROM users WHERE money > 0 ORDER BY money DESC LIMIT ?
                 """
 
-            elif top_type == "clicks":
+            elif top_type == "snap":
                 sql = """
                     SELECT user_id, ghoul_nickname, clicks FROM ghouls WHERE clicks > 0 ORDER BY clicks DESC LIMIT ?
                 """
@@ -40,7 +40,7 @@ class TopsRepository:
                     SELECT rank FROM ranked WHERE user_id = ?
                 """
 
-            elif top_type == "clicks":
+            elif top_type == "snap":
                 sql = """
                     WITH ranked AS (
                         SELECT 

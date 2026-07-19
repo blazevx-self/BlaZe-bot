@@ -10,7 +10,7 @@ class ResultStatus(StrEnum):
 
     OVERDOSE = "overdose"
     OVERDOSE_COOLDOWN = "overdose_cooldown"
-    NOT_ENOUGH_CLICKS="not_enough_clicks"
+    NOT_ENOUGH_SNAP="not_enough_snap"
 
     NO_KAGUNE = "no_kagune"
 

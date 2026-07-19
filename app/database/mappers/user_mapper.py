@@ -24,8 +24,8 @@ def row_to_user(row: Mapping[str, Any]) -> UserData:
 
         level=row["level"],
 
-        last_click=row["last_click"],
-        clicks=row["clicks"],
+        last_snap=row["last_click"],
+        snap=row["clicks"],
 
         coffee_last_time=row["coffee_last_time"],
         coffee_cooldown=row["coffee_cooldown"],
