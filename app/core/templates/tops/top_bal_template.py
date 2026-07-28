@@ -4,7 +4,6 @@ from app.configs.yaml import cfg
 from app.utils.truncate_name import truncate_text
 from app.utils.format_num import format_num
 
-
 # шаблон топ по балику
 def build_top_bal_text(result):
     top_users = result.top_user

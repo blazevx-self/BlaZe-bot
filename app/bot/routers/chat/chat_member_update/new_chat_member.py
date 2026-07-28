@@ -1,4 +1,4 @@
-from aiogram import Router, Bot
+from aiogram import Router
 
 from aiogram.types import ChatMemberUpdated
 from aiogram.filters.chat_member_updated import (
@@ -11,7 +11,6 @@ from app.services.chat_service import chat_service
 from app.database.repositories.chats_repository import chat_repository
 
 from app.utils.logger import bot_logger, error_logger
-
 
 router = Router()
 
@@ -35,7 +34,6 @@ async def bot_added(event: ChatMemberUpdated):
 
     except TelegramAPIError as e:
         error_logger.exception(f"[BOT] Welcome message failed | chat_id={event.chat.id} | error={e}")
-
 
 @router.my_chat_member(ChatMemberUpdatedFilter(IS_MEMBER >> IS_NOT_MEMBER))
 async def bot_removed(event: ChatMemberUpdated):

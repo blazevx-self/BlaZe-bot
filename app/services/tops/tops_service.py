@@ -8,7 +8,6 @@ from app.types.services_result.tops import TopResult
 
 from app.database.repositories.tops_repository import tops_repository
 
-
 class TopsService:
     """Сервис получения рейтингов игрока в топах."""
 

@@ -13,7 +13,6 @@ from app.services.ghoul_service import ghoul_service
 from app.utils.format_num import format_num
 from app.utils.logger import kagune_logger
 
-
 class KaguneService:
     """Сервис игровой механики развитие кагуне"""
 
@@ -37,7 +36,6 @@ class KaguneService:
             status=ResultStatus.SUCCESS,
             kagune_type=kagune_type
         )
-
 
     @staticmethod
     async def process_kagune(user: UserData) -> KaguneResult:

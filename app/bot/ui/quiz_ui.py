@@ -10,6 +10,5 @@ async def send_question_ui(message_or_call, q, left, user_id):
 
     if isinstance(message_or_call, CallbackQuery):
         await message_or_call.message.edit_text(text=text, reply_markup=markup)
-
     else:
         await message_or_call.reply(text=text, reply_markup=markup)

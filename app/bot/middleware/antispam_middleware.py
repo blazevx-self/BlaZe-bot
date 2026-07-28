@@ -7,7 +7,6 @@ from cachetools import TTLCache
 from app.configs.yaml import cfg
 from app.utils.logger import security_logger
 
-
 class AntiSpamGhoulMiddleware(BaseMiddleware):
     """Middleware защиты от спама callback-кнопками.
 
@@ -17,7 +16,6 @@ class AntiSpamGhoulMiddleware(BaseMiddleware):
 
     def __init__(self, time_limit: float = 0.7) -> None:
         self.cache = TTLCache(maxsize=10_000, ttl=time_limit)
-
 
     async def __call__(
             self,

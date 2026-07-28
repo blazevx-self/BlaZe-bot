@@ -4,7 +4,6 @@ from app.configs.yaml import cfg
 from app.utils.truncate_name import truncate_text
 from app.utils.format_num import format_num
 
-
 # шаблон топ по щелчкам
 def build_top_snap_text(result):
     top_users = result.top_user

@@ -14,9 +14,7 @@ router = Router()
 @router.message(F.text.lower() == 'распрофиль', GhoulRequired())
 async def ras_profile(message: Message, user: UserData):
     result = await race_service.build_race_profile(user=user)
-
     await message.reply(text=result.text, reply_markup=get_ras_to_profile_kb())
-
 
 @router.callback_query(F.data == 'open_profile')
 async def ras_to_profile(callback: CallbackQuery, user: UserData):

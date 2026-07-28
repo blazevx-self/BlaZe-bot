@@ -1,7 +1,6 @@
 import random
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-
 def get_quiz_keyboard(options_str: str, question_id: int, user_id: int) -> InlineKeyboardMarkup:
     options = options_str.split('|')
     random.shuffle(options)
@@ -21,7 +20,6 @@ def get_quiz_keyboard(options_str: str, question_id: int, user_id: int) -> Inlin
         keyboard.append(row)
 
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
-
 
 def get_quiz_again_kb() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[

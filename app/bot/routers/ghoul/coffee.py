@@ -9,7 +9,6 @@ from app.types.entities import UserData
 from app.services.ghouls.coffee_service import coffee_service
 from app.bot.filters.ghoul_filters import GhoulRequired
 
-
 router = Router()
 
 @router.message(F.text.lower() == "пить кофе", GhoulRequired())

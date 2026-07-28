@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class CooldownAction(str, Enum):
     SNAP = "snap"
     COFFEE = "coffee"

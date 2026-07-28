@@ -1,6 +1,5 @@
 from app.types.entities import UserData
 
-
 def build_user_info(from_user, user_db=None) -> str:
     """
     Единый формат user_info для логов.

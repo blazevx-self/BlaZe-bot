@@ -7,10 +7,8 @@ from aiogram.types import InlineKeyboardMarkup
 from app.core.constants.game.stats import STATS_KEYBOARD
 from app.services.calculate_stats_service import can_upgrade_amount
 
-
 UpgradeAmount = Literal[1, 3, 5]
 UPGRADE_AMOUNTS: tuple[UpgradeAmount, ...] = (1, 3, 5)
-
 
 def builds_stats_keyboard(stats: Row) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()

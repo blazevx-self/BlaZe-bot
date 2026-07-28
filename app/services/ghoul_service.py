@@ -31,7 +31,6 @@ class GhoulService:
 
         return bool(user and user.kagune_was_obtained)
 
-
     @staticmethod
     def get_price(level: int) -> int:
         """Расчёт стоимости улучшения кагуне."""
@@ -40,7 +39,6 @@ class GhoulService:
         multiplier = game_cfg.kagune.price_multiplier
 
         return int(base * (multiplier ** (level - 1)))
-
 
     @staticmethod
     def get_kagune_gif(level: int) -> str:
@@ -57,7 +55,6 @@ class GhoulService:
                 break
 
         return current_gif
-
 
     @staticmethod
     def calculate_power(user: UserData) -> int:
@@ -78,7 +75,6 @@ class GhoulService:
 
         return int(base_power * multiplier)
 
-
     @staticmethod
     def get_danger_rank(power: int) -> str:
         """Определение ранга угрозы
@@ -89,7 +85,6 @@ class GhoulService:
                 return rank
 
         return "SSS+"
-
 
     @staticmethod
     def get_rank(level: int) -> str:
@@ -103,7 +98,6 @@ class GhoulService:
                 break
 
         return current_rank
-
 
     @staticmethod
     def get_status(user: UserData) -> str:

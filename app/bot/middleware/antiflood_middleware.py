@@ -1,12 +1,12 @@
 import time
 
+from typing import Any, Callable, Dict, Awaitable
+from cachetools import TTLCache
+
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
-from cachetools import TTLCache
-from typing import Any, Callable, Dict, Awaitable
 
 from app.utils.logger import security_logger
-
 
 class AntifloodMiddleware(BaseMiddleware):
     """Middleware защиты от флуда.
@@ -25,7 +25,6 @@ class AntifloodMiddleware(BaseMiddleware):
         self.user_requests = TTLCache(maxsize=10_000, ttl=limit_seconds)
         self.limit_seconds = limit_seconds
         self.max_requests = max_requests
-
 
     async def __call__(
             self,

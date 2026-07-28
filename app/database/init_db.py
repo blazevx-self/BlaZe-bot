@@ -5,7 +5,6 @@ from app.database.schemas.ghouls_schema import CREATE_GHOULS
 from app.database.schemas.quiz_schema import CREATE_QUIZ_TABLE, CREATE_QUIZ_HISTORY_TABLE
 from app.database.schemas.chat_schema import CREATE_CHAT
 
-
 async def init_db():
     async with DatabaseManager.connect() as db:
         await db.execute(CREATE_USERS)

@@ -5,7 +5,6 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database.models.base import Base
 
-
 class QuizOrm(Base):
     __tablename__ = "quiz_questions"
 

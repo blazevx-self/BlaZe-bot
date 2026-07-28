@@ -15,7 +15,6 @@ from app.utils.format_num import format_num
 from app.utils.time import format_duration
 from app.utils.logger import coffee_logger
 
-
 class CoffeeService:
     """Сервис игровой механики употребления кофе."""
 

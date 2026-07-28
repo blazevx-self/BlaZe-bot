@@ -1,7 +1,6 @@
 from typing import Any
 from app.utils.logger import system_logger
 
-
 class NotifierService:
     """
     Сервис уведомления администратора о критических ошибках.

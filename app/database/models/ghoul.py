@@ -6,7 +6,6 @@ from sqlalchemy.types import BigInteger
 
 from app.database.models.base import Base
 
-
 class GhoulOrm(Base):
     __tablename__ = 'ghouls'
 

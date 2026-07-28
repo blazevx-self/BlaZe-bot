@@ -10,7 +10,6 @@ from app.bot.keyboards.common.help_keyboard import get_help_menu, get_help_menu_
 
 from app.utils.logger import bot_logger
 
-
 router = Router()
 
 @router.message(Command('help'), F.chat.type == 'private')
@@ -26,7 +25,6 @@ async def help_me(message: Message) -> None:
         link_preview_options=LinkPreviewOptions(is_disabled=False),
     )
 
-
 @router.callback_query(F.data == 'help')
 async def help_cb(callback: CallbackQuery) -> None:
     await callback.message.edit_text(
@@ -35,7 +33,6 @@ async def help_cb(callback: CallbackQuery) -> None:
         link_preview_options=LinkPreviewOptions(is_disabled=False),
     )
     await callback.answer()
-
 
 @router.callback_query(F.data == 'back')
 async def back_me(callback: CallbackQuery):

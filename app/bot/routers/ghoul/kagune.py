@@ -13,7 +13,6 @@ from app.bot.keyboards.ghoul.kagune_keyboard import get_grow_kagune_kb, get_open
 from app.utils.format_num import format_num
 from app.utils.time import format_duration
 
-
 router = Router()
 
 @router.message(F.text.lower() == "растить кагуне")
@@ -49,7 +48,6 @@ async def kagune_menu(message: Message, user: UserData):
 
     await message.reply_animation(animation=result.gif, caption=result.text,)
 
-
 @router.callback_query(F.data == "kagune_new")
 async def kagune_open(callback: CallbackQuery, user: UserData):
     result = await kagune_service.process_kagune_open(user=user)
@@ -65,7 +63,6 @@ async def kagune_open(callback: CallbackQuery, user: UserData):
 
     await callback.message.edit_text(text=text, reply_markup=get_grow_kagune_kb())
     await callback.answer()
-
 
 @router.callback_query(F.data == "kagune_ras")
 async def kagune_grow(callback: CallbackQuery, user: UserData):

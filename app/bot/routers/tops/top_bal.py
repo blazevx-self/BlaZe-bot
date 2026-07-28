@@ -14,7 +14,6 @@ from app.bot.keyboards.tops.tops_keyboard import (
     get_back_to_top_kb
 )
 
-
 router = Router()
 
 async def _send_or_edit_top_bal(
@@ -47,7 +46,6 @@ async def _send_or_edit_top_bal(
         else:
             raise
 
-
 @router.message(F.text.lower() == 'топ балик')
 async def top_money_command(message: Message, user: UserData):
     await _send_or_edit_top_bal(
@@ -55,7 +53,6 @@ async def top_money_command(message: Message, user: UserData):
         user=user,
         reply_markup=get_top_money_kb()
     )
-
 
 @router.callback_query(F.data == 'update_top_money')
 async def refresh_top_we(callback: CallbackQuery, user: UserData):
@@ -66,7 +63,6 @@ async def refresh_top_we(callback: CallbackQuery, user: UserData):
         is_refresh=True
     )
 
-
 @router.callback_query(F.data == 'update_only_top_money')
 async def update_top_only(callback: CallbackQuery, user: UserData):
     await _send_or_edit_top_bal(
@@ -76,7 +72,6 @@ async def update_top_only(callback: CallbackQuery, user: UserData):
         is_refresh=True
     )
 
-
 @router.callback_query(F.data == 'money_top')
 async def ghoul_top_top(callback: CallbackQuery, user: UserData):
     await _send_or_edit_top_bal(
@@ -85,7 +80,6 @@ async def ghoul_top_top(callback: CallbackQuery, user: UserData):
         reply_markup=get_balance_top_money_kb()
     )
 
-
 @router.callback_query(F.data == 'back_to_top')
 async def back_to_balance(callback: CallbackQuery, user: UserData):
     await _send_or_edit_top_bal(
@@ -93,7 +87,6 @@ async def back_to_balance(callback: CallbackQuery, user: UserData):
         user=user,
         reply_markup=get_top_money_kb()
     )
-
 
 @router.callback_query(F.data == 'back_balance')
 async def back_to_top(callback: CallbackQuery, user: UserData):

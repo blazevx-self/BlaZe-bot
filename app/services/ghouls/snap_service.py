@@ -14,7 +14,6 @@ from app.database.repositories.ghouls_repository import ghouls_repository
 from app.utils.format_num import format_num
 from app.utils.logger import snap_logger
 
-
 class SnapService:
     """Сервис игровой механики щелчков"""
 

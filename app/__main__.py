@@ -17,14 +17,11 @@ from app.bot.middleware.user_sync_middleware import UserSyncMiddleware
 
 from app.database.init_db import init_db
 
-
 async def on_startup():
     system_logger.info("[SYSTEM] Bot started | version=1.0.0 | py=%s", sys.version.split()[0])
 
-
 async def on_shutdown():
     system_logger.info("[SYSTEM] Bot stopped")
-
 
 async def setup_middlewares(dp: Dispatcher) -> None:
     dp.message.middleware(LoggingMiddleware())
@@ -37,7 +34,6 @@ async def setup_middlewares(dp: Dispatcher) -> None:
 
     dp.message.middleware(AntifloodMiddleware(limit_seconds=5, max_requests=15))
     dp.callback_query.middleware(AntifloodMiddleware(limit_seconds=5, max_requests=15))
-
 
 async def main():
     bot = Bot(
@@ -66,7 +62,6 @@ async def main():
 
     finally:
         await bot.session.close()
-
 
 if __name__ == '__main__':
     try:

@@ -1,6 +1,5 @@
 from app.types.time_components import TimeComponents
 
-
 def parse_seconds(total_seconds: int) -> TimeComponents:
     days = total_seconds // (24 * 3600)
     remainder = total_seconds % (24 * 3600)
@@ -21,7 +20,6 @@ def parse_seconds(total_seconds: int) -> TimeComponents:
         total_minutes=total_seconds // 60,
         total_seconds=total_seconds
     )
-
 
 def format_duration(total_seconds: int, show_seconds: bool = True) -> str:
     time = parse_seconds(total_seconds)

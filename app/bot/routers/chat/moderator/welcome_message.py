@@ -4,7 +4,6 @@ from aiogram.types import Message
 from app.services.chat_service import chat_service
 from app.bot.filters.group_only import GroupOnlyFilter, GroupCreatorFilter
 
-
 router = Router()
 
 @router.message(F.text.lower().startswith("новое приветствие"), GroupOnlyFilter(), GroupCreatorFilter())

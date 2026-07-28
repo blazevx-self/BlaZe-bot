@@ -1,6 +1,5 @@
 from enum import StrEnum
 
-
 class ResultStatus(StrEnum):
     """Общие статусы результатов"""
     SUCCESS = "success"

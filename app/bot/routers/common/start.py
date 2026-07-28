@@ -9,7 +9,6 @@ from app.bot.keyboards.common.start_keyboard import start_keyboard
 
 from app.utils.logger import bot_logger
 
-
 router = Router()
 
 @router.message(CommandStart(), F.chat.type == 'private')

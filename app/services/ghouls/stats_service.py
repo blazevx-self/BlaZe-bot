@@ -18,9 +18,7 @@ from app.bot.keyboards.ghoul.stats_keyboard import builds_stats_keyboard
 
 from app.utils.logger import stats_logger
 
-
 UpgradeAmount = Literal[1, 3, 5]
-
 
 class StatsService:
     """Сервис управления характеристиками гуля.
@@ -53,7 +51,6 @@ class StatsService:
             text=text,
             keyboard=builds_stats_keyboard(stats)
         )
-
 
     @staticmethod
     async def process_stats_upgrade(

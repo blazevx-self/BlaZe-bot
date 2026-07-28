@@ -12,7 +12,6 @@ from app.bot.filters.ghoul_filters import GhoulRequired
 
 from app.utils.time import format_duration
 
-
 router = Router()
 
 @router.message(F.text.lower() == 'щелк', GhoulRequired())

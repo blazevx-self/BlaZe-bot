@@ -4,7 +4,6 @@ from app.utils.logger import (
     error_logger
 )
 
-
 class LoggerService:
     """
         Сервис логирования пользовательских действий.
@@ -36,7 +35,6 @@ class LoggerService:
 
         bot_logger.info(f"[TEXT COMMAND] {user_info} | chat={chat_type} | command=\"{command}\" | ping={process_time:.2f}ms")
 
-
     @staticmethod
     def log_callback(
             user_info: str,
@@ -52,7 +50,6 @@ class LoggerService:
         """
 
         callback_logger.info(f"[CALLBACK] {user_info} | callback=\"{callback_data}\" | ping={process_time:.2f}ms")
-
 
     @staticmethod
     def log_error(

@@ -3,7 +3,6 @@ import yaml
 from app.core.constants.system.paths import YAML_PATH
 from app.utils.logger import system_logger
 
-
 def load_config() -> dict:
     system_logger.info(f"[CONFIG] Loading...")
 

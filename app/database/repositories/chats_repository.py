@@ -1,6 +1,5 @@
 from app.database.base import DatabaseManager
 
-
 class ChatRepository:
     @staticmethod
     async def upsert(chat_id: int, title: str) -> None:
@@ -17,7 +16,6 @@ class ChatRepository:
             """, (title, chat_id))
             await db.commit()
 
-
     @staticmethod
     async def get_chat_by_id(chat_id: int) -> None:
         async with DatabaseManager.connect() as db:
@@ -27,7 +25,6 @@ class ChatRepository:
                 WHERE chat_id = ?
             """, (chat_id,)) as cursor:
                 return await cursor.fetchone()
-
 
     @staticmethod
     async def update_rules(chat_id: int, rules: str | None) -> None:
@@ -39,7 +36,6 @@ class ChatRepository:
             """, (rules, chat_id))
             await db.commit()
 
-
     @staticmethod
     async def update_welcome_message(chat_id: int, welcome_message: str | None) -> None:
         async with DatabaseManager.connect() as db:
@@ -50,7 +46,6 @@ class ChatRepository:
             """, (welcome_message, chat_id))
             await db.commit()
 
-
     @staticmethod
     async def update_goodbye_message(chat_id: int, goodbye_message: str | None) -> None:
         async with DatabaseManager.connect() as db:
@@ -60,7 +55,6 @@ class ChatRepository:
                 WHERE chat_id = ?
             """, (goodbye_message, chat_id))
             await db.commit()
-
 
     @staticmethod
     async def get_all_chats():

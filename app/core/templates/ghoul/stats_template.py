@@ -4,7 +4,6 @@ from app.types.entities import UserData
 
 from app.configs.yaml import cfg
 
-
 # шаблон прокачки характеристик гуля
 def stats_text(user: UserData, stats: dict) -> str:
     return cfg['message']['stats_text'].format(
@@ -21,7 +20,6 @@ def stats_text(user: UserData, stats: dict) -> str:
         p_speed=make_prices_string(stats["speed"], "speed"),
         p_hp=make_prices_string(stats["hp"], "hp"),
         p_regen=make_prices_string(stats["regen"], "regen"))
-
 
 def make_prices_string(current_stat: int, stat_name: str) -> str:
     """Форматирование цены статов в сообщении"""

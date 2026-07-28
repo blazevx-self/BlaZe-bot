@@ -6,7 +6,6 @@ from aiogram.types import Message
 from app.configs.yaml import cfg
 from app.utils.logger import bot_logger
 
-
 router = Router()
 
 @router.message(F.text.lower() == 'бот')

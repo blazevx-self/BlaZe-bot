@@ -7,7 +7,6 @@ from sqlalchemy.types import BigInteger
 from app.database.models.base import Base
 from app.core.enums.cooldown_action import CooldownAction
 
-
 class UserCooldownOrm(Base):
     __tablename__ = "user_cooldown"
 

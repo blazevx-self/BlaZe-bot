@@ -4,7 +4,6 @@ from aiogram.types import Message
 from app.services.chat_service import chat_service
 from app.bot.filters.group_only import GroupOnlyFilter, GroupCreatorFilter
 
-
 router = Router()
 
 @router.message(F.text.lower() == 'правила', GroupOnlyFilter())
@@ -16,7 +15,6 @@ async def check_chat_rules(message: Message):
         return
 
     await message.reply(rules)
-
 
 @router.message(F.text.lower().startswith("новые правила"), GroupOnlyFilter(), GroupCreatorFilter())
 async def set_rules(message: Message):
@@ -36,7 +34,6 @@ async def set_rules(message: Message):
     await chat_service.set_rules(chat_id=message.chat.id, rules=rules)
 
     await message.reply("<b>Правила чата сохранены.</b>")
-
 
 @router.message(F.text.lower().startswith("удалить правила"), GroupOnlyFilter(), GroupCreatorFilter())
 async def delete_rules(message: Message):

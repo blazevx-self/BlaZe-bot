@@ -1,13 +1,11 @@
 from dataclasses import dataclass
 from app.core.enums import ResultStatus
 
-
 @dataclass
 class QuizStartResult:
     status: ResultStatus
     question: dict | None = None
     left: int | None = None
-
 
 @dataclass
 class QuizAnswerResult:

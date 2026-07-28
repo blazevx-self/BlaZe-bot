@@ -10,7 +10,6 @@ from app.utils.truncate_name import truncate_text
 
 from app.services.ghoul_service import ghoul_service
 
-
 class ProfileService:
     """Сервис формирования обычного профиля пользователя"""
 

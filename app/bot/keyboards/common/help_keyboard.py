@@ -1,6 +1,5 @@
-from aiogram.utils.keyboard import InlineKeyboardBuilder
 from app.configs.yaml import cfg
-
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 def get_help_menu():
     builder = InlineKeyboardBuilder()
@@ -10,7 +9,6 @@ def get_help_menu():
     builder.adjust(1)
 
     return builder.as_markup()
-
 
 def get_help_menu_back():
     builder = InlineKeyboardBuilder()
@@ -23,7 +21,6 @@ def get_help_menu_back():
 
     return builder.as_markup()
 
-
 def get_help_menu_unknown_command():
     builder = InlineKeyboardBuilder()
 
@@ -32,4 +29,3 @@ def get_help_menu_unknown_command():
     builder.adjust(1)
 
     return builder.as_markup()
-

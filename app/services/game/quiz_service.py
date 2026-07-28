@@ -14,7 +14,6 @@ from app.types.services_result.game import (
 from app.database.repositories.quiz_repository import quiz_repository
 from app.utils.logger import quiz_logger
 
-
 class QuizService:
     """Сервис логики викторины."""
 
@@ -53,7 +52,6 @@ class QuizService:
             question=question,
             left=access['left'] - 1
         )
-
 
     @staticmethod
     async def process_quiz_answer(

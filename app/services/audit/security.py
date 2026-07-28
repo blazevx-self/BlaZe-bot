@@ -6,7 +6,6 @@ from app.core.constants.system.limits import (
 
 from app.utils.logger import security_logger
 
-
 class SecurityService:
     """
     Сервис проверки подозрительной активности пользователя.
@@ -22,14 +21,12 @@ class SecurityService:
         if len(callback_data) > MAX_CALLBACK_LENGTH:
             security_logger.warning(f"[SUSPICIOUS CALLBACK] {user_info} | callback={callback_data}")
 
-
     @staticmethod
     def log_invalid_callback(user_info: str, callback_data: str) -> None:
         """Проверяет callback на допустимые префиксы."""
 
         if not callback_data.startswith(ALLOWED_CALLBACK_PREFIXES):
             security_logger.warning(f"[INVALID CALLBACK] {user_info} | callback={callback_data}")
-
 
     @staticmethod
     def log_slow_request(

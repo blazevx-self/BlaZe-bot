@@ -7,7 +7,6 @@ from app.types.services_result.ghoul import RaceProfileResult
 from app.services.ghoul_service import ghoul_service
 from app.utils.truncate_name import truncate_text
 
-
 class RaceProfileService:
     """Сервис формирования расового профиля игрока."""
 

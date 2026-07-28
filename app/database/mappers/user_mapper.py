@@ -1,7 +1,6 @@
 from app.types.entities import UserData
 from typing import Any, Mapping
 
-
 def row_to_user(row: Mapping[str, Any]) -> UserData:
 
     return UserData(

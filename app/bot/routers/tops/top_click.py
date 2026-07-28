@@ -10,7 +10,6 @@ from app.services.tops.tops_service import top_service
 from app.bot.filters.ghoul_filters import GhoulRequired
 from app.bot.keyboards.tops.tops_keyboard import get_update_top_snap_kb
 
-
 router = Router()
 
 @router.message(F.text.lower() == "топ щелк", GhoulRequired())
@@ -19,7 +18,6 @@ async def snap_top_command(message: Message, user: UserData):
     text = build_top_snap_text(result)
 
     await message.reply(text=text, reply_markup=get_update_top_snap_kb())
-
 
 @router.callback_query(F.data == "update_top_snap")
 async def refresh_snap_top(callback: CallbackQuery, user: UserData):
