@@ -1,8 +1,9 @@
 from aiogram.utils.markdown import html_decoration as hd
 
 from app.configs.yaml import cfg
-from app.utils.format_text import truncate_text
+from app.utils.truncate_name import truncate_text
 from app.utils.format_num import format_num
+
 
 # шаблон топ по балику
 def build_top_bal_text(result):
@@ -10,7 +11,7 @@ def build_top_bal_text(result):
     rank = result.rank
     user = result.user
 
-    text = cfg['message']['tops']['top_money']['top_15_text'] + "\n"
+    text = "<b>Топ 15 богатых гулей</b>\n"
 
     text += "<b>╭─────────────────╮</b>\n"
 

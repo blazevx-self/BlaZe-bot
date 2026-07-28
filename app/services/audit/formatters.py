@@ -1,5 +1,6 @@
 from app.types.entities import UserData
 
+
 def build_user_info(from_user, user_db=None) -> str:
     """
     Единый формат user_info для логов.
@@ -9,6 +10,7 @@ def build_user_info(from_user, user_db=None) -> str:
     - поддерживать единый стиль логов
     - скрывать внутреннюю структуру user объекта
     """
+
     if isinstance(user_db, UserData):
         return (
             f"name=\"{user_db.name}\" | "

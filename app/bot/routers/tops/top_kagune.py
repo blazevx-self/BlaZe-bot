@@ -3,39 +3,32 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.exceptions import TelegramBadRequest
 
 from app.core.templates.tops.top_kagune_template import build_top_kagune_text
+from app.types.entities import UserData
 
 from app.services.tops.tops_service import top_service
+
+from app.bot.filters.ghoul_filters import GhoulRequired
 from app.bot.keyboards.tops.tops_keyboard import get_update_top_kagune_kb
-from app.types.entities import UserData
+
 
 router = Router()
 
-@router.message(F.text.lower() == "топ кагуне")
+@router.message(F.text.lower() == "топ кагуне", GhoulRequired())
 async def top_kagune_command(message: Message, user: UserData):
-    result = await top_service.process_tops(
-        user=user,
-        top_type="kagune"
-    )
+    result = await top_service.process_tops(user=user, top_type="kagune")
     text = build_top_kagune_text(result)
 
-    await message.reply(
-        text=text,
-        parse_mode="HTML",
-        reply_markup=get_update_top_kagune_kb()
-    )
+    await message.reply(text=text, reply_markup=get_update_top_kagune_kb())
+
 
 @router.callback_query(F.data == "update_top_kagune")
 async def refresh_top_kagune(callback: CallbackQuery, user: UserData):
-    result = await top_service.process_tops(
-        user=user,
-        top_type="kagune"
-    )
+    result = await top_service.process_tops(user=user, top_type="kagune")
     text = build_top_kagune_text(result)
 
     try:
         await callback.message.edit_text(
             text=text,
-            parse_mode="HTML",
             reply_markup=get_update_top_kagune_kb()
         )
         await callback.answer("Обновлён топчик", show_alert=False)

@@ -1,5 +1,6 @@
 from pathlib import Path
 
+
 BASE_DIR = Path(__file__).resolve()
 
 while BASE_DIR.name != "BlaZe bot V2":

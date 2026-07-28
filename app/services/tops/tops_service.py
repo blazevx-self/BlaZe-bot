@@ -4,16 +4,16 @@ from app.core.enums import ResultStatus
 from app.configs.game import game_cfg
 
 from app.types.entities import UserData
-from app.types.services_types.tops import TopResult
+from app.types.services_result.tops import TopResult
 
 from app.database.repositories.tops_repository import tops_repository
 
-# noinspection PyMethodMayBeStatic
+
 class TopsService:
     """Сервис получения рейтингов игрока в топах."""
 
+    @staticmethod
     async def process_tops(
-            self,
             user: UserData,
             top_type: str,
     ) -> TopResult:
@@ -35,7 +35,7 @@ class TopsService:
         return TopResult(
             status=ResultStatus.SUCCESS,
             top_user=leaderboard,
-            rank=rank,
+            rank=rank or 0,
             user=user
         )
 

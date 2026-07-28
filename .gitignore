@@ -1,23 +1,17 @@
-# env
 .env
 
-# venv
 .venv/
 venv/
 
-# python cache
 __pycache__/
 *.pyc
 *.pyo
 
-# database
 *.db
 
-# logs
 logs/
 *.log
 
-# IDE
 .idea/
 
 config.yaml

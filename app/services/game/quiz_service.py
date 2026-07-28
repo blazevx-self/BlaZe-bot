@@ -6,7 +6,7 @@ from app.core.templates.game.quiz_template import quiz_result_text
 from app.core.enums import ResultStatus
 
 from app.types.entities import UserData
-from app.types.services_types.game import (
+from app.types.services_result.game import (
     QuizStartResult,
     QuizAnswerResult
 )
@@ -14,11 +14,12 @@ from app.types.services_types.game import (
 from app.database.repositories.quiz_repository import quiz_repository
 from app.utils.logger import quiz_logger
 
-# noinspection PyMethodMayBeStatic
+
 class QuizService:
     """Сервис логики викторины."""
 
-    async def process_quiz_start(self, user: UserData) -> QuizStartResult:
+    @staticmethod
+    async def process_quiz_start(user: UserData) -> QuizStartResult:
         """Подготавливает новую викторину для пользователя.
 
         Проверяет доступные попытки, выбирает случайный вопрос,
@@ -53,8 +54,9 @@ class QuizService:
             left=access['left'] - 1
         )
 
+
+    @staticmethod
     async def process_quiz_answer(
-            self,
             user: UserData,
             question_id: int,
             user_choice: str
@@ -73,6 +75,11 @@ class QuizService:
             return QuizAnswerResult(status=ResultStatus.LIMIT)
 
         question = await quiz_repository.get_question_by_id(question_id)
+
+        if not question:
+            quiz_logger.error(f"[QUIZ] Question not found | id={question_id}")
+            return QuizAnswerResult(status=ResultStatus.ERROR)
+
         is_correct = question['correct'].strip().lower() == user_choice.strip().lower()
 
         reward_min, reward_max = game_cfg.quiz.reward

@@ -10,12 +10,11 @@ from app.core.constants.game.ranks import DANGER_RANKS
 from app.types.entities import UserData
 from app.database.repositories.users_repository import user_repository
 
-# noinspection PyMethodMayBeStatic
 class GhoulService:
     """Сервис игровых механик гулей."""
 
+    @staticmethod
     async def check_ghoul(
-            self,
             user_id: int,
             cached_user: Optional[UserData] = None
     ) -> bool:
@@ -32,6 +31,7 @@ class GhoulService:
 
         return bool(user and user.kagune_was_obtained)
 
+
     @staticmethod
     def get_price(level: int) -> int:
         """Расчёт стоимости улучшения кагуне."""
@@ -40,6 +40,7 @@ class GhoulService:
         multiplier = game_cfg.kagune.price_multiplier
 
         return int(base * (multiplier ** (level - 1)))
+
 
     @staticmethod
     def get_kagune_gif(level: int) -> str:
@@ -56,6 +57,7 @@ class GhoulService:
                 break
 
         return current_gif
+
 
     @staticmethod
     def calculate_power(user: UserData) -> int:
@@ -76,6 +78,7 @@ class GhoulService:
 
         return int(base_power * multiplier)
 
+
     @staticmethod
     def get_danger_rank(power: int) -> str:
         """Определение ранга угрозы
@@ -86,6 +89,7 @@ class GhoulService:
                 return rank
 
         return "SSS+"
+
 
     @staticmethod
     def get_rank(level: int) -> str:
@@ -99,6 +103,7 @@ class GhoulService:
                 break
 
         return current_rank
+
 
     @staticmethod
     def get_status(user: UserData) -> str:

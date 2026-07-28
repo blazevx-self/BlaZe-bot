@@ -8,7 +8,8 @@ class GhoulRepository:
     async def set_coffee_overdose(self, user_id: int, cooldown_timestamp: int) -> None:
         async with DatabaseManager.connect() as db:
             await db.execute("""
-                UPDATE ghouls SET coffee_cooldown = ?, coffee_session = 0 WHERE user_id = ?
+                UPDATE ghouls 
+                SET coffee_cooldown = ?, coffee_session = 0 WHERE user_id = ?
             """, (cooldown_timestamp, user_id))
 
             await db.commit()

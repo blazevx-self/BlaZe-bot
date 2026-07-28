@@ -2,11 +2,13 @@ from aiogram import Router, F, Bot
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 
-from app.services.common.start_service import start_service
-from app.bot.keyboards.common.start_keyboard import start_keyboard
 from app.types.entities import UserData
 
+from app.services.common.start_service import start_service
+from app.bot.keyboards.common.start_keyboard import start_keyboard
+
 from app.utils.logger import bot_logger
+
 
 router = Router()
 
@@ -25,8 +27,4 @@ async def cmd_start(message: Message, bot: Bot, user: UserData):
     if result.is_subscribed:
         user.is_subscribed = True
 
-    await message.reply(
-        text=result.text,
-        parse_mode="HTML",
-        reply_markup=start_keyboard()
-    )
+    await message.reply(text=result.text, reply_markup=start_keyboard())

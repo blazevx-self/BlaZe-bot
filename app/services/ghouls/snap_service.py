@@ -5,7 +5,7 @@ from app.configs.yaml import cfg
 from app.configs.game import game_cfg
 from app.core.enums import ResultStatus
 
-from app.types.services_types.ghoul import SnapResult
+from app.types.services_result.ghoul import SnapResult
 from app.types.entities import UserData
 
 from app.database.repositories.users_repository import user_repository
@@ -14,11 +14,12 @@ from app.database.repositories.ghouls_repository import ghouls_repository
 from app.utils.format_num import format_num
 from app.utils.logger import snap_logger
 
-# noinspection PyMethodMayBeStatic
+
 class SnapService:
     """Сервис игровой механики щелчков"""
 
-    async def process_snap(self, user: UserData) -> SnapResult:
+    @staticmethod
+    async def process_snap(user: UserData) -> SnapResult:
         """Обрабатывает выполнение команды <Щелк>.
 
         Проверяет кулдаун, начисляет награду, обновляет статистику пользователя

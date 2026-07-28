@@ -1,8 +1,9 @@
 from aiogram.utils.markdown import html_decoration as hd
 
 from app.configs.yaml import cfg
-from app.utils.format_text import truncate_text
+from app.utils.truncate_name import truncate_text
 from app.utils.format_num import format_num
+
 
 # шаблон топ по кагуне
 def build_top_kagune_text(result):
@@ -10,7 +11,7 @@ def build_top_kagune_text(result):
     user = result.user
     user_rank = result.rank
 
-    text = cfg['message']['tops']['top_kagune']['top_10_text'] + "\n"
+    text = "<b>Топ 10 самых сильных гулей</b>\n"
 
     text += "<b>╭─────────────────╮</b>\n"
 

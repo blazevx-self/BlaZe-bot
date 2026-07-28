@@ -9,8 +9,8 @@ from app.utils.logger import system_logger
 
 from app.database.repositories.users_repository import user_repository
 
-# noinspection PyMethodMayBeStatic
-class DatabaseMiddleware(BaseMiddleware):
+
+class UserSyncMiddleware(BaseMiddleware):
     """Middleware синхронизации пользователя.
 
     Загружает пользователя из базы данных, создаёт нового
@@ -47,7 +47,9 @@ class DatabaseMiddleware(BaseMiddleware):
 
         return await handler(event, data)
 
-    async def _create_user(self, tg_user) -> None:
+
+    @staticmethod
+    async def _create_user(tg_user) -> None:
         """Создаёт нового пользователя."""
 
         try:
@@ -59,8 +61,9 @@ class DatabaseMiddleware(BaseMiddleware):
             system_logger.info(f"[DB] User created | user_id={tg_user.id}")
 
         except Exception:
-            system_logger.error(f"[DB] User created failed | user_id={tg_user.id}")
+            system_logger.exception(f"[DB] User created failed | user_id={tg_user.id}")
             raise
+
 
     async def _sync_user_data(self, tg_user, user_data: UserData) -> UserData:
         """Синхронизирует данные юзера с Telegram."""
@@ -83,8 +86,9 @@ class DatabaseMiddleware(BaseMiddleware):
 
         return user_data
 
+
+    @staticmethod
     async def _update_user_data_safe(
-        self,
         user_id: int,
         name: str,
         username: str
@@ -103,6 +107,7 @@ class DatabaseMiddleware(BaseMiddleware):
         except Exception:
             system_logger.exception(f"[DB] User update failed | user_id={user_id}")
 
+
     @staticmethod
     def _build_new_user(tg_user) -> UserData:
         """Собирает дефолтные данные нового юзера."""
@@ -110,5 +115,5 @@ class DatabaseMiddleware(BaseMiddleware):
             user_id=tg_user.id,
             name=tg_user.first_name,
             username=tg_user.username,
-            kagune_was_obtained=False
+            kagune_was_obtained=False,
         )

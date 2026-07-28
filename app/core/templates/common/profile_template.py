@@ -4,7 +4,7 @@ def profile_text(
         level: int,
         rank: str,
         status: str,
-        clicks: str,
+        snap: str,
         money: str,
         coffee: str
 ) -> str:
@@ -15,7 +15,7 @@ def profile_text(
  <tg-emoji emoji-id=\"6257870936293251906\">📈</tg-emoji> <b>Ранг:</b> <code>{rank}</code>
  <tg-emoji emoji-id=\"5474613551706429302\">👋</tg-emoji> <b>Статус:</b> <code>{status}</code>
 
- 🫰🏼 <b>Сломано пальцев:</b> {clicks}  
+ 🫰🏼 <b>Сломано пальцев:</b> {snap}  
  <tg-emoji emoji-id=\"5864068125112144897\">💸</tg-emoji> <b>Балик:</b> <code>{money} BlazeCoin</code>
  ☕️ <b>Выпито кофе:</b> <code>{coffee}</code>
  

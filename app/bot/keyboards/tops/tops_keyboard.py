@@ -1,5 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
+
 def get_balance_in_top_kb() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="Топ богатых", callback_data="money_top")]
@@ -13,13 +14,13 @@ def get_top_money_kb() -> InlineKeyboardMarkup:
 
 def get_back_to_top_kb() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="↩️ Назад", callback_data="back_to_top", icon_custom_emoji_id="5258132936401624790")]
+        [InlineKeyboardButton(text="Назад", callback_data="back_to_top", icon_custom_emoji_id="5258132936401624790")]
     ])
 
 def get_balance_top_money_kb() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="Обновить топчик", callback_data="update_top_money", icon_custom_emoji_id="5260687119092817530")],
-        [InlineKeyboardButton(text="↩️ Назад", callback_data="back_to_balance", icon_custom_emoji_id="5258132936401624790")]
+        [InlineKeyboardButton(text="Назад", callback_data="back_to_balance", icon_custom_emoji_id="5258132936401624790")]
     ])
 
 def get_update_top_snap_kb() -> InlineKeyboardMarkup:

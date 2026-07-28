@@ -7,7 +7,7 @@ from app.core.templates.ghoul.stats_template import stats_text
 from app.core.constants.game.stats import STAT_NAMES
 from app.core.enums import ResultStatus
 
-from app.types.services_types.ghoul import StatsResult
+from app.types.services_result.ghoul import StatsResult
 from app.types.entities import UserData
 
 from app.database.repositories.ghouls_repository import ghouls_repository
@@ -18,16 +18,18 @@ from app.bot.keyboards.ghoul.stats_keyboard import builds_stats_keyboard
 
 from app.utils.logger import stats_logger
 
+
 UpgradeAmount = Literal[1, 3, 5]
 
-# noinspection PyMethodMayBeStatic
+
 class StatsService:
     """Сервис управления характеристиками гуля.
 
     Отвечает за отображения меню характеристик и обработку их улучшения.
     """
 
-    async def get_stats_menu(self, user: UserData) -> StatsResult:
+    @staticmethod
+    async def get_stats_menu(user: UserData) -> StatsResult:
         """Формирует меню характеристик игрока.
 
         Получает текущие характеристики пользователя и возвращает текст вместе с клавиатурой
@@ -52,8 +54,9 @@ class StatsService:
             keyboard=builds_stats_keyboard(stats)
         )
 
+
+    @staticmethod
     async def process_stats_upgrade(
-            self,
             user: UserData,
             stat: str,
             amount: UpgradeAmount
@@ -91,7 +94,7 @@ class StatsService:
             stat=stat,
             current_stat=current_stat,
             amount=amount,
-            money=current_user_db['money']
+            money=current_user_db.money
         )
 
         if calc_result.status != ResultStatus.SUCCESS:

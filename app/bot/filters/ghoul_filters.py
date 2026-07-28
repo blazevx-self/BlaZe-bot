@@ -4,6 +4,7 @@ from aiogram.types import Message, CallbackQuery
 from app.services.ghoul_service import ghoul_service
 from app.configs.yaml import cfg
 
+
 class GhoulRequired(BaseFilter):
     """Фильтр доступа.
 
@@ -33,4 +34,6 @@ class GhoulRequired(BaseFilter):
             await event.answer(cfg['message']['not_ghoul']['not_ghoul_callback'], show_alert=False)
 
         return False
+
+
 

@@ -1,6 +1,7 @@
 from typing import Any
 from app.utils.logger import system_logger
 
+
 class NotifierService:
     """
     Сервис уведомления администратора о критических ошибках.
@@ -31,17 +32,18 @@ class NotifierService:
         """
 
         error_text = (
-            f"🚨 ERROR\n\n"
-            f"👤 User: {user_info}\n"
-            f"📦 Event: {event_name}\n"
-            f"⏱ Time: {process_time}ms\n\n"
-            f"Error:\n"
+            "<b>☕️ Кажется, мой тупой и криворукий разраб допустил ошибку.</b>\n\n"
+            f"👤 <b>Ошибка была поймана у пользователя:</b> {user_info}\n"
+            f"📦 <b>Событие:</b> {event_name}\n"
+            f"⏱ <b>Время обработки:</b> {process_time}ms\n\n"
+            f"<b>Ошибка:</b>\n"
             f"{error}\n\n"
             f"{traceback_text[-1500:]}"
         )
 
         try:
-            await bot.send_message(admin_id, error_text)
+            await bot.send_message(admin_id, error_text, parse_mode="HTML")
+
         except Exception as e:
             system_logger.error(f"[NOTIFIER] Failed to send error to admin: {e}")
 

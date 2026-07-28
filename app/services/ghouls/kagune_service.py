@@ -4,7 +4,7 @@ from app.configs.game import game_cfg
 from app.configs.yaml import cfg
 from app.core.enums import ResultStatus
 
-from app.types.services_types.ghoul import KaguneResult
+from app.types.services_result.ghoul import KaguneResult
 from app.types.entities import UserData
 
 from app.database.repositories.ghouls_repository import ghouls_repository
@@ -13,11 +13,12 @@ from app.services.ghoul_service import ghoul_service
 from app.utils.format_num import format_num
 from app.utils.logger import kagune_logger
 
-# noinspection PyMethodMayBeStatic
+
 class KaguneService:
     """Сервис игровой механики развитие кагуне"""
 
-    async def process_kagune_open(self, user: UserData) -> KaguneResult:
+    @staticmethod
+    async def process_kagune_open(user: UserData) -> KaguneResult:
         """Выдаёт пользователю первое кагуне случайного типа."""
 
         user_id = user.user_id
@@ -37,7 +38,9 @@ class KaguneService:
             kagune_type=kagune_type
         )
 
-    async def process_kagune(self, user: UserData) -> KaguneResult:
+
+    @staticmethod
+    async def process_kagune(user: UserData) -> KaguneResult:
         """Обрабатывает улучшения кагуне.
 
         Проверяет кулдаун, баланс пользователя, повышает уровень кагуне

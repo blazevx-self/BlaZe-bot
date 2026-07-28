@@ -8,6 +8,7 @@ from aiogram import BaseMiddleware
 from app.services.audit.audit_service import audit_service
 from app.services.audit.formatters import build_user_info
 
+
 class LoggingMiddleware(BaseMiddleware):
     """Middleware для логирования событий.
 

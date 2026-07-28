@@ -6,6 +6,7 @@ from sqlalchemy.types import BigInteger
 
 from app.database.models.base import Base
 
+
 class UserOrm(Base):
     __tablename__ = 'users'
 
@@ -17,6 +18,9 @@ class UserOrm(Base):
 
     money: Mapped[int] = mapped_column(default=0)
     donate_money: Mapped[int] = mapped_column(default=0)
+
+    quiz_attempts: Mapped[int] = mapped_column(default=15)
+    quiz_reset_at: Mapped[datetime | None] = mapped_column(nullable=True)
 
     is_admin: Mapped[bool] = mapped_column(default=False)
     is_subscribed: Mapped[bool] = mapped_column(default=False)

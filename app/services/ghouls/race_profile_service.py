@@ -2,17 +2,17 @@ from app.core.enums import ResultStatus
 from app.core.templates.ghoul.race_profile_template import race_profile_text
 
 from app.types.entities import UserData
-from app.types.services_types.ghoul import RaceProfileResult
+from app.types.services_result.ghoul import RaceProfileResult
 
 from app.services.ghoul_service import ghoul_service
-from app.utils.format_text import truncate_text
+from app.utils.truncate_name import truncate_text
 
-# noinspection PyMethodMayBeStatic
 
 class RaceProfileService:
     """Сервис формирования расового профиля игрока."""
 
-    async def build_race_profile(self, user: UserData) -> RaceProfileResult:
+    @staticmethod
+    async def build_race_profile(user: UserData) -> RaceProfileResult:
         """Формирует расовый профиль гуля.
 
         Вычисляет суммарную мощь, ранг угрозы и собирает текст профиля.

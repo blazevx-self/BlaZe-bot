@@ -6,6 +6,7 @@ from sqlalchemy.types import BigInteger
 
 from app.database.models.base import Base
 
+
 class GhoulOrm(Base):
     __tablename__ = 'ghouls'
 
@@ -20,6 +21,8 @@ class GhoulOrm(Base):
     kagune_type: Mapped[str] = mapped_column(String(32), default="unknown")
     kagune_lvl: Mapped[int] = mapped_column(default=0)
     kagune_was_obtained: Mapped[bool] = mapped_column(default=False)
+
+    quiz_daily_left: Mapped[int] = mapped_column(default=15)
 
     strength: Mapped[int] = mapped_column(default=1)
     dexterity: Mapped[int] = mapped_column(default=1)

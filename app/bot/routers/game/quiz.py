@@ -4,13 +4,15 @@ from aiogram.types import Message, CallbackQuery
 
 from app.configs.yaml import cfg
 from app.core.enums import ResultStatus
-
-from app.services.game.quiz_service import quiz_service
-from app.bot.keyboards.game.quiz_keyboard import get_quiz_again_kb
 from app.types.entities import UserData
 
+from app.services.game.quiz_service import quiz_service
+
+from app.bot.keyboards.game.quiz_keyboard import get_quiz_again_kb
 from app.bot.ui.quiz_ui import send_question_ui
+
 from app.utils.logger import bot_logger
+
 
 router = Router()
 
@@ -28,20 +30,32 @@ async def quiz(message: Message, user: UserData):
         return
 
     if result.status == ResultStatus.NO_QUESTIONS:
-        await message.reply(cfg['message']['quiz']['no_questions'], parse_mode="HTML")
+        await message.reply(cfg['message']['quiz']['no_questions'])
         return
 
     await send_question_ui(
         message_or_call=message,
         q=result.question,
-        left=result.left
+        left=result.left,
+        user_id=user.user_id
     )
+
 
 @router.callback_query(F.data.startswith(f"q_"))
 async def quiz_handler(callback: CallbackQuery, user: UserData):
     data = callback.data.split("_")
+
     question_id = int(data[1])
-    user_choice = "_".join(data[2:])
+    owner_id = int(data[2])
+    user_choice = "_".join(data[3:])
+
+    if callback.from_user.id != owner_id:
+        await callback.answer(
+            text="☕️ Это не твоя викторина, не мешай людям отвечать на вопросы.\n\n"
+            "Сам викторину свою вызывай -> /quiz и проходи", show_alert=True
+        )
+
+        return
 
     result = await quiz_service.process_quiz_answer(
         user=user,
@@ -60,21 +74,14 @@ async def quiz_handler(callback: CallbackQuery, user: UserData):
     user.money = result.new_money
 
     if result.status == ResultStatus.LIMIT_REACHED:
-        await callback.message.edit_text(
-            text=result.text,
-            parse_mode='HTML',
-            reply_markup=get_quiz_again_kb()
-        )
+        await callback.message.edit_text(text=result.text, reply_markup=get_quiz_again_kb())
         await callback.answer()
 
         return
 
-    await callback.message.edit_text(
-        text=result.text,
-        parse_mode="HTML",
-        reply_markup=get_quiz_again_kb()
-    )
+    await callback.message.edit_text(text=result.text, reply_markup=get_quiz_again_kb())
     await callback.answer()
+
 
 @router.callback_query(F.data == "quiz_again")
 async def quiz_again(callback: CallbackQuery, user: UserData):
@@ -91,6 +98,7 @@ async def quiz_again(callback: CallbackQuery, user: UserData):
     await send_question_ui(
         message_or_call=callback,
         q=result.question,
-        left=result.left
+        left=result.left,
+        user_id=user.user_id
     )
     await callback.answer()

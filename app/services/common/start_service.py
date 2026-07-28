@@ -6,17 +6,18 @@ from aiogram.enums import ChatMemberStatus
 from app.configs.yaml import cfg
 from app.core.enums import ResultStatus
 
-from app.types.services_types.common import StartResult
+from app.types.services_result.common import StartResult
 from app.types.entities import UserData
 
 from app.database.repositories.users_repository import user_repository
 from app.utils.logger import start_logger
 
-# noinspection PyMethodMayBeStatic
+
 class StartService:
     """Сервис обработки команды /start."""
 
-    async def process_start(self, user: UserData, bot: Bot) -> StartResult:
+    @staticmethod
+    async def process_start(user: UserData, bot: Bot) -> StartResult:
         """Проверяет подписку пользователя и выдаёт стартовый бонус.
 
         Если бонус уже был получен или пользователь не подписан,

@@ -5,7 +5,8 @@ from app.configs.yaml import cfg
 from app.configs.game import game_cfg
 
 from app.core.enums import ResultStatus
-from app.types.services_types.ghoul import CoffeeResult
+
+from app.types.services_result.ghoul import CoffeeResult
 from app.types.entities import UserData
 
 from app.database.repositories.ghouls_repository import ghouls_repository
@@ -14,11 +15,12 @@ from app.utils.format_num import format_num
 from app.utils.time import format_duration
 from app.utils.logger import coffee_logger
 
-# noinspection PyMethodMayBeStatic
+
 class CoffeeService:
     """Сервис игровой механики употребления кофе."""
 
-    async def process_coffee(self, user: UserData) -> CoffeeResult:
+    @staticmethod
+    async def process_coffee(user: UserData) -> CoffeeResult:
         """Обрабатывает употребления кофе.
 
         Проверяет ограничения, выдаёт награду, обновляет данные игрока

@@ -8,6 +8,6 @@ from app.types.entities import UserData
 class TopResult:
     status: ResultStatus
     user: UserData
-    top_user: list[dict] | None = None
+    top_user: list[dict]
     rank: int = 0
 

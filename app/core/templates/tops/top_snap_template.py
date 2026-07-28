@@ -1,8 +1,9 @@
 from aiogram.utils.markdown import html_decoration as hd
 
 from app.configs.yaml import cfg
-from app.utils.format_text import truncate_text
+from app.utils.truncate_name import truncate_text
 from app.utils.format_num import format_num
+
 
 # шаблон топ по щелчкам
 def build_top_snap_text(result):
@@ -10,7 +11,7 @@ def build_top_snap_text(result):
     user = result.user
     user_rank = result.rank
 
-    text = cfg['message']['tops']['top_snap']['top_20_text'] + "\n"
+    text = "<b>Топ 20 сломанных пальцев</b>\n"
 
     text += "<b>╭─────────────────╮</b>\n"
 
@@ -26,6 +27,11 @@ def build_top_snap_text(result):
         text += f"<b>{prefix}</b> {name} — {snap}\n"
 
     text += "<b>╰─────────────────╯</b>\n"
+
+    if user_rank == 0:
+        text += (
+            f"\n<b>Ты не входишь в топ сломанных пальцев. Воспользуйся командой «щелк»</b>"
+        )
 
     if user_rank > len(top_users):
         text += (

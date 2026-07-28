@@ -5,11 +5,13 @@ from aiogram.types import Message
 
 from app.configs.yaml import cfg
 from app.core.enums import ResultStatus
-from app.bot.filters.ghoul_filters import GhoulRequired
+from app.types.entities import UserData
 
 from app.services.ghouls.snap_service import snap_service
-from app.types.entities import UserData
+from app.bot.filters.ghoul_filters import GhoulRequired
+
 from app.utils.time import format_duration
+
 
 router = Router()
 
@@ -24,15 +26,11 @@ async def snap(message: Message, user: UserData):
             time=format_duration(remaining)
         )
 
-        await message.reply(text=text, parse_mode="HTML")
+        await message.reply(text=text)
         return
 
     user.money = result.new_money
     user.snap = result.new_snap
     user.last_snap= int(time.time())
 
-    await message.reply_animation(
-        animation=result.gif,
-        caption=result.text,
-        parse_mode="HTML"
-    )
+    await message.reply_animation(animation=result.gif, caption=result.text,)

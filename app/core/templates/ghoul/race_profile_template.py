@@ -1,6 +1,7 @@
 from app.core.constants.game.stats import STAT_LIMITS
 from app.types.entities import UserData
 
+
 # шаблон для расового профиля гуля
 def race_profile_text(
     user: UserData,

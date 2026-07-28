@@ -7,6 +7,7 @@ from app.services.audit.security import security_service
 
 from app.configs.yaml import cfg
 
+
 class AuditService:
     """
     Центральный фасад аудита.
@@ -54,6 +55,7 @@ class AuditService:
             event_name=message.__class__.__name__
         )
 
+
     @staticmethod
     def handle_callback(
             user_info: str,
@@ -95,6 +97,7 @@ class AuditService:
             process_time=process_time,
             event_name=callback.__class__.__name__
         )
+
 
     @staticmethod
     async def handle_exception(

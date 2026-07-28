@@ -22,6 +22,5 @@ async def unknown_command(message: Message):
         "<b>⁉️ Ты чо, далбаёб?</b>\n\n"
         "<i>Такой команды нет, да даже мой разраб с ай-кью комнатной температуры не додумался бы до такого.</i>\n\n"
         "<code>Иди лор сначала почитай.</code>",
-        parse_mode="HTML",
         reply_markup=get_help_menu_unknown_command()
     )

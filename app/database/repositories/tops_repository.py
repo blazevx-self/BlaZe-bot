@@ -69,7 +69,7 @@ class TopsRepository:
 
             async with db.execute(sql, (user_id,)) as cursor:
                 row = await cursor.fetchone()
-                return row['rank'] if row else None
+                return row['rank'] if row else 0
 
 
 tops_repository = TopsRepository()

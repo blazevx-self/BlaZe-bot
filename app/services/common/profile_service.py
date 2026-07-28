@@ -1,20 +1,21 @@
 from app.core.templates.common.profile_template import profile_text
 from app.core.enums import ResultStatus
 
-from app.types.services_types.common import ProfileResult
+from app.types.services_result.common import ProfileResult
 from app.types.entities import UserData
 
 
 from app.utils.format_num import format_num
-from app.utils.format_text import truncate_text
+from app.utils.truncate_name import truncate_text
 
 from app.services.ghoul_service import ghoul_service
 
-# noinspection PyMethodMayBeStatic
+
 class ProfileService:
     """Сервис формирования обычного профиля пользователя"""
 
-    async def build_profile(self, user: UserData) -> ProfileResult:
+    @staticmethod
+    async def build_profile(user: UserData) -> ProfileResult:
         """Формирует текст профиля с текущими характеристиками пользователя"""
 
         user_id = user.user_id
@@ -27,7 +28,7 @@ class ProfileService:
         rank = ghoul_service.get_rank(level)
 
         money = format_num(user.money)
-        clicks = format_num(user.clicks)
+        snap = format_num(user.snap)
         coffee = format_num(user.coffee_total)
 
         text = profile_text(
@@ -36,7 +37,7 @@ class ProfileService:
             rank=rank,
             status=status,
             money=money,
-            clicks=clicks,
+            snap=snap,
             coffee=coffee
         )
 

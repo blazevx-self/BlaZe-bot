@@ -2,7 +2,7 @@ import json
 import aiosqlite
 import asyncio
 import os
-from app.database.base import DB_PATH
+from app.database.database import DB_PATH
 
 async def upload_questions():
     if not os.path.exists('assets/json/quiz.json'):

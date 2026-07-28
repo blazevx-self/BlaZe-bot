@@ -2,45 +2,56 @@ import asyncio
 import sys
 
 from aiogram import Bot, Dispatcher
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
+
 from app.configs.settings import settings
 
 from app.bot.routers.routes import all_routers
+from app.utils.logger import system_logger
 
 from app.bot.middleware.logging_middleware import LoggingMiddleware
 from app.bot.middleware.antispam_middleware import AntiSpamGhoulMiddleware
 from app.bot.middleware.antiflood_middleware import AntifloodMiddleware
-from app.bot.middleware.db_middleware import DatabaseMiddleware
+from app.bot.middleware.user_sync_middleware import UserSyncMiddleware
 
-from app.utils.logger import system_logger
 from app.database.init_db import init_db
+
 
 async def on_startup():
     system_logger.info("[SYSTEM] Bot started | version=1.0.0 | py=%s", sys.version.split()[0])
 
+
 async def on_shutdown():
     system_logger.info("[SYSTEM] Bot stopped")
+
 
 async def setup_middlewares(dp: Dispatcher) -> None:
     dp.message.middleware(LoggingMiddleware())
     dp.callback_query.middleware(LoggingMiddleware())
 
-    dp.message.middleware(AntifloodMiddleware(limit_seconds=5, max_requests=15))
-    dp.callback_query.middleware(AntifloodMiddleware(limit_seconds=5, max_requests=15))
+    dp.message.middleware(UserSyncMiddleware())
+    dp.callback_query.middleware(UserSyncMiddleware())
 
     dp.callback_query.middleware(AntiSpamGhoulMiddleware(time_limit=0.7))
 
-    dp.message.middleware(DatabaseMiddleware())
-    dp.callback_query.middleware(DatabaseMiddleware())
+    dp.message.middleware(AntifloodMiddleware(limit_seconds=5, max_requests=15))
+    dp.callback_query.middleware(AntifloodMiddleware(limit_seconds=5, max_requests=15))
+
 
 async def main():
+    bot = Bot(
+        token=settings.BOT_TOKEN.get_secret_value(),
+        default=DefaultBotProperties(
+            parse_mode=ParseMode.HTML,
+            link_preview_is_disabled=True
+        )
+    )
+
     try:
-        bot = Bot(token=settings.BOT_TOKEN.get_secret_value())
         dp = Dispatcher()
 
-        system_logger.info("[SYSTEM] Initializing database...")
         await init_db()
-        system_logger.info("[SYSTEM] Database initialized")
-
         await setup_middlewares(dp)
 
         dp.include_routers(*all_routers)
@@ -54,11 +65,12 @@ async def main():
         raise
 
     finally:
-        await on_shutdown()
+        await bot.session.close()
+
 
 if __name__ == '__main__':
     try:
         asyncio.run(main())
 
     except KeyboardInterrupt:
-        system_logger.info("[SYSTEM] Interrupted by (Ctrl+C)")
+        system_logger.info("[SYSTEM] Interrupted by Ctrl+C")

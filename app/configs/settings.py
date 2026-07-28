@@ -1,8 +1,9 @@
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 class Settings(BaseSettings):
-    DATABASE_URL: str = "sqlite+aiosqlite:///database.db"
+    DATABASE_URL: str
     BOT_TOKEN: SecretStr
     ADMIN_ID: int
 

@@ -18,7 +18,7 @@ class UserData:
     level: int = 1
 
     kagune_was_obtained: bool = False
-    kagune_lvl: int=0
+    kagune_lvl: int = 0
     kagune_type: str | None = None
     kagune_last_grow: int = 0
     kakuja_activated: bool = False

@@ -1,7 +1,8 @@
 import random
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-def get_quiz_keyboard(options_str: str, question_id: int) -> InlineKeyboardMarkup:
+
+def get_quiz_keyboard(options_str: str, question_id: int, user_id: int) -> InlineKeyboardMarkup:
     options = options_str.split('|')
     random.shuffle(options)
 
@@ -9,7 +10,7 @@ def get_quiz_keyboard(options_str: str, question_id: int) -> InlineKeyboardMarku
     row = []
 
     for opt in options:
-        btn = InlineKeyboardButton(text=opt, callback_data=f"q_{question_id}_{opt}")
+        btn = InlineKeyboardButton(text=opt, callback_data=f"q_{question_id}_{user_id}_{opt}")
         row.append(btn)
 
         if len(row) == 2:
@@ -20,6 +21,7 @@ def get_quiz_keyboard(options_str: str, question_id: int) -> InlineKeyboardMarku
         keyboard.append(row)
 
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
+
 
 def get_quiz_again_kb() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
