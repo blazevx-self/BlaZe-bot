@@ -52,6 +52,7 @@ class StatsService:
             keyboard=builds_stats_keyboard(stats)
         )
 
+
     @staticmethod
     async def process_stats_upgrade(
             user: UserData,

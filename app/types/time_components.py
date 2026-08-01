@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+
 @dataclass(slots=True, frozen=True)
 class TimeComponents:
     days: int

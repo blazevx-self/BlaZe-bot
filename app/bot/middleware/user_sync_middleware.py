@@ -47,6 +47,7 @@ class UserSyncMiddleware(BaseMiddleware):
 
         return await handler(event, data)
 
+
     @staticmethod
     async def _create_user(tg_user) -> None:
         """Создаёт нового пользователя."""
@@ -62,6 +63,7 @@ class UserSyncMiddleware(BaseMiddleware):
         except Exception:
             system_logger.exception(f"[DB] User created failed | user_id={tg_user.id}")
             raise
+
 
     async def _sync_user_data(self, tg_user, user_data: UserData) -> UserData:
         """Синхронизирует данные юзера с Telegram."""
@@ -84,6 +86,7 @@ class UserSyncMiddleware(BaseMiddleware):
 
         return user_data
 
+
     @staticmethod
     async def _update_user_data_safe(
         user_id: int,
@@ -103,6 +106,7 @@ class UserSyncMiddleware(BaseMiddleware):
 
         except Exception:
             system_logger.exception(f"[DB] User update failed | user_id={user_id}")
+
 
     @staticmethod
     def _build_new_user(tg_user) -> UserData:

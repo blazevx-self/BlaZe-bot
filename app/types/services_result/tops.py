@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from app.core.enums import ResultStatus
 from app.types.entities import UserData
 
+
 @dataclass
 class TopResult:
     status: ResultStatus

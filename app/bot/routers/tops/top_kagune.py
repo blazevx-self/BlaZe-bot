@@ -19,6 +19,7 @@ async def top_kagune_command(message: Message, user: UserData):
 
     await message.reply(text=text, reply_markup=get_update_top_kagune_kb())
 
+
 @router.callback_query(F.data == "update_top_kagune")
 async def refresh_top_kagune(callback: CallbackQuery, user: UserData):
     result = await top_service.process_tops(user=user, top_type="kagune")

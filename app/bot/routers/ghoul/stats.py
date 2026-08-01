@@ -15,6 +15,7 @@ router = Router()
 async def stats_menu_group_error(message: Message):
     await message.reply("Команда работает только в личных сообщениях с ботом.")
 
+
 @router.message(F.text.lower() == "качаца", F.chat.type == "private", GhoulRequired())
 async def stats_menu(message: Message, user: UserData):
     result = await stats_service.get_stats_menu(user)
@@ -24,6 +25,7 @@ async def stats_menu(message: Message, user: UserData):
         return
 
     await message.reply(text=result.text, reply_markup=result.keyboard)
+
 
 @router.callback_query(F.data.startswith("stat:"))
 async def stats(callback: CallbackQuery, user: UserData):
@@ -38,6 +40,7 @@ async def stats(callback: CallbackQuery, user: UserData):
 
     await callback.message.edit_text(text=result.text, reply_markup=result.keyboard)
     await callback.answer(result.notification or "Error stats", show_alert=False)
+
 
 @router.callback_query(F.data == "locked")
 async def locked(callback: CallbackQuery):

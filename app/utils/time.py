@@ -21,6 +21,7 @@ def parse_seconds(total_seconds: int) -> TimeComponents:
         total_seconds=total_seconds
     )
 
+
 def format_duration(total_seconds: int, show_seconds: bool = True) -> str:
     time = parse_seconds(total_seconds)
 

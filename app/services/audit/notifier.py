@@ -41,7 +41,7 @@ class NotifierService:
         )
 
         try:
-            await bot.send_message(admin_id, error_text, parse_mode="HTML")
+            await bot.send_message(admin_id, error_text)
 
         except Exception as e:
             system_logger.error(f"[NOTIFIER] Failed to send error to admin: {e}")

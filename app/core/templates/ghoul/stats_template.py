@@ -21,6 +21,7 @@ def stats_text(user: UserData, stats: dict) -> str:
         p_hp=make_prices_string(stats["hp"], "hp"),
         p_regen=make_prices_string(stats["regen"], "regen"))
 
+
 def make_prices_string(current_stat: int, stat_name: str) -> str:
     """Форматирование цены статов в сообщении"""
     limit = STAT_LIMITS[stat_name]

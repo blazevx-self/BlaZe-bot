@@ -53,6 +53,7 @@ class QuizService:
             left=access['left'] - 1
         )
 
+
     @staticmethod
     async def process_quiz_answer(
             user: UserData,

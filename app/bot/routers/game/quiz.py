@@ -39,6 +39,7 @@ async def quiz(message: Message, user: UserData):
         user_id=user.user_id
     )
 
+
 @router.callback_query(F.data.startswith(f"q_"))
 async def quiz_handler(callback: CallbackQuery, user: UserData):
     data = callback.data.split("_")
@@ -78,6 +79,7 @@ async def quiz_handler(callback: CallbackQuery, user: UserData):
 
     await callback.message.edit_text(text=result.text, reply_markup=get_quiz_again_kb())
     await callback.answer()
+
 
 @router.callback_query(F.data == "quiz_again")
 async def quiz_again(callback: CallbackQuery, user: UserData):

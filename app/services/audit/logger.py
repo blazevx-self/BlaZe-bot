@@ -35,6 +35,7 @@ class LoggerService:
 
         bot_logger.info(f"[TEXT COMMAND] {user_info} | chat={chat_type} | command=\"{command}\" | ping={process_time:.2f}ms")
 
+
     @staticmethod
     def log_callback(
             user_info: str,
@@ -50,6 +51,7 @@ class LoggerService:
         """
 
         callback_logger.info(f"[CALLBACK] {user_info} | callback=\"{callback_data}\" | ping={process_time:.2f}ms")
+
 
     @staticmethod
     def log_error(

@@ -25,11 +25,13 @@ def calculate_price(current_stat: int, amount: int) -> int:
 
     return total_price
 
+
 def can_upgrade_amount(current_stat: int, amount: UpgradeAmount) -> bool:
     """Проверка: открыта ли кнопок апа (+3 или +5) на текущем уровне стата"""
 
     required_level = UNLOCK_LEVELS[amount]
     return current_stat >= required_level
+
 
 def calculate_upgrade(
     stat: str,

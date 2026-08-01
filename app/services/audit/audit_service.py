@@ -20,6 +20,20 @@ class AuditService:
     """
 
     @staticmethod
+    def _is_wordle_guess(message: Message) -> bool:
+        if not message.from_user or not message.text:
+            return False
+
+        text = message.text.strip()
+
+        return (
+                not text.startswith("/")
+                and len(text.split()) == 1
+                and len(text) == 5
+                and text.isalpha()
+        )
+
+    @staticmethod
     def handle_message(
             user_info: str,
             message: Message,
@@ -38,6 +52,9 @@ class AuditService:
         text = message.text or "NOT TEXT"
         chat_type = message.chat.type
 
+        if AuditService._is_wordle_guess(message):
+            return
+
         if text.startswith("/"):
             return
 
@@ -53,6 +70,7 @@ class AuditService:
             process_time=process_time,
             event_name=message.__class__.__name__
         )
+
 
     @staticmethod
     def handle_callback(
@@ -95,6 +113,7 @@ class AuditService:
             process_time=process_time,
             event_name=callback.__class__.__name__
         )
+
 
     @staticmethod
     async def handle_exception(

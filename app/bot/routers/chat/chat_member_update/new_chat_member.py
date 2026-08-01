@@ -35,6 +35,7 @@ async def bot_added(event: ChatMemberUpdated):
     except TelegramAPIError as e:
         error_logger.exception(f"[BOT] Welcome message failed | chat_id={event.chat.id} | error={e}")
 
+
 @router.my_chat_member(ChatMemberUpdatedFilter(IS_MEMBER >> IS_NOT_MEMBER))
 async def bot_removed(event: ChatMemberUpdated):
     bot_logger.info(

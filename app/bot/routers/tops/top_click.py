@@ -19,6 +19,7 @@ async def snap_top_command(message: Message, user: UserData):
 
     await message.reply(text=text, reply_markup=get_update_top_snap_kb())
 
+
 @router.callback_query(F.data == "update_top_snap")
 async def refresh_snap_top(callback: CallbackQuery, user: UserData):
     result = await top_service.process_tops(user=user, top_type="snap")

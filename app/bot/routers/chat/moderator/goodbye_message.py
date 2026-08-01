@@ -7,7 +7,7 @@ from app.bot.filters.group_only import GroupOnlyFilter, GroupCreatorFilter
 router = Router()
 
 @router.message(F.text.lower().startswith("новое прощание"), GroupOnlyFilter(), GroupCreatorFilter())
-async def set_welcome_message_chat(message: Message):
+async def set_goodbye_message_chat(message: Message):
     goodbye_message = message.text[len('новое прощание'):].strip()
 
     if not goodbye_message:

@@ -28,7 +28,7 @@ class GhoulRequired(BaseFilter):
             return True
 
         if isinstance(event, Message):
-            await event.reply(cfg['message']['not_ghoul']['not_ghoul_message'], parse_mode="HTML")
+            await event.reply(cfg['message']['not_ghoul']['not_ghoul_message'])
 
         elif isinstance(event, CallbackQuery):
             await event.answer(cfg['message']['not_ghoul']['not_ghoul_callback'], show_alert=False)

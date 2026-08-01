@@ -12,9 +12,10 @@ class ChatService:
         chat = await chat_repository.get_chat_by_id(chat_id=chat_id)
 
         if not chat:
-            raise ValueError("The chat was not found")
+            raise ValueError("Чат не найден.")
 
         return chat
+
 
     @staticmethod
     async def upsert(chat_id: int, title: str):
@@ -23,17 +24,18 @@ class ChatService:
         chat = await chat_repository.upsert(chat_id=chat_id, title=title)
         return chat
 
+
     @staticmethod
     async def set_rules(chat_id: int, rules: str):
         """Устанавливает правила чата."""
 
         if not rules.strip():
-            raise ValueError("The rules can't be empty")
+            raise ValueError("Правила не могут быть пустыми.")
 
         if len(rules) < 1 or len(rules) > 4000:
-            raise ValueError("The number of characters cannot be less than 1 or more than 4000 characters")
+            raise ValueError("Количество символов не может быть меньше 1 или больше 4000 символов.")
 
-        chat = await chat_service._get_chat(chat_id=chat_id)
+        chat = await ChatService._get_chat(chat_id=chat_id)
 
         old_rules = chat['rules']
 
@@ -45,45 +47,51 @@ class ChatService:
             rules=rules
         )
 
+
     @staticmethod
     async def delete_rules(chat_id: int):
         """Удаляет правила чата"""
 
-        chat = await chat_service._get_chat(chat_id=chat_id)
+        chat = await ChatService._get_chat(chat_id=chat_id)
 
         if not chat['rules']:
-            raise ValueError("There are no rules in this chat")
+            raise ValueError("В этом чате нет никаких правил.")
 
-        return await chat_repository.update_rules(chat_id=chat_id, rules=None)
+        return await chat_repository.update_rules(
+            chat_id=chat_id,
+            rules=None
+        )
+
 
     @staticmethod
     async def set_welcome_message(chat_id: int, welcome_message: str):
         """Устанавливает приветственное сообщение"""
 
         if not welcome_message.strip():
-            raise ValueError("Welcome message can't be empty")
+            raise ValueError("Приветственное сообщение не может быть пустым")
 
         if len(welcome_message) < 1 or len(welcome_message) > 4000:
-            raise ValueError("The number of characters cannot be less than 1 or more than 4000 characters")
+            raise ValueError("Количество символов не может быть меньше 1 или больше 4000 символов.")
 
-        await chat_service._get_chat(chat_id=chat_id)
+        await ChatService._get_chat(chat_id=chat_id)
 
         return await chat_repository.update_welcome_message(
             chat_id=chat_id,
             welcome_message=welcome_message
         )
 
+
     @staticmethod
     async def set_goodbye_message(chat_id: int, goodbye_message: str):
         """Устанавливает прощальное сообщение"""
 
         if not goodbye_message.strip():
-            raise ValueError("Goodbye message can't be empty")
+            raise ValueError("Прощальное сообщение не может быть пустым")
 
         if len(goodbye_message) < 1 or len(goodbye_message) > 4000:
-            raise ValueError("The number of characters cannot be less than 1 or more than 4000 characters")
+            raise ValueError("Количество символов не может быть меньше 1 или больше 4000 символов.")
 
-        await chat_service._get_chat(chat_id=chat_id)
+        await ChatService._get_chat(chat_id=chat_id)
 
         return await chat_repository.update_goodbye_message(
             chat_id=chat_id,
@@ -95,22 +103,23 @@ class ChatService:
     async def get_rules(chat_id: int) -> str | None:
         """Возвращает правила чата"""
 
-        chat = await chat_service._get_chat(chat_id=chat_id)
-
+        chat = await ChatService._get_chat(chat_id=chat_id)
         return chat['rules']
+
 
     @staticmethod
     async def get_welcome_message(chat_id: int) -> str | None:
         """Возвращает приветственное сообщение"""
 
-        chat = await chat_service._get_chat(chat_id=chat_id)
+        chat = await ChatService._get_chat(chat_id=chat_id)
         return chat['welcome_message']
+
 
     @staticmethod
     async def get_goodbye_message(chat_id: int) -> str | None:
         """Возвращает прощальное сообщение"""
 
-        chat = await chat_service._get_chat(chat_id=chat_id)
+        chat = await ChatService._get_chat(chat_id=chat_id)
         return chat['goodbye_message']
 
 chat_service = ChatService()

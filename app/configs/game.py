@@ -1,6 +1,7 @@
 import random
 from dataclasses import dataclass, field
 
+
 @dataclass(slots=True, frozen=True)
 class RankWeights:
     money: float = 0.01
@@ -12,6 +13,7 @@ class RankWeights:
     speed: int = 25
     hp: int = 20
     regen: int = 25
+
 
 @dataclass(slots=True, frozen=True)
 class RankConfig:
@@ -43,6 +45,7 @@ class RankConfig:
         400000: "ЛЕХЕНДА 👑",
     })
 
+
 @dataclass(slots=True, frozen=True)
 class KaguneConfig:
     start_price: int = 150
@@ -63,28 +66,33 @@ class KaguneConfig:
             k=1,
         )[0]
 
+
 @dataclass(slots=True, frozen=True)
 class StatsPriceConfig:
     base_price: int = 120
     price_multiplier: float = 1.07
 
+
 @dataclass(slots=True, frozen=True)
 class CoffeeConfig:
-    reward: tuple[int, int] = (1500, 2000)
+    reward: tuple[int, int] = (1200, 1800)
     cooldown: int = 30 * 60
     overdose_cooldown: int = 5 * 60 * 60
     required_snap: int = 100
+
 
 @dataclass(slots=True, frozen=True)
 class SnapConfig:
     reward: tuple[int, int] = (500, 1000)
     cooldown: int = 10 * 60
 
+
 @dataclass(slots=True, frozen=True)
 class QuizConfig:
     day_limit: int = 15
-    reward: tuple[int, int] = (1500, 2500)
+    reward: tuple[int, int] = (1800, 3000)
     reset_time: str = "00:00"
+
 
 @dataclass(slots=True, frozen=True)
 class TopsConfig:
@@ -99,6 +107,12 @@ class TopsConfig:
             "kagune": self.kagune_limit,
         }[top_type]
 
+
+@dataclass(slots=True, frozen=True)
+class WordleConfig:
+    reward: tuple[int, int] = (3000, 5000)
+
+
 @dataclass(slots=True, frozen=True)
 class EconomyConfig:
     ranks: RankConfig = field(default_factory=RankConfig)
@@ -108,5 +122,6 @@ class EconomyConfig:
     snap: SnapConfig = field(default_factory=SnapConfig)
     quiz: QuizConfig = field(default_factory=QuizConfig)
     tops: TopsConfig = field(default_factory=TopsConfig)
+    wordle: WordleConfig = field(default_factory=WordleConfig)
 
 game_cfg = EconomyConfig()

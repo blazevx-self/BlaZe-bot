@@ -25,6 +25,7 @@ async def help_me(message: Message) -> None:
         link_preview_options=LinkPreviewOptions(is_disabled=False),
     )
 
+
 @router.callback_query(F.data == 'help')
 async def help_cb(callback: CallbackQuery) -> None:
     await callback.message.edit_text(
@@ -33,6 +34,7 @@ async def help_cb(callback: CallbackQuery) -> None:
         link_preview_options=LinkPreviewOptions(is_disabled=False),
     )
     await callback.answer()
+
 
 @router.callback_query(F.data == 'back')
 async def back_me(callback: CallbackQuery):

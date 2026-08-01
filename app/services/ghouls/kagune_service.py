@@ -37,6 +37,7 @@ class KaguneService:
             kagune_type=kagune_type
         )
 
+
     @staticmethod
     async def process_kagune(user: UserData) -> KaguneResult:
         """Обрабатывает улучшения кагуне.

@@ -16,6 +16,7 @@ async def check_chat_rules(message: Message):
 
     await message.reply(rules)
 
+
 @router.message(F.text.lower().startswith("новые правила"), GroupOnlyFilter(), GroupCreatorFilter())
 async def set_rules(message: Message):
     rules = message.text[len("новые правила"):].strip()
@@ -34,6 +35,7 @@ async def set_rules(message: Message):
     await chat_service.set_rules(chat_id=message.chat.id, rules=rules)
 
     await message.reply("<b>Правила чата сохранены.</b>")
+
 
 @router.message(F.text.lower().startswith("удалить правила"), GroupOnlyFilter(), GroupCreatorFilter())
 async def delete_rules(message: Message):
