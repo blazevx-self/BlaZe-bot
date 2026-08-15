@@ -7,6 +7,8 @@ from app.bot.routers.tops import top_bal, top_click, top_kagune
 from app.bot.routers.chat.moderator import rules, welcome_message, goodbye_message
 from app.bot.routers.chat.chat_member_update import new_chat_member, left_chat_member
 
+from app.bot.routers.admin import ban
+
 all_routers = (
     start.router,
     help.router,
@@ -31,6 +33,8 @@ all_routers = (
 
     new_chat_member.router,
     left_chat_member.router,
+    
+    ban.router,
 
     rules.router,
     goodbye_message.router,

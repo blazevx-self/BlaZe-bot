@@ -13,7 +13,7 @@ from app.types.entities import UserData
 from app.database.repositories.ghouls_repository import ghouls_repository
 from app.database.repositories.users_repository import user_repository
 
-from app.services.calculate_stats_service import calculate_upgrade
+from app.services.ghouls.stats.calculate_stats_service import calculate_upgrade
 from app.bot.keyboards.ghoul.stats_keyboard import builds_stats_keyboard
 
 from app.utils.logger import stats_logger
@@ -101,7 +101,7 @@ class StatsService:
              f"stat={stat} | amount={amount} | reason={calc_result.status.value}"
             )
 
-            notification=cfg['message']['notifications'].get(
+            notification=cfg['message']['stats']['notifications'].get(
                 calc_result.status,
                 "Ошибка прокачки статов"
             )

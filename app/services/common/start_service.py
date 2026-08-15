@@ -4,6 +4,8 @@ from aiogram import Bot
 from aiogram.enums import ChatMemberStatus
 
 from app.configs.yaml import cfg
+from app.configs.game import game_cfg
+
 from app.core.enums import ResultStatus
 
 from app.types.services_result.common import StartResult
@@ -24,43 +26,37 @@ class StartService:
         """
 
         user_id = user.user_id
-        is_subscribed = False
 
         #Проверка подписки на канал через Telegram API
         try:
             member = await bot.get_chat_member(
-                chat_id=cfg['settings']['channel_id'],
+                chat_id=game_cfg.start.channel_id,
                 user_id=user_id
             )
 
-            if member.status in (
+            is_subscribed = member.status in (
                 ChatMemberStatus.MEMBER,
                 ChatMemberStatus.ADMINISTRATOR,
                 ChatMemberStatus.CREATOR,
-            ):
-                is_subscribed = True
+            )
 
         except aiogram.exceptions.TelegramAPIError as e:
-            is_subscribed = False
             start_logger.warning(f"[START] Subscription check failed | user_id={user_id} | error={e}")
+            is_subscribed = False
 
         if is_subscribed and not user.is_subscribed:
-            bonus = cfg['settings']['bonus_amount']
+            bonus = game_cfg.start.bonus_amount
 
-            await user_repository.activate_subscribed_bonus(user_id, bonus)
+            await user_repository.activate_subscribed_bonus(user_id=user_id, bonus=bonus)
+            
             start_logger.info(f"[START] Subscription bonus issued | user_id={user_id} | bonus={bonus}")
-
-            new_money = user.money + bonus
 
             return StartResult(
                 status=ResultStatus.SUCCESS,
-                text=cfg['settings']['text_is_subscription'].format(bonus_money=bonus),
-                new_money=new_money,
-                is_subscribed = True
+                text=cfg['message']['text_is_subscription'].format(bonus_money=bonus)
             )
 
-        raw_text = cfg['message']['start']
-        text = f"<tg-emoji emoji-id='5289581576001167896'>🤨</tg-emoji> {raw_text}"
+        text = f"<tg-emoji emoji-id='5289581576001167896'>🤨</tg-emoji> {cfg['message']['start']}"
 
         return StartResult(
             status=ResultStatus.SUCCESS,

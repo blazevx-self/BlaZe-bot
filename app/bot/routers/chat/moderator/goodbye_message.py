@@ -1,12 +1,12 @@
 from aiogram import Router, F
 from aiogram.types import Message
 
-from app.services.chat_service import chat_service
-from app.bot.filters.group_only import GroupOnlyFilter, GroupCreatorFilter
+from app.services.chat_service.chat_service import chat_service
+from app.bot.filters.group_only import GroupOnlyFilter, GroupModeratorFilter
 
 router = Router()
 
-@router.message(F.text.lower().startswith("новое прощание"), GroupOnlyFilter(), GroupCreatorFilter())
+@router.message(F.text.lower().startswith("новое прощание"), GroupOnlyFilter(), GroupModeratorFilter())
 async def set_goodbye_message_chat(message: Message):
     goodbye_message = message.text[len('новое прощание'):].strip()
 

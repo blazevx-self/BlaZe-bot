@@ -8,6 +8,9 @@ CREATE_USERS = """
     is_admin INTEGER DEFAULT 0,
     created_at DATETIME DEFAULT (datetime('now', 'localtime')),
     updated_at DATETIME DEFAULT (datetime('now', 'localtime')),
-    is_subscribed INTEGER DEFAULT 0
+    is_subscribed INTEGER DEFAULT 0,
+    is_banned BOOLEAN DEFAULT FALSE,
+    ban_reason TEXT,
+    banned_until DATETIME DEFAULT (datetime('now', 'localtime'))
     )
 """

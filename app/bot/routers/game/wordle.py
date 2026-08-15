@@ -1,4 +1,4 @@
-from aiogram import Router, Bot
+from aiogram import Router, Bot, F
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Command
 from aiogram.types import Message, BufferedInputFile
@@ -67,6 +67,7 @@ async def _delete_board(
 
 
 @router.message(Command("wordle"))
+@router.message(F.text.lower() == "вротли")
 async def wordle_start(message: Message):
     bot_logger.info(
         f"[COMMAND] name=\"{message.from_user.first_name}\" | user_id={message.from_user.id} | "
@@ -77,8 +78,8 @@ async def wordle_start(message: Message):
         return
 
     user_id = message.from_user.id
-
     photo = wordle_service.get_board(telegram_id=user_id)
+    
     if photo:
         sent = await message.reply_photo(
             photo=BufferedInputFile(file=photo, filename="wordle.png"),
@@ -88,6 +89,7 @@ async def wordle_start(message: Message):
         return
 
     photo = wordle_service.start_game(telegram_id=user_id)
+    
     sent = await message.reply_photo(
         photo=BufferedInputFile(file=photo, filename="wordle.png"),
         caption=(
@@ -118,13 +120,11 @@ async def wordle_guess(message: Message, bot: Bot, user: UserData):
     if not result:
         return
 
-    if result.new_money is not None:
-        user.money = result.new_money
-
     caption = _build_caption(result, word)
     photo = BufferedInputFile(file=result.image, filename="wordle.png")
 
     old_message_id = wordle_service.get_board_message_id(user_id)
+    
     if old_message_id:
         await _delete_board(bot, message.chat.id, old_message_id)
 

@@ -5,7 +5,7 @@ from app.services.audit.logger import logger_service
 from app.services.audit.notifier import notifier_service
 from app.services.audit.security import security_service
 
-from app.configs.yaml import cfg
+from app.configs.settings import settings
 
 class AuditService:
     """
@@ -139,7 +139,7 @@ class AuditService:
             process_time=process_time,
         )
 
-        admin_id = cfg['settings']['admin_id']
+        admin_id = settings.ADMIN_ID
 
         if not bot or not admin_id:
             return

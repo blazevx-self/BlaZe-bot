@@ -2,14 +2,14 @@ import json
 import aiosqlite
 import asyncio
 import os
-from app.database.database import DB_PATH
+from app.core.constants.system.paths import DB_PATH
 
 async def upload_questions():
-    if not os.path.exists('assets/json/quiz.json'):
+    if not os.path.exists('app/assets/json/quiz.json'):
         print('Файл по пути не найден, чо тупой чтоль?')
         return
 
-    with open('assets/json/quiz.json', 'r', encoding='utf-8') as f:
+    with open('app/assets/json/quiz.json', 'r', encoding='utf-8') as f:
         questions = json.load(f)
 
     async with aiosqlite.connect(DB_PATH) as db:

@@ -12,10 +12,7 @@ class TopsService:
     """Сервис получения рейтингов игрока в топах."""
 
     @staticmethod
-    async def process_tops(
-            user: UserData,
-            top_type: str,
-    ) -> TopResult:
+    async def process_tops(user: UserData, top_type: str) -> TopResult:
         """Возвращает таблицу лидеров и позицию пользователя."""
 
         limit = game_cfg.tops.get_limit(top_type)

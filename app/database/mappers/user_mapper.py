@@ -1,5 +1,7 @@
-from app.types.entities import UserData
 from typing import Any, Mapping
+from datetime import datetime
+
+from app.types.entities import UserData
 
 def row_to_user(row: Mapping[str, Any]) -> UserData:
 
@@ -9,6 +11,10 @@ def row_to_user(row: Mapping[str, Any]) -> UserData:
         username=row["username"],
         money=row["money"],
         is_subscribed=bool(row["is_subscribed"]),
+        is_banned=row["is_banned"],
+        ban_reason=row["ban_reason"],
+        banned_until=row["banned_until"],
+        created_at=datetime.fromisoformat(row["created_at"]),
 
         kagune_was_obtained=bool(row["kagune_was_obtained"]),
         kagune_lvl=row["kagune_lvl"],

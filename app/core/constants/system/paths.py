@@ -1,10 +1,13 @@
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve()
+BASE_DIR = Path(__file__).resolve().parent
 
-
-while BASE_DIR.name != "BlaZe bot V2":
+while BASE_DIR != BASE_DIR.parent:
+    if BASE_DIR.name == "BlaZe-bot":
+        break
     BASE_DIR = BASE_DIR.parent
+else:
+    raise RuntimeError("Project root not found")
 
 
 YAML_PATH = BASE_DIR / 'config.yaml'

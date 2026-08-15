@@ -8,7 +8,7 @@ from app.types.services_result.ghoul import KaguneResult
 from app.types.entities import UserData
 
 from app.database.repositories.ghouls_repository import ghouls_repository
-from app.services.ghoul_service import ghoul_service
+from app.services.ghouls.ghoul_service import ghoul_service
 
 from app.utils.format_num import format_num
 from app.utils.logger import kagune_logger
@@ -29,6 +29,10 @@ class KaguneService:
         except Exception:
             kagune_logger.exception(f"[KAGUNE] Open failed | user_id={user_id} | type={kagune_type}")
             raise
+        
+        user.kagune_was_obtained = True
+        user.kagune_lvl = 1
+        user.kagune_type = kagune_type
 
         kagune_logger.info(f"[KAGUNE] First kagune obtained | user_id={user_id} | type={kagune_type}")
 
@@ -76,30 +80,37 @@ class KaguneService:
             )
 
         new_level = level + 1
+        
+        try:
+            await ghouls_repository.update_kagune_level(
+                user_id=user_id,
+                new_lvl=new_level,
+                price=price,
+                timestamp=now
+            )
+        
+        except Exception:
+            kagune_logger.exception(f"[KAGUNE] Upgrade failed | user_id={user_id} | old_level={level} | new_level={new_level}")
+            raise
 
-        await ghouls_repository.update_kagune_level(
-            user_id=user_id,
-            new_lvl=new_level,
-            price=price,
-            timestamp=now,
-        )
+        user.money = current_money - price
+        user.kagune_lvl = new_level
+        user.kagune_last_grow = now
 
         kagune_logger.info(
             f"[KAGUNE] Level upgraded | user_id={user_id} | "
-            f"old_level={level} | new_level={new_level} | price={price} | money_left={current_money - price}"
+            f"old_level={level} | new_level={user.kagune_lvl} | price={price}"
         )
-
+        
         text = cfg['message']['kagune']['kagune_up'].format(
-            new_lvl=new_level,
-            price=format_num(price)
-        )
+                new_lvl=new_level,
+                price=format_num(price)
+            )
 
         return KaguneResult(
             status=ResultStatus.SUCCESS,
             text=text,
-            gif=ghoul_service.get_kagune_gif(new_level),
-            new_lvl=new_level,
-            new_money=current_money - price,
+            gif=ghoul_service.get_kagune_gif(new_level)
         )
 
 kagune_service = KaguneService()

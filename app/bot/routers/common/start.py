@@ -19,11 +19,4 @@ async def cmd_start(message: Message, bot: Bot, user: UserData):
     )
 
     result = await start_service.process_start(user=user, bot=bot)
-
-    if result.new_money:
-        user.money = result.new_money
-
-    if result.is_subscribed:
-        user.is_subscribed = True
-
     await message.reply(text=result.text, reply_markup=start_keyboard())

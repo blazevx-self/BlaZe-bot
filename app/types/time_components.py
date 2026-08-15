@@ -7,7 +7,6 @@ class TimeComponents:
     hours: int
     minutes: int
     seconds: int
-
     total_hours: int
     total_minutes: int
     total_seconds: int

@@ -36,17 +36,6 @@ ALLOWED_STATS = (
     "regen"
 )
 
-STATUS_FIELDS = {
-    "money": "money",
-    "clicks": "clicks",
-    "coffee_total": "coffee",
-    "kagune_lvl": "kagune_lvl",
-    "strength": "strength",
-    "agility": "agility",
-    "speed": "speed",
-    "hp": "hp",
-    "regen": "regen",
-}
 
 POWER_FIELDS = (
     "strength",

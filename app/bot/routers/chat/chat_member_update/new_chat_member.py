@@ -7,7 +7,7 @@ from aiogram.filters.chat_member_updated import (
 )
 from aiogram.exceptions import TelegramAPIError
 
-from app.services.chat_service import chat_service
+from app.services.chat_service.chat_service import chat_service
 from app.database.repositories.chats_repository import chat_repository
 
 from app.utils.logger import bot_logger, error_logger

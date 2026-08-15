@@ -4,7 +4,7 @@ from app.core.templates.ghoul.race_profile_template import race_profile_text
 from app.types.entities import UserData
 from app.types.services_result.ghoul import RaceProfileResult
 
-from app.services.ghoul_service import ghoul_service
+from app.services.ghouls.ghoul_service import ghoul_service
 from app.utils.truncate_name import truncate_text
 
 class RaceProfileService:
@@ -31,7 +31,9 @@ class RaceProfileService:
             danger_rank=danger_rank,
             level=user.level,
             power=power,
-            kagune_lvl=user.kagune_lvl
+            kagune_lvl=user.kagune_lvl,
+            snap=user.snap,
+            coffee=user.coffee_total
         )
 
         return RaceProfileResult(

@@ -3,7 +3,7 @@ from typing import Optional
 from app.configs.game import game_cfg
 from app.configs.yaml import cfg
 
-from app.core.constants.game.stats import STATUS_FIELDS, POWER_FIELDS
+from app.core.constants.game.stats import POWER_FIELDS
 from app.core.constants.game.kagune import KAGUNE_MULTIPLIER
 from app.core.constants.game.ranks import DANGER_RANKS
 
@@ -89,44 +89,5 @@ class GhoulService:
                 return rank
 
         return "SSS+"
-
-
-    @staticmethod
-    def get_rank(level: int) -> str:
-        ghoul_ranks = game_cfg.ranks.ghoul_ranks
-        current_rank = "E"
-
-        for threshold in sorted(ghoul_ranks):
-            if level >= threshold:
-                current_rank = ghoul_ranks[threshold]
-            else:
-                break
-
-        return current_rank
-
-
-    @staticmethod
-    def get_status(user: UserData) -> str:
-        """Вычисление экономико-боевого статуса гуля
-           на основе суммарного power_level из конфига
-        """
-        weights = game_cfg.ranks.weights
-        statuses = game_cfg.ranks.statuses
-
-        # вычисление общего power level пользователя на основе активности
-        power_level = sum(
-            (getattr(user, field, 0) * getattr(weights, weight))
-            for field, weight in STATUS_FIELDS.items()
-        )
-
-        current_status = "Новенький"
-
-        for threshold in sorted(statuses):
-            if power_level >= threshold:
-                current_status = statuses[threshold]
-            else:
-                break
-
-        return current_status
 
 ghoul_service = GhoulService()

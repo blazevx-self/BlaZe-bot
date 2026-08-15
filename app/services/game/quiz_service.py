@@ -80,34 +80,29 @@ class QuizService:
             return QuizAnswerResult(status=ResultStatus.ERROR)
 
         is_correct = question['correct'].strip().lower() == user_choice.strip().lower()
+        reward = game_cfg.quiz.award if is_correct else 0
 
-        reward_min, reward_max = game_cfg.quiz.reward
-        earned = random.randint(reward_min, reward_max) if is_correct else 0
-
-        await quiz_repository.use_question_charge(user_id=user_id, earned_money=earned)
+        await quiz_repository.use_question_charge(user_id=user_id, earned_money=reward)
 
         quiz_logger.info(
             f"[QUIZ] Answer processed | user_id={user_id} | "
-            f"question_id={question_id} | correct={is_correct} | earned={earned}"
+            f"question_id={question_id} | correct={is_correct} | earned={reward}"
         )
-
-        new_money = user.money + earned
-        questions_left = access['left'] - 1
 
         result_text = quiz_result_text(
             question=question['question'],
             correct_answer=question['correct'],
             user_choice=user_choice,
             is_correct=is_correct,
-            earned=earned
+            earned=reward
         )
-
+        
+        questions_left = access['left'] - 1
         status = ResultStatus.LIMIT_REACHED if questions_left <= 0 else ResultStatus.SUCCESS
 
         return QuizAnswerResult(
             status=status,
-            text=result_text,
-            new_money=new_money
+            text=result_text
         )
 
 quiz_service = QuizService()

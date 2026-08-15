@@ -16,7 +16,6 @@ class QuizStartResult:
 class QuizAnswerResult:
     status: ResultStatus
     text: str | None = None
-    new_money: int | None = None
 
 
 @dataclass(slots=True, frozen=True)
@@ -72,6 +71,5 @@ class WordleResult:
     target_word: str | None = None
     board_message_id: int | None = None
     earned: int = 0
-    new_money: int | None = None
 
 

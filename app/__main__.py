@@ -14,6 +14,7 @@ from app.bot.middleware.logging_middleware import LoggingMiddleware
 from app.bot.middleware.antispam_middleware import AntiSpamGhoulMiddleware
 from app.bot.middleware.antiflood_middleware import AntifloodMiddleware
 from app.bot.middleware.user_sync_middleware import UserSyncMiddleware
+from app.bot.middleware.ban_middleware import BanMiddleware
 
 from app.database.init_db import init_db
 
@@ -32,6 +33,8 @@ async def setup_middlewares(dp: Dispatcher) -> None:
     dp.message.middleware(UserSyncMiddleware())
     dp.callback_query.middleware(UserSyncMiddleware())
 
+    dp.message.middleware(BanMiddleware())
+
     dp.callback_query.middleware(AntiSpamGhoulMiddleware(time_limit=0.7))
 
     dp.message.middleware(AntifloodMiddleware(limit_seconds=5, max_requests=15))
@@ -49,7 +52,7 @@ async def main():
 
     try:
         dp = Dispatcher()
-
+        
         await init_db()
         await setup_middlewares(dp)
 

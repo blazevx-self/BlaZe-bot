@@ -21,8 +21,12 @@ class UserOrm(Base):
     quiz_attempts: Mapped[int] = mapped_column(default=15)
     quiz_reset_at: Mapped[datetime | None] = mapped_column(nullable=True)
 
-    is_admin: Mapped[bool] = mapped_column(default=False)
-    is_subscribed: Mapped[bool] = mapped_column(default=False)
+    is_admin: Mapped[bool] = mapped_column(default=False, nullable=False)
+    is_subscribed: Mapped[bool] = mapped_column(default=False, nullable=False)
+    
+    is_banned: Mapped[bool] = mapped_column(default=False)
+    ban_reason: Mapped[str | None] = mapped_column(nullable=True)
+    banned_until: Mapped[datetime | None] = mapped_column(nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now())

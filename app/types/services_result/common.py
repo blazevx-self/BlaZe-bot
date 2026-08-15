@@ -6,8 +6,6 @@ from app.core.enums import ResultStatus
 class StartResult:
     status: ResultStatus
     text: str | None = None
-    new_money: int | None = None
-    is_subscribed: bool = None
 
 
 @dataclass

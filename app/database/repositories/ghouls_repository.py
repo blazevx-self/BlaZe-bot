@@ -55,21 +55,42 @@ class GhoulRepository:
             await db.commit()
 
     # ЩЕЛК
-    async def get_last_snap(self, user_id: int) -> int:
+    async def process_snap(
+        self,
+        user_id: int,
+        money: int,
+         timestamp: int,
+    ) -> bool:
         async with DatabaseManager.connect() as db:
-            async with db.execute("SELECT last_click FROM ghouls WHERE user_id = ?", (user_id,)) as cursor:
-                row = await cursor.fetchone()
-                return row['last_click'] if row else 0
+            try:
+                cursor = await db.execute(
+                    """
+                    UPDATE users
+                    SET money = money + ?
+                    WHERE user_id = ?
+                    """, 
+                    (money, user_id),
+                )
 
-    async def update_last_snap(self, user_id: int, timestamp: int) -> None:
-        async with DatabaseManager.connect() as db:
-            await db.execute("UPDATE ghouls SET last_click = ? WHERE user_id = ?", (timestamp, user_id))
-            await db.commit()
+                if cursor.rowcount == 0:
+                    return False
 
-    async def add_snap(self, user_id: int) -> None:
-        async with DatabaseManager.connect() as db:
-            await db.execute("UPDATE ghouls SET clicks = clicks + 1 WHERE user_id = ?", (user_id,))
-            await db.commit()
+                await db.execute(
+                    """
+                    UPDATE ghouls
+                    SET clicks = clicks + 1,
+                    last_click = ?
+                    WHERE user_id = ?
+                    """,
+                (timestamp, user_id),
+            )
+
+                await db.commit()
+                return True
+
+            except Exception:
+                await db.rollback()
+                raise
 
     # СТАТЫ
     async def get_stats(self, user_id: int) -> None | Row:

@@ -1,17 +1,13 @@
-.env
-
-.venv/
 venv/
-
 __pycache__/
 *.pyc
 *.pyo
+.idea/
+.vscode/
 
-*.db
+.env
 
 logs/
 *.log
 
-.idea/
-
-config.yaml
+*.db

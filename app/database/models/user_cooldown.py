@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import func, ForeignKey, Enum as SqlEnum
+from sqlalchemy import func, ForeignKey, Enum as SqlEnum, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import BigInteger
 
@@ -31,3 +31,11 @@ class UserCooldownOrm(Base):
 
     expires_at: Mapped[int] = mapped_column(BigInteger, nullable=False)
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+
+    __table_args__ = (
+        UniqueConstraint(
+            "telegram_id",
+            "action",
+            name="uq_user_cooldown_action",
+        )
+    )

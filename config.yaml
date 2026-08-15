@@ -1,0 +1,307 @@
+bot_responses:
+  - "Ась?"
+  - "Чего тебе?"
+  - "Шо"
+  - "Ну говори"
+  - "Чего уставился"
+  - "Чо те?"
+  - "Кого?"
+  - "Что?"
+  - "не мешай"
+  - "да?"
+  - "Проблемы ебать?"
+  - "Я"
+  - "Чо такое?"
+  - "Слушаю"
+  - "ау?"
+  - "чо бля?"
+  - "Тут я"
+  - "Шо ты хочешь?"
+  - "Чо вы доебались?"
+  - "Ну и чё?"
+  - "Серьёзно?"
+  - "Блять, реально?"
+  - "Ну и хуй с ним"
+  - "Руки не из жопы?"
+  - "Ага, конечно"
+  - "С тобой всё норм?"
+  - "Ты кто вообще?"
+  - "Всё, хватит"
+  - "Завязывай"
+  - "Сам бот"
+  - "Чо я?"
+  - "Нахуя припёрся?"
+  - "Хули?"
+  - "Шо ты маленький?"
+  - "Давай без истерик"
+  - "Бездарям не положено отвечать"
+  - "Хули ты хочешь?"
+  - "Ого"
+  - "Занят, иди нахуй"
+  - "Ну и ладно"
+  - "Ну я и чо"
+  - "Что хотел-то?"
+  - "Что опять надо"
+  - "типо я"
+  - "Да иди нахуй"
+  - "Эмм чел"
+  - "Да отстань уже"
+  - "Отвали короче"
+  - "Говори быстрее"
+  - "Ну?"
+  - "всё динаху"
+  - "Да ну что опять"
+  - "А?"
+  - "Что такое?"
+  - "тупо я"
+  - "Ты мне в иерархии не нужен"
+  - "Я думал, у тебя есть вопросы"
+  - "Я не прислуга"
+  - "Мне лень даже отвечать"
+  - "Пиши быстрее"
+  - "Ну и всё?"
+  - "Чо молчишь?"
+  - "Иди делом займись"
+  - "Всё, я ушёл"
+  - "и чо опять хочешь ты от меня?"
+  - "Чо вы доебались?"
+  - "Чо ебать?"
+  - "Шо там?"
+  - "Я в работе"
+  - "К вашему слугу"
+  - "Чо надо нищета?"
+  - "Да не ори бездарь"
+  - "Я не одобряю твоё поведение"
+  - "Хули надо?"
+  - "Чо такое эу?"
+  - "Да стяни ебальник"
+  - "Шо там?"
+  - "Давай, удиви меня"
+  - "Тебе скучно?"
+  - "И?"
+  - "Сдурел совсем?"
+
+
+assets:
+  kagune:
+    gifs:
+      1: "CgACAgIAAxkBAAIXOWogEZbP4gjJYXrxbv5Zb1wfZcrYAAIwmAACPWIAAUmKhp_uXnxO9DsE"
+      20: "CgACAgIAAxkBAAIXOGogEYmMfnOPAAG4yRWcM_j5xgLFbAACLpgAAj1iAAFJt8uluSrQSf47BA"
+      35: "CgACAgIAAxkBAAIXOmogEZl8oiBB92h-dfPmk8BDfhcaAAIxmAACPWIAAUml5ZPClu291jsE"
+      50: "CgACAgIAAxkBAAIWxmoeux7nTQJHjvcynZLGXtVidh39AAL8mQACA1v5SLz78CubtPsrOwQ"
+      60: "CgACAgIAAxkBAAIWzWoeux6SMbqwn-25VF8ltkS_HhIiAAIPmgACA1v5SDr97giYqlHFOwQ"
+      75: "CgACAgIAAxkBAAIWy2oeux6oNmXur6Cwl8i7KCfViAvtAAICmgACA1v5SLSR9Xtk_OHJOwQ"
+      90: "CgACAgIAAxkBAAIWyWoeux7Af4ahvgkO1f4PZLrZXGf4AAL_mQACA1v5SIm4GHzJrBjOOwQ"
+      110: "CgACAgIAAxkBAAIWzGoeux4mc3_QqX5ob8ZQXRfKoUwKAAIDmgACA1v5SAvcSNEVXbr6OwQ"
+      130: "CgACAgIAAxkBAAIWymoeux71REmEZdMOj9TZdsxX2Z5DAAOaAAIDW_lIM_ziCIMggg47BA"
+      150: "CgACAgIAAxkBAAIWyGoeux6E0NMMhR7HEIVcAZ5pdhApAAL-mQACA1v5SKaP0XCdvZuGOwQ"
+      175: "CgACAgIAAxkBAAIWxGoeux6SDoASRlEktXpmVdwXLBPqAAL4mQACA1v5SASBlMs5Fj9mOwQ"
+      185: "CgACAgIAAxkBAAIWxWoeux6kvjTRf-AiDI2QZMLzd4JBAAL5mQACA1v5SNZJC66sSChFOwQ"
+      200: "CgACAgIAAxkBAAIXN2ogEX3JuZqPlmUg-GbH2Gte9igFAAIsmAACPWIAAUm48SYAAeAobwc7BA"
+
+  snap:
+    gifs:
+      - "CgACAgIAAxkBAAIJEGnvcQhb9fVFUFRubGqggQLr24HWAAJZoQACu3iBS6Oa9K34CAZkOwQ"
+      - "CgACAgIAAxkBAAIJEWnvcQi3W98ohO4gulB6E3Z4iu-sAAJboQACu3iBSz5iv0olthBUOwQ"
+      - "CgACAgIAAxkBAAIJEmnvcQjSMjxnirXMAWUpYml6xPhvAAJeoQACu3iBSxV6nZG3-lRFOwQ"
+      - "CgACAgIAAxkBAAIJE2nvcQg6K6XV4oUM6OFbMs0XgQABcgACX6EAArt4gUsiHJ440A5yNTsE"
+      - "CgACAgIAAxkBAAIJFGnvcQjFCaBiAjyab7E7OzzBylKSAAJhoQACu3iBS7AILJY3gOgwOwQ"
+      - "CgACAgIAAxkBAAIJFWnvcQha1L6ZypBvWUrz8K_wufTfAAJxoQACu3iBS00frqtC-5qrOwQ"
+
+  coffee:
+    gifs:
+      - "CgACAgIAAxkBAAIPXmoDLlhCMmzTEyUh_1xFXaNv54UoAAIQnwACmYgYSMJDIot88JyVOwQ"
+      - "CgACAgIAAxkBAAIPX2oDLl7EXRI1mbQ9qmklzcF87-ynAAIRnwACmYgYSJymgC1th9y2OwQ"
+      - "CgACAgIAAxkBAAIPYGoDLmAmA4nC9QNR_TRkr0CNZHagAAISnwACmYgYSIanErEfpdDaOwQ"
+      - "CgACAgIAAxkBAAIPYWoDLmerwyUhnpfJsYwxS2F64NXzAAIVnwACmYgYSGSY4JAYkWKKOwQ"
+      - "CgACAgIAAxkBAAIPYmoDLmy0TwVbVZtfwzuGNIuUBFNrAAIWnwACmYgYSHLeqLVu09u7OwQ"
+
+
+message:
+  start: |
+      <b> Добро пожаловать в BlaZe | Bot</b>
+      
+      <i>Ты оказался в месте, где не всё так просто, как кажется. Здесь каждый скрывает свою истинную сущность.</i>
+      
+      <tg-emoji emoji-id="5258461531464539536">📌</tg-emoji> Ознакомься с командами.
+  text_is_subscription: |
+    <b><tg-emoji emoji-id="5289581576001167896">🤨</tg-emoji> Добро пожаловать в BlaZe | Bot</b>
+      
+    <i>Ты оказался в месте, где не всё так просто, как кажется. Здесь каждый скрывает свою истинную сущность.</i>
+    
+    <code><tg-emoji emoji-id="5258179403652801593">❤️</tg-emoji> Подписан на канал, держи бонус</code> от - Blaze<code> в размере</code> <b>{bonus_money} BlazeCoin</b> 💰
+      
+    <tg-emoji emoji-id="5258461531464539536">📌</tg-emoji> Ознакомься с командами.
+
+
+
+  help:
+    help_text: |
+     <b>BlaZe | Bot — Навигация </b>
+    
+     <i>В этом городе нет простых путей.
+     Выживают только те, кто понимает правила</i>
+    
+     <b>Список на статью с командами:</b>
+    back_help: |
+      <b>Добро пожаловать в BlaZe | Bot</b>
+      
+      <i>Ты оказался в месте, где не всё так просто, как кажется. Здесь каждый скрывает свою истинную сущность.</i>
+      
+      <tg-emoji emoji-id="5258461531464539536">📌</tg-emoji> Ознакомься с командами.
+
+  balance:
+    balance_text: |
+      <tg-emoji emoji-id="5258391025281408576">📈</tg-emoji> <b>Баланс - <code>{name}</code></b>
+        
+      <tg-emoji emoji-id="5864068125112144897">💸</tg-emoji> Текущий балик: {money} BlazeCoin
+        
+      <tg-emoji emoji-id="5258336354642697821">⬇️</tg-emoji> Посмотри на настоящих богачей в топе
+    top_balance_text: |
+      <tg-emoji emoji-id="5258391025281408576">📈</tg-emoji> <b>Баланс - <code>{name}</code></b>
+        
+      <tg-emoji emoji-id="5864068125112144897">💸</tg-emoji> Текущий балик: {money} BlazeCoin
+
+  coffee:
+    coffee_snap_limit: |
+      ☕️ <b>Кафе «Антейку»</b>
+    
+      Бесплатный кофе не дают просто так бездарям вроде тебя.
+    
+      🫰🏼 Сломай ещё - <b>{needed} пальцев</b>, чтобы насладиться чашечкой ароматного кофе в «Антейку».
+
+    overdose_1: |
+      <b>Ты словил передоз ✌️</b>
+    
+      Тебе же русским языков советовали: <b>жди 30 минут</b>.
+      Но ты, видимо, слишком особенный, чтобы слушать?
+    
+      Отдыхай теперь <b>5 часов</b>, убежище.
+    overdose_2: |
+      ⚠️ <b>Состояние: передоз</b>
+    
+      Ты выпил слишком много кофе и валяешься на полу кафе.
+    
+      <tg-emoji emoji-id="5258258882022612173">⏲️</tg-emoji> Очнёшься через: <b>{time}</b>
+
+    coffee_up: |
+      <tg-emoji emoji-id="5429647911291987886">☕️</tg-emoji> <b>Ты выпил чашечку кофе</b>
+    
+      <tg-emoji emoji-id="4994522334992795220">📊</tg-emoji> Выпито кофе: <code>{coffee_total}</code>
+      <tg-emoji emoji-id="5864068125112144897">💸</tg-emoji> Поднял бабла: <code>+{money}</code>
+    
+      <tg-emoji emoji-id="5258258882022612173">⏲️</tg-emoji> Следующую чашечку советуем пить через 30 минут.
+
+  kagune:
+    cooldown: |
+      Ты тупое животное, нельзя растить кагуне постоянно, сходи-ка нахуй и не пиши эту команду - ⏲️ {time}.
+
+    not_enough_money: | 
+      Капец ты нищий, для прокачки кагуне тебе не хватает: <b>{missing} BlazeCoin</b> 💵  
+
+    kagune_1: |
+      Готов ли ты стать гулем и принять свою истинную силу? Готов ли ты справиться со своим кагуне?
+    
+      Прими же себя, <b>{name}</b>
+    kagune_2: |
+      Что ж, <b>{name}</b>, ты пробудил своё кагуне и отныне...Ты гуль.
+    
+      Пути назад больше нет...С этого дня тебе предстоит жить между двумя мирами, не принадлежа ни одному из них.
+    
+      Твой тип кагуне - <b>{chosen_type}</b>
+    kagune_up: |               
+      <tg-emoji emoji-id="5427145079229787042">👁</tg-emoji> <b>Ты усилил своё кагуне</b>
+    
+      <tg-emoji emoji-id="4994522334992795220">📊</tg-emoji> Его текущий уровень: <code>{new_lvl}</code>
+      <tg-emoji emoji-id="5864068125112144897">💸</tg-emoji> Бабла потрачено: <code>-{price}</code>
+    
+      <tg-emoji emoji-id="5258258882022612173">⏲️</tg-emoji> Следующая стадия доступна через 15 минутак
+
+  snap:
+    snap_cooldown: |
+      <tg-emoji emoji-id="5429629352738302761">🫠</tg-emoji> <b>А вот нихуя не щелк!</b>
+    
+      Куда ты тыкаешь, ещё 10 минутак не прошло.
+    
+      <tg-emoji emoji-id="5258258882022612173">⏲️</tg-emoji> Остаётся ждать: <b>{time}</b>
+      🩹 Пальчик восстанавливается
+    snap_up: |
+      <tg-emoji emoji-id="5429629352738302761">🫠</tg-emoji> <b>Пальчик сломан</b>
+    
+      🫰🏼 Сломано пальцев: <code>{total_snap}</code>
+      <tg-emoji emoji-id="5864068125112144897">💸</tg-emoji> Поднял деняк кеш: <code>+{money_won}</code>
+
+      <tg-emoji emoji-id="5258258882022612173">⏲️</tg-emoji> Cледующая попытка через 10 минутак
+
+  quiz:
+    quiz_limit: |
+      Лимит вопросов исчерпан на сегодня, дегенерат!
+      
+      Жди до следующего дня. ✌️
+    quiz_naebalovo_user: |
+      Ты кого тут наебать хочешь, дохуя умный или чо? Лимит - это закон.
+      
+      Жди до завтра тебе сказали. ✌️
+    right:
+      <tg-emoji emoji-id="5260726538302660868">✅</tg-emoji>верно
+    incorrect:
+      <tg-emoji emoji-id="5260342697075416641">❌</tg-emoji>неверно
+    no_questions: |
+      🧠 <b>Нихуя ты задрот! Ты ответил абсолютно на все вопросы в квизе.</b>
+      
+      Твой IQ социально выше, чем у тупого и криворукого разраба. Сиди кури сигаретку и жди, пока этот ленивый уебок завезёт новые паки вопросов. 🚬
+
+    no_questions_callback: |
+      Ты ответил на все вопросы! Жди обновы.
+
+  stats:
+    stats_text: |
+      💸 <b>Балик:</b> <code>{money} BlazeCoin</code>
+    
+      💪 <b>Сила:</b> <code>{strength}/120 {p_strength}</code>
+      🤸 <b>Ловкость:</b> <code>{agility}/105 {p_agility}</code>
+      🏃 <b>Скорость:</b> <code>{speed}/108 {p_speed}</code>
+      ❤️ <b>Макс. здоровье</b>: <code>{hp}/115 {p_hp}</code>
+      ️️❣️ <b>Регенерация:</b> <code>{regen}/110 {p_regen}</code>
+    notifications:
+      invalid_stat: "⚠️ Неизвестный стат"
+      invalid_amount: "⚠️ Ошибка прокачки"
+      maxed: "🔝 Стат прокачан до максимума"
+      not_enough_money: "💲 Недостаточно BC на балике"
+      db_error: "⚠️ Ошибка транзакции балика"
+
+  not_ghoul:
+    not_ghoul_message:
+      👁 Ты не являешься гулем на данный момент, 
+      пробуди своё кагуне и прими свою сущность через команду 
+      <b>«растить кагуне»</b>
+    not_ghoul_callback:
+      👁‍🗨 Ты ещё не являешься гулем
+
+  middleware_text_antispam:
+    ⏳ Воооу, стопэ. Одно нажатие - достаточно
+
+  tops:
+    top_money:
+      prefixes:
+        "1": "<tg-emoji emoji-id='5834643712189141114'>👑</tg-emoji> "
+        "2": "🥈 "
+        "3": "🥉 "
+      rank_messages:
+        "1": "\n<tg-emoji emoji-id='5289722755871162900'>👑</tg-emoji> Отныне, ты самый богатый гуль в истории."
+        "2": "\n<b>Ты на 2-ом месте</b> и теперь не являешься бездарем."
+        "3": "\n<b>Ты вошёл в тройку миллионеров по BlazeCoin!</b>"
+        "4": "\n<tg-emoji emoji-id='5258084656674250503'>🚪</tg-emoji> <i>Ты на <b>{rank}—м</b> месте, бездарь</i>"
+        "5": "\n<tg-emoji emoji-id='5299024976429466492'>🤡</tg-emoji> Боже, в общий топ хотяб войди, не позорься"
+    top_kagune:
+      prefixes:
+        "1": "<tg-emoji emoji-id='5834643712189141114'>👑</tg-emoji> "
+        "2": "🥈 "
+        "3": "🥉 "
+      top_1_status:
+        "\n<i>Гуль по имени {name} является самым сильным среди всех.</i>"
+    top_snap:
+       prefixes:
+         "1": "<tg-emoji emoji-id='5834643712189141114'>👑</tg-emoji> "
+         "2": "🥈 "
+         "3": "🥉 "

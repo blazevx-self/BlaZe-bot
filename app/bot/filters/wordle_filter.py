@@ -5,6 +5,8 @@ from app.core.constants.game.wordle import WORD_LENGTH
 from app.services.game.wordle.wordle_service import wordle_service
 
 class WordleGameFilter(BaseFilter):
+    """Проверяет, является ли сообщение допустимой попыткой в активной игре Wordle."""
+    
     async def __call__(self, message: Message) -> bool:
         if not message.text or not message.from_user:
             return False

@@ -1,62 +1,56 @@
 import random
+
+from random import randint
 from dataclasses import dataclass, field
 
 
 @dataclass(slots=True, frozen=True)
-class RankWeights:
-    money: float = 0.01
-    clicks: float = 1.0
-    coffee: int = 30
-    kagune_lvl: int = 300
-    strength: int = 25
-    agility: int = 25
-    speed: int = 25
-    hp: int = 20
-    regen: int = 25
+class StartConfig:
+    bonus_amount: int = 10000
+    channel_id: int = -1003884750303
+    guide_link: str = "https://t.me/+ChhN0j9eYMI3ODBi"
+    telegraph_link: str = "https://telegra.ph/BlaZe--Bot--help-08-14"
+    channel_link: str = "https://t.me/+H67pSJL-qYU5Y2Qy"
 
 
 @dataclass(slots=True, frozen=True)
-class RankConfig:
-    weights: RankWeights = field(default_factory=RankWeights)
+class ProfileStatusWeights:
+    money: float = 0.01
+    days_in_project: float = 15.0
 
-    ghoul_ranks: dict[int, str] = field(default_factory=lambda: {
-        5: "E",
-        10: "D",
-        20: "C",
-        35: "B",
-        60: "A",
-        100: "S",
-        200: "SS",
-        99999: "SSS"
-    })
 
+@dataclass(slots=True, frozen=True)
+class ProfileStatusConfig:
+    weights: ProfileStatusWeights = field(default_factory=ProfileStatusWeights)
     statuses: dict[int, str] = field(default_factory=lambda: {
-        200: "Гуль одиночка",
-        1000: "Работник «Антейку»",
-        5000: "Член «Аогири»",
-        15000: "Каннибал-потрошитель",
-        35000: "Сколопендра",
-        60000: "Неудержимый гуль",
-        100000: "Бедствие всего района",
-        145000: "Глава Токио",
-        250000: "Повелитель",
-        300000: "Чёрный бог смерти",
-        325000: "Одноглазый король",
-        400000: "ЛЕХЕНДА 👑",
+        100: "Первый шаг",
+        250: "Осваивающийся",
+        500: "Знакомый",
+        1000: "Свой человек",
+        5000: "Постоянный участник",
+        15000: "Активист",
+        35000: "Уважаемый участник",
+        60000: "Влиятельный",
+        100000: "Настоящий олд",
+        145000: "Почётный участник",
+        250000: "Икона сообщества",
+        300000: "Живая легенда",
+        325000: "Опора сообщества",
+        400000: "Легенда проекта 👑",
     })
 
 
 @dataclass(slots=True, frozen=True)
 class KaguneConfig:
-    start_price: int = 150
-    price_multiplier: float = 1.07
+    start_price: int = 500
+    price_multiplier: float = 1.05
     cooldown: int = 15 * 60
 
     types_chance: dict[str, int] = field(default_factory=lambda: {
         "Укаку": 45,
-        "Коукаку": 40,
-        "Ринкаку": 10,
-        "Бикаку": 35,
+        "Коукаку": 30,
+        "Ринкаку": 15,
+        "Бикаку": 20,
     })
 
     def random_type(self) -> str:
@@ -69,29 +63,44 @@ class KaguneConfig:
 
 @dataclass(slots=True, frozen=True)
 class StatsPriceConfig:
-    base_price: int = 120
-    price_multiplier: float = 1.07
+    base_price: int = 250
+    price_multiplier: float = 1.04
 
 
 @dataclass(slots=True, frozen=True)
 class CoffeeConfig:
-    reward: tuple[int, int] = (1200, 1800)
+    min_award: int = 1200
+    max_award: int = 1800
     cooldown: int = 30 * 60
     overdose_cooldown: int = 5 * 60 * 60
     required_snap: int = 100
 
+    @property
+    def award(self) -> int:
+        return randint(self.min_award, self.max_award)
+
 
 @dataclass(slots=True, frozen=True)
 class SnapConfig:
-    reward: tuple[int, int] = (500, 1000)
+    min_award: int = 500
+    max_award: int = 1000
     cooldown: int = 10 * 60
+
+    @property
+    def award(self) -> int:
+        return randint(self.min_award, self.max_award)
 
 
 @dataclass(slots=True, frozen=True)
 class QuizConfig:
     day_limit: int = 15
-    reward: tuple[int, int] = (1800, 3000)
+    min_award: int = 1800
+    max_award: int = 3000
     reset_time: str = "00:00"
+
+    @property
+    def award(self) -> int:
+        return randint(self.min_award, self.max_award)
 
 
 @dataclass(slots=True, frozen=True)
@@ -110,12 +119,18 @@ class TopsConfig:
 
 @dataclass(slots=True, frozen=True)
 class WordleConfig:
-    reward: tuple[int, int] = (3000, 5000)
+    min_award: int = 3000
+    max_award: int = 5000
+    
+    @property
+    def award(self) -> int:
+        return randint(self.min_award, self.max_award)
 
 
 @dataclass(slots=True, frozen=True)
 class EconomyConfig:
-    ranks: RankConfig = field(default_factory=RankConfig)
+    start: StartConfig = field(default_factory=StartConfig)
+    profile_statuses: ProfileStatusConfig = field(default_factory=ProfileStatusConfig)
     kagune: KaguneConfig = field(default_factory=KaguneConfig)
     stats_price: StatsPriceConfig = field(default_factory=StatsPriceConfig)
     coffee: CoffeeConfig = field(default_factory=CoffeeConfig)

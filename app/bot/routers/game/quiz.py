@@ -16,6 +16,7 @@ from app.utils.logger import bot_logger
 router = Router()
 
 @router.message(Command("quiz"))
+@router.message(F.text.lower() == "викторина")
 async def quiz(message: Message, user: UserData):
     bot_logger.info(
         f"[COMMAND] name=\"{message.from_user.first_name}\" | user_id={message.from_user.id} | "
@@ -49,10 +50,7 @@ async def quiz_handler(callback: CallbackQuery, user: UserData):
     user_choice = "_".join(data[3:])
 
     if callback.from_user.id != owner_id:
-        await callback.answer(
-            text="☕️ Это не твоя викторина, не мешай людям отвечать на вопросы.\n\n"
-            "Сам викторину свою вызывай -> /quiz и проходи", show_alert=True
-        )
+        await callback.answer(text="☕️ Это не твоя викторина. Запусти свою через /quiz", show_alert=True)
         return
 
     result = await quiz_service.process_quiz_answer(
@@ -68,8 +66,6 @@ async def quiz_handler(callback: CallbackQuery, user: UserData):
         await callback.message.edit_reply_markup(reply_markup=None)
 
         return
-
-    user.money = result.new_money
 
     if result.status == ResultStatus.LIMIT_REACHED:
         await callback.message.edit_text(text=result.text, reply_markup=get_quiz_again_kb())

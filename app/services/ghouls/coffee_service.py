@@ -28,37 +28,35 @@ class CoffeeService:
 
         user_id = user.user_id
         now = int(time.time())
+        
+        # проверяем требования щелчков для кофе
         required_snap = game_cfg.coffee.required_snap
 
-        # проверка требования кликов для кофе
         if user.snap < required_snap:
             needed = required_snap - user.snap
-            text = cfg['message']['coffee']['coffee_snap_limit'].format(needed=needed)
 
             return CoffeeResult(
                 status=ResultStatus.NOT_ENOUGH_SNAP,
-                text=text,
+                text=cfg['message']['coffee']['coffee_snap_limit'].format(needed=needed),
             )
-
+        
+        # Проверяем кулдаун передозировки
         cooldown = user.coffee_cooldown
-        is_cooldown = cooldown and now < cooldown
 
-        if is_cooldown:
+        if cooldown and now < cooldown:
             remaining = cooldown - now
 
             return CoffeeResult(
                 status=ResultStatus.OVERDOSE_COOLDOWN,
-                text=cfg['message']['coffee']['overdose_2'].format(
-                    time=format_duration(remaining)
-                )
+                text=cfg['message']['coffee']['overdose_2'].format(time=format_duration(remaining))
             )
 
         wait_time = game_cfg.coffee.cooldown
         overdose_time = game_cfg.coffee.overdose_cooldown
         last_drink = user.coffee_last_time
 
-        # частое употребление кофе (кофе можно пить 1 раз в 30 минут)
-        if last_drink != 0 and (now - last_drink) < wait_time:
+        # Слишком частое употребление
+        if last_drink != 0 and now - last_drink < wait_time:
             cooldown_time = now + overdose_time
 
             await ghouls_repository.set_coffee_overdose(
@@ -68,12 +66,10 @@ class CoffeeService:
 
             return CoffeeResult(
                 status=ResultStatus.OVERDOSE,
-                text=cfg['message']['coffee']['overdose_1'],
-                new_coffee_cooldown=cooldown_time
+                text=cfg['message']['coffee']['overdose_1']
             )
-
-        reward_min, reward_max = game_cfg.coffee.reward
-        money = random.randint(reward_min, reward_max)
+        # Выдаём награду
+        money = game_cfg.coffee.award
 
         try:
             await ghouls_repository.drink_coffee_success(
@@ -86,14 +82,13 @@ class CoffeeService:
             coffee_logger.exception(f"[COFFEE] Reward issuing failed | user_id={user_id} | reward={money}")
             raise
 
-        new_money = user.money + money
-        new_coffe_total = user.coffee_total + 1
+        coffee_total = user.coffee_total + 1
 
-        coffee_logger.info(f"[COFFEE] Success drink | user_id={user_id} | reward={money} | total={new_coffe_total}")
+        coffee_logger.info(f"[COFFEE] Success drink | user_id={user_id} | reward={money} | total={coffee_total}")
 
         text = cfg['message']['coffee']['coffee_up'].format(
             money=format_num(money),
-            coffee_total=format_num(new_coffe_total)
+            coffee_total=format_num(coffee_total)
         )
 
         coffee_gif = random.choice(cfg['assets']['coffee']['gifs'])
@@ -101,10 +96,7 @@ class CoffeeService:
         return CoffeeResult(
             status=ResultStatus.SUCCESS,
             text=text,
-            gif=coffee_gif,
-            new_money=new_money,
-            new_coffee_total=new_coffe_total,
-            new_coffee_cooldown=0
+            gif=coffee_gif
         )
 
 coffee_service = CoffeeService()

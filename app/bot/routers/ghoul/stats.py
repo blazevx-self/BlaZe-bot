@@ -6,7 +6,7 @@ from aiogram.types import Message, CallbackQuery
 from app.core.enums import ResultStatus
 from app.types.entities import UserData
 
-from app.services.ghouls.stats_service import stats_service
+from app.services.ghouls.stats.stats_service import stats_service
 from app.bot.filters.ghoul_filters import GhoulRequired
 
 router = Router()

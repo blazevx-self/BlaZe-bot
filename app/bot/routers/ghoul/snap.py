@@ -15,21 +15,16 @@ from app.utils.time import format_duration
 router = Router()
 
 @router.message(F.text.lower() == 'щелк', GhoulRequired())
+@router.message(F.text.lower() == 'щёлк', GhoulRequired())
 async def snap(message: Message, user: UserData):
     result = await snap_service.process_snap(user=user)
 
     if result.status == ResultStatus.COOLDOWN:
         remaining = result.remaining
 
-        text = cfg['message']['snap']['snap_cooldown'].format(
-            time=format_duration(remaining)
-        )
-
+        text = cfg['message']['snap']['snap_cooldown'].format(time=format_duration(remaining))
+        
         await message.reply(text=text)
         return
 
-    user.money = result.new_money
-    user.snap = result.new_snap
-    user.last_snap= int(time.time())
-
-    await message.reply_animation(animation=result.gif, caption=result.text,)
+    await message.reply_animation(animation=result.gif, caption=result.text)

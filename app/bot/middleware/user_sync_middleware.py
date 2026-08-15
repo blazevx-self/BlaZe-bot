@@ -1,6 +1,8 @@
 import asyncio
 
 from typing import Any, Awaitable, Callable, Dict
+from datetime import datetime
+
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
 
@@ -116,4 +118,5 @@ class UserSyncMiddleware(BaseMiddleware):
             name=tg_user.first_name,
             username=tg_user.username,
             kagune_was_obtained=False,
+            created_at=datetime.now(),
         )

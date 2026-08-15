@@ -1,43 +1,60 @@
+from app.configs.game import game_cfg
 from app.core.templates.common.profile_template import profile_text
 from app.core.enums import ResultStatus
 
 from app.types.services_result.common import ProfileResult
 from app.types.entities import UserData
 
-
 from app.utils.format_num import format_num
 from app.utils.truncate_name import truncate_text
-
-from app.services.ghoul_service import ghoul_service
+from app.utils.time import days_since_registration
 
 class ProfileService:
     """Сервис формирования обычного профиля пользователя"""
 
     @staticmethod
+    def get_status(user: UserData, days_in_project: int) -> str:
+        """Определяет статус пользователя по его общей активности."""
+
+        weights = game_cfg.profile_statuses.weights
+        statuses = game_cfg.profile_statuses.statuses
+
+        profile_score = (
+            user.money * weights.money
+            + days_in_project * weights.days_in_project
+        )
+
+        current_status = "Новичок"
+
+        for threshold in sorted(statuses):
+            if profile_score >= threshold:
+                current_status = statuses[threshold]
+            else:
+                break
+
+        return current_status
+
+
+    @staticmethod
     async def build_profile(user: UserData) -> ProfileResult:
-        """Формирует текст профиля с текущими характеристиками пользователя"""
-
+        """Формирует обычный профиль пользователя."""
+        
         user_id = user.user_id
-        first_name = user.name
-        level = user.level
+        link = f'<a href="tg://user?id={user_id}"><b>{truncate_text(user.name)}</b></a>'
 
-        link = f'<a href="tg://user?id={user_id}"><b>{truncate_text(first_name)}</b></a>'
-
-        status = ghoul_service.get_status(user)
-        rank = ghoul_service.get_rank(level)
-
-        money = format_num(user.money)
-        snap = format_num(user.snap)
-        coffee = format_num(user.coffee_total)
+        days_in_project = days_since_registration(user.created_at)
+        status = ProfileService.get_status(user=user, days_in_project=days_in_project)
+        
+        race = "Гуль" if user.kagune_was_obtained else "Человек"
 
         text = profile_text(
             user_link=link,
-            level=level,
-            rank=rank,
+            user_id=user_id,
+            race=race,
             status=status,
-            money=money,
-            snap=snap,
-            coffee=coffee
+            money=format_num(user.money),
+            registered_at=user.created_at,
+            days_in_project=days_in_project,
         )
 
         return ProfileResult(

@@ -29,8 +29,6 @@ class KaguneResult:
     remaining: int | None = None
     missing: int | None = None
     kagune_type: str | None = None
-    new_lvl: int | None = None
-    new_money: int | None = None
 
 
 @dataclass
@@ -44,9 +42,6 @@ class CoffeeResult:
     status: ResultStatus
     text: str | None = None
     gif: str | None = None
-    new_money: int | None = None
-    new_coffee_total: int | None = None
-    new_coffee_cooldown: int | None = None
 
 
 @dataclass
@@ -54,7 +49,6 @@ class SnapResult:
     status: ResultStatus
     text: str | None = None
     gif: str | None = None
-    remaining: int | None = None
-    new_money: int | None = None
-    new_snap: int | None = None
+    remaining: int | None = 0
+    last_snap: int | None = None
 

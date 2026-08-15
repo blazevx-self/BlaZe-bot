@@ -1,6 +1,15 @@
+from datetime import datetime
+
 from app.types.time_components import TimeComponents
 
 def parse_seconds(total_seconds: int) -> TimeComponents:
+    """Преобразует общее количество секунд в компоненты времени (
+        дни, 
+        часы,
+        минуты, 
+        секунды
+    ) и суммарные значения."""
+    
     days = total_seconds // (24 * 3600)
     remainder = total_seconds % (24 * 3600)
 
@@ -23,6 +32,8 @@ def parse_seconds(total_seconds: int) -> TimeComponents:
 
 
 def format_duration(total_seconds: int, show_seconds: bool = True) -> str:
+    """Форматирует длительность в читаемую строку, например '2ч. и 15мин.'."""
+    
     time = parse_seconds(total_seconds)
 
     parts = []
@@ -46,3 +57,8 @@ def format_duration(total_seconds: int, show_seconds: bool = True) -> str:
         return " и ".join(parts)
 
     return parts[0]
+
+
+def days_since_registration(created_at: datetime) -> int:
+    """Возвращает количество дней, прошедших с момента регистрации пользователя."""
+    return (datetime.now().date() - created_at.date()).days

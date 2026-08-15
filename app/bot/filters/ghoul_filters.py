@@ -1,7 +1,7 @@
 from aiogram.filters import BaseFilter
 from aiogram.types import Message, CallbackQuery
 
-from app.services.ghoul_service import ghoul_service
+from app.services.ghouls.ghoul_service import ghoul_service
 from app.configs.yaml import cfg
 
 class GhoulRequired(BaseFilter):

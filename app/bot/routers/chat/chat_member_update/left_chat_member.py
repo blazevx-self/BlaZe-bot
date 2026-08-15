@@ -6,7 +6,7 @@ from aiogram.filters.chat_member_updated import (
     IS_MEMBER, IS_NOT_MEMBER,
 )
 
-from app.services.chat_service import chat_service
+from app.services.chat_service.chat_service import chat_service
 
 router = Router()
 

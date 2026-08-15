@@ -8,7 +8,9 @@ def race_profile_text(
     danger_rank: str,
     level: int,
     power: int,
-    kagune_lvl: int
+    kagune_lvl: int,
+    snap: int,
+    coffee: int
 ) -> str:
 
     return f"""
@@ -30,9 +32,11 @@ def race_profile_text(
 
 ⚡ <b>Суммарная мощь:</b> <code>{power}</code>
 
+🫰🏼 <b>Сломано пальцев:</b> {snap}  
+☕️ <b>Выпито кофе:</b> <code>{coffee}</code>
+
 🥩 <b>Съедено людей:</b> <code>0</code>
 🍖 <b>Съедено гулей:</b> <code>0</code>
 
 🧿 <b>Какуджа:</b> <code>Нет</code>
-
 """
