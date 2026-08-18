@@ -4,7 +4,6 @@ from app.configs.yaml import cfg
 from app.utils.truncate_name import truncate_text
 from app.utils.format_num import format_num
 
-# шаблон топ по щелчкам
 def build_top_snap_text(result):
     top_users = result.top_user
     user = result.user
@@ -14,7 +13,7 @@ def build_top_snap_text(result):
 
     text += "<b>╭─────────────────╮</b>\n"
 
-    prefixes = cfg['message']['tops']['top_snap']['prefixes']
+    prefixes = cfg['message']['tops']['prefixes']
 
     for position, top_user in enumerate(top_users, start=1):
         snap = format_num(top_user['clicks'])

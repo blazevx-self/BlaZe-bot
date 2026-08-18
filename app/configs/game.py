@@ -9,13 +9,12 @@ class StartConfig:
     bonus_amount: int = 10000
     channel_id: int = -1003884750303
     guide_link: str = "https://t.me/+ChhN0j9eYMI3ODBi"
-    telegraph_link: str = "https://telegra.ph/BlaZe--Bot--help-08-14"
+    telegraph_link: str = "https://telegra.ph/BlaZe--Bot--Pomoshch-08-18-2"
     channel_link: str = "https://t.me/+H67pSJL-qYU5Y2Qy"
 
 
 @dataclass(slots=True, frozen=True)
 class ProfileStatusWeights:
-    money: float = 0.01
     days_in_project: float = 15.0
 
 
@@ -23,20 +22,20 @@ class ProfileStatusWeights:
 class ProfileStatusConfig:
     weights: ProfileStatusWeights = field(default_factory=ProfileStatusWeights)
     statuses: dict[int, str] = field(default_factory=lambda: {
-        100: "Первый шаг",
-        250: "Осваивающийся",
-        500: "Знакомый",
-        1000: "Свой человек",
-        5000: "Постоянный участник",
-        15000: "Активист",
-        35000: "Уважаемый участник",
-        60000: "Влиятельный",
-        100000: "Настоящий олд",
-        145000: "Почётный участник",
-        250000: "Икона сообщества",
-        300000: "Живая легенда",
-        325000: "Опора сообщества",
-        400000: "Легенда проекта 👑",
+        1: "Первый шаг",
+        3: "Осваивающийся",
+        7: "Знакомый",
+        14: "Свой человек",
+        30: "Постоянный участник",
+        60: "Активист",
+        90: "Уважаемый участник",
+        120: "Влиятельный",
+        150: "Настоящий олд",
+        180: "Почётный участник",
+        240: "Икона сообщества",
+        280: "Живая легенда",
+        320: "Опора сообщества",
+        365: "Легенда проекта",
     })
 
 
@@ -108,12 +107,14 @@ class TopsConfig:
     money_limit: int = 15
     snap_limit: int = 20
     kagune_limit: int = 10
+    coffee_limit: int = 20
 
     def get_limit(self, top_type: str) -> int:
         return {
             "money": self.money_limit,
             "snap": self.snap_limit,
             "kagune": self.kagune_limit,
+            "coffee": self.coffee_limit,
         }[top_type]
 
 

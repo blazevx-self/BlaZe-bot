@@ -84,6 +84,8 @@ bot_responses:
 
 assets:
   kagune:
+    obtained_gif:
+      CgACAgIAAxkBAAIlNmqATGAcOxl8rN9FBU9SeYDAiMbhAAKLogACRhYJSBylRFc7drcqPQQ
     gifs:
       1: "CgACAgIAAxkBAAIXOWogEZbP4gjJYXrxbv5Zb1wfZcrYAAIwmAACPWIAAUmKhp_uXnxO9DsE"
       20: "CgACAgIAAxkBAAIXOGogEYmMfnOPAAG4yRWcM_j5xgLFbAACLpgAAj1iAAFJt8uluSrQSf47BA"
@@ -101,18 +103,22 @@ assets:
 
   snap:
     gifs:
-      - "CgACAgIAAxkBAAIJEGnvcQhb9fVFUFRubGqggQLr24HWAAJZoQACu3iBS6Oa9K34CAZkOwQ"
-      - "CgACAgIAAxkBAAIJEWnvcQi3W98ohO4gulB6E3Z4iu-sAAJboQACu3iBSz5iv0olthBUOwQ"
-      - "CgACAgIAAxkBAAIJEmnvcQjSMjxnirXMAWUpYml6xPhvAAJeoQACu3iBSxV6nZG3-lRFOwQ"
       - "CgACAgIAAxkBAAIJE2nvcQg6K6XV4oUM6OFbMs0XgQABcgACX6EAArt4gUsiHJ440A5yNTsE"
       - "CgACAgIAAxkBAAIJFGnvcQjFCaBiAjyab7E7OzzBylKSAAJhoQACu3iBS7AILJY3gOgwOwQ"
       - "CgACAgIAAxkBAAIJFWnvcQha1L6ZypBvWUrz8K_wufTfAAJxoQACu3iBS00frqtC-5qrOwQ"
-
+      - "CgACAgIAAxkBAAIlPWqAZfEoaYvkN521OO6SdrX5RAV-AAJKowACRhYJSFzjKp-SmZoIPQQ"
+      - "CgACAgIAAxkBAAIlP2qAZiWYdmmTlFPhM-mMZcBLId_CAAJMowACRhYJSOdfc5WpbkixPQQ"
+      - "CgACAgIAAxkBAAIJEGnvcQhb9fVFUFRubGqggQLr24HWAAJZoQACu3iBS6Oa9K34CAZkOwQ"
+      - "CgACAgIAAxkBAAIJEWnvcQi3W98ohO4gulB6E3Z4iu-sAAJboQACu3iBSz5iv0olthBUOwQ"
+      - "CgACAgIAAxkBAAIJEmnvcQjSMjxnirXMAWUpYml6xPhvAAJeoQACu3iBSxV6nZG3-lRFOwQ"
+     
   coffee:
     gifs:
       - "CgACAgIAAxkBAAIPXmoDLlhCMmzTEyUh_1xFXaNv54UoAAIQnwACmYgYSMJDIot88JyVOwQ"
       - "CgACAgIAAxkBAAIPX2oDLl7EXRI1mbQ9qmklzcF87-ynAAIRnwACmYgYSJymgC1th9y2OwQ"
       - "CgACAgIAAxkBAAIPYGoDLmAmA4nC9QNR_TRkr0CNZHagAAISnwACmYgYSIanErEfpdDaOwQ"
+      - "CgACAgIAAxkBAAIlVmqAb9mnim8XqGYpbGgvruRiHnX-AALhowACRhYJSJDsWwnCu-khPQQ"
+      - "CgACAgIAAxkBAAIlWGqAb-Z1J4mUNoeUUZ8WTrs8gpuZAALiowACRhYJSLbzChi4ZP00PQQ"
       - "CgACAgIAAxkBAAIPYWoDLmerwyUhnpfJsYwxS2F64NXzAAIVnwACmYgYSGSY4JAYkWKKOwQ"
       - "CgACAgIAAxkBAAIPYmoDLmy0TwVbVZtfwzuGNIuUBFNrAAIWnwACmYgYSHLeqLVu09u7OwQ"
 
@@ -213,7 +219,7 @@ message:
       <tg-emoji emoji-id="5427145079229787042">👁</tg-emoji> <b>Ты усилил своё кагуне</b>
     
       <tg-emoji emoji-id="4994522334992795220">📊</tg-emoji> Его текущий уровень: <code>{new_lvl}</code>
-      <tg-emoji emoji-id="5864068125112144897">💸</tg-emoji> Бабла потрачено: <code>-{price}</code>
+      <tg-emoji emoji-id="5864068125112144897">💸</tg-emoji> Потрачено денег: <code>-{price}</code>
     
       <tg-emoji emoji-id="5258258882022612173">⏲️</tg-emoji> Следующая стадия доступна через 15 минутак
 
@@ -282,26 +288,18 @@ message:
     ⏳ Воооу, стопэ. Одно нажатие - достаточно
 
   tops:
-    top_money:
-      prefixes:
+    prefixes:
         "1": "<tg-emoji emoji-id='5834643712189141114'>👑</tg-emoji> "
         "2": "🥈 "
         "3": "🥉 "
+    top_money:
+      not_money:
+        "\n<tg-emoji emoji-id='5299024976429466492'>🤡</tg-emoji> Боже, в общий топ хотяб войди, не позорься"
       rank_messages:
         "1": "\n<tg-emoji emoji-id='5289722755871162900'>👑</tg-emoji> Отныне, ты самый богатый гуль в истории."
         "2": "\n<b>Ты на 2-ом месте</b> и теперь не являешься бездарем."
         "3": "\n<b>Ты вошёл в тройку миллионеров по BlazeCoin!</b>"
         "4": "\n<tg-emoji emoji-id='5258084656674250503'>🚪</tg-emoji> <i>Ты на <b>{rank}—м</b> месте, бездарь</i>"
-        "5": "\n<tg-emoji emoji-id='5299024976429466492'>🤡</tg-emoji> Боже, в общий топ хотяб войди, не позорься"
     top_kagune:
-      prefixes:
-        "1": "<tg-emoji emoji-id='5834643712189141114'>👑</tg-emoji> "
-        "2": "🥈 "
-        "3": "🥉 "
       top_1_status:
         "\n<i>Гуль по имени {name} является самым сильным среди всех.</i>"
-    top_snap:
-       prefixes:
-         "1": "<tg-emoji emoji-id='5834643712189141114'>👑</tg-emoji> "
-         "2": "🥈 "
-         "3": "🥉 "

@@ -13,7 +13,7 @@ from app.bot.keyboards.tops.tops_keyboard import get_update_top_kagune_kb
 router = Router()
 
 @router.message(F.text.lower() == "топ кагуне", GhoulRequired())
-async def top_kagune_command(message: Message, user: UserData):
+async def top_kagune_cmd(message: Message, user: UserData):
     result = await top_service.process_tops(user=user, top_type="kagune")
     text = build_top_kagune_text(result)
 

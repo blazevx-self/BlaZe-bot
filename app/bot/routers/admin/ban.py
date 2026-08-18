@@ -12,7 +12,7 @@ async def ban_bot(message: Message):
     if not message.text:
         return
 
-    args = message.text.split(maxsplit=3)
+    args = message.text.split(maxsplit=2)
 
     if message.reply_to_message and message.reply_to_message.from_user:
         if message.reply_to_message.from_user.is_bot:
@@ -28,7 +28,9 @@ async def ban_bot(message: Message):
             await message.reply(
                 "<b>Использование:</b> /ban «id или @username» [длительность] [причина]\n\n"
                 "<b>Длительность:</b> <code>30m, 24h, 7d</code>\n"
-                "<b>Без неё</b> — <code>навсегда.</code>"
+                "<b>Без неё</b> — <code>навсегда.</code>\n\n"
+                "<b>Причина:</b> <code>текст</code>\n"
+                "<b>Без нёё — не указана.</b>" 
             )
             return
 

@@ -12,6 +12,7 @@ from app.core.constants.system.paths import FONT_PATH
 from app.types.services_result.game import GuessResult
 from app.utils.logger import system_logger
 
+
 BACKGROUND = (18, 18, 19)
 
 EMPTY_FILL = (18, 18, 19)

@@ -34,31 +34,14 @@ class AuditService:
         )
 
     @staticmethod
-    def handle_message(
-            user_info: str,
-            message: Message,
-            process_time: float
-    ) -> None:
-        """
-        Обрабатывает входящее текстовое сообщение.
-
-        Выполняет:
-        - логирование команды
-        - security проверки
-        - фильтрацию системных сообщений
-        - контроль производительности
-        """
-
+    def handle_message(user_info: str, message: Message, process_time: float) -> None:
         text = message.text or "NOT TEXT"
         chat_type = message.chat.type
 
         if AuditService._is_wordle_guess(message):
             return
 
-        if text.startswith("/"):
-            return
-
-        logger_service.log_message(
+        logger_service.log_command(
             user_info=user_info,
             chat_type=chat_type,
             command=text,
@@ -71,25 +54,11 @@ class AuditService:
             event_name=message.__class__.__name__
         )
 
-
     @staticmethod
-    def handle_callback(
-            user_info: str,
-            callback: CallbackQuery,
-            process_time: float
-    ) -> None:
-        """
-        Обрабатывает callback-запрос.
-
-        Выполняет:
-        - логирование callback действий
-        - security проверки
-        - контроль скорости обработки
-        """
-
+    def handle_callback(user_info: str, callback: CallbackQuery, process_time: float) -> None:
         callback_data = callback.data or "NOT DATA"
 
-        if callback_data.startswith(("q_", "quiz_again")):
+        if callback_data.startswith(("q_", "quiz_again", "stat:", "locked")):
             return
 
         logger_service.log_callback(
@@ -114,7 +83,6 @@ class AuditService:
             event_name=callback.__class__.__name__
         )
 
-
     @staticmethod
     async def handle_exception(
             *,
@@ -125,14 +93,6 @@ class AuditService:
             error: Exception,
             traceback_text: str
     ) -> None:
-        """
-        Обрабатывает исключения в middleware/хендлерах.
-
-        Выполняет:
-        - логирование ошибки
-        - уведомление администратора
-        """
-
         logger_service.log_error(
             user_info=user_info,
             event_name=event_name,

@@ -21,11 +21,6 @@ from app.utils.logger import stats_logger
 UpgradeAmount = Literal[1, 3, 5]
 
 class StatsService:
-    """Сервис управления характеристиками гуля.
-
-    Отвечает за отображения меню характеристик и обработку их улучшения.
-    """
-
     @staticmethod
     async def get_stats_menu(user: UserData) -> StatsResult:
         """Формирует меню характеристик игрока.

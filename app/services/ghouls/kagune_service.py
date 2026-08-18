@@ -14,12 +14,8 @@ from app.utils.format_num import format_num
 from app.utils.logger import kagune_logger
 
 class KaguneService:
-    """Сервис игровой механики развитие кагуне"""
-
     @staticmethod
     async def process_kagune_open(user: UserData) -> KaguneResult:
-        """Выдаёт пользователю первое кагуне случайного типа."""
-
         user_id = user.user_id
         kagune_type = game_cfg.kagune.random_type()
 
@@ -38,18 +34,13 @@ class KaguneService:
 
         return KaguneResult(
             status=ResultStatus.SUCCESS,
-            kagune_type=kagune_type
+            kagune_type=kagune_type,
+            gif=ghoul_service.get_kagune_obtained_gif()
         )
 
 
     @staticmethod
     async def process_kagune(user: UserData) -> KaguneResult:
-        """Обрабатывает улучшения кагуне.
-
-        Проверяет кулдаун, баланс пользователя, повышает уровень кагуне
-        и возвращает результат выполнения
-        """
-
         user_id = user.user_id
 
         if not user.kagune_was_obtained:

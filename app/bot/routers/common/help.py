@@ -13,12 +13,7 @@ from app.utils.logger import bot_logger
 router = Router()
 
 @router.message(Command('help'))
-async def help_me(message: Message) -> None:
-    bot_logger.info(
-        f"[COMMAND] name=\"{message.from_user.first_name}\" | user_id={message.from_user.id} | "
-        f"chat={message.chat.type} | command=\"/help\""
-    )
-
+async def help_me(message: Message) -> None:    
     await message.reply(
         text=build_help_text(),
         reply_markup=get_help_menu(),

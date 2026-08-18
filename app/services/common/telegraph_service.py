@@ -1,20 +1,21 @@
 from telegraph import Telegraph
 
-telegraph = Telegraph()
-telegraph.create_account(short_name='BlaZe | Bot')
+from app.configs.settings import settings
+from app.core.templates.common.telegraph_template import build_help_telegraph
 
 class TelegraphService:
-    """Сервис создания страниц Telegraph."""
+    def __init__(self):
+        self.telegraph = Telegraph(access_token=settings.TELEGRAPH_ACCESS_TOKEN.get_secret_value())
 
-    @staticmethod
-    def create_page(title: str, html: str) -> str:
-        """Создаёт страницу Telegraph и возвращает ссылку на неё."""
-
-        result = telegraph.create_page(
-            title=title,
-            html_content=html
+    def update_page(self) -> None:
+        self.telegraph.edit_page(
+            path=settings.TELEGRAPH_PAGE_PATH,
+            title="BlaZe | Bot — Помощь",
+            html_content=build_help_telegraph(),
         )
 
-        return f"https://telegra.ph/{result['path']}"
+    @property
+    def url(self) -> str:
+        return f"https://telegra.ph/{settings.TELEGRAPH_PAGE_PATH}"
 
 telegraph_service = TelegraphService()

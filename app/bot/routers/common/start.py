@@ -1,5 +1,5 @@
 from aiogram import Router, F, Bot
-from aiogram.filters import CommandStart
+from aiogram.filters import CommandStart, Command
 from aiogram.types import Message
 
 from app.types.entities import UserData
@@ -11,12 +11,7 @@ from app.utils.logger import bot_logger
 
 router = Router()
 
-@router.message(CommandStart(), F.chat.type == 'private')
+@router.message(CommandStart())
 async def cmd_start(message: Message, bot: Bot, user: UserData):
-    bot_logger.info(
-        f"[COMMAND] name=\"{message.from_user.first_name}\" | user_id={message.from_user.id} | "
-        f"chat={message.chat.type} | command=\"/start\""
-    )
-
     result = await start_service.process_start(user=user, bot=bot)
     await message.reply(text=result.text, reply_markup=start_keyboard())

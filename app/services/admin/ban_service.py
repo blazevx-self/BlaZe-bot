@@ -8,8 +8,6 @@ from app.types.services_result.admin import BanResult
 from app.database.repositories.users_repository import user_repository
 
 class BanService:
-    """Сервис управления банами пользователей."""
-    
     @staticmethod
     def _parse_duration(value: str) -> datetime | None:
         """'7d', '24h', '30m' -> datetime. Всё остальное -> None (перманентно)."""
@@ -23,7 +21,6 @@ class BanService:
             return datetime.now(timezone.utc) + timedelta(**{units[value[-1]]: int(value[:-1])})
 
         return None
-
 
     @staticmethod
     async def _resolve_user(query: str | int) -> UserData:
@@ -41,8 +38,6 @@ class BanService:
         duration: str | None = None,
         reason: str | None = None
     ) -> BanResult:
-        """Блокирует пользователя на указанный срок или навсегда."""
-
         user = await self._resolve_user(query)
 
         if user.is_banned:
@@ -65,10 +60,7 @@ class BanService:
             reason=reason
         )
 
-
     async def unban(self, query: str | int) -> UserData:
-        """Снимает бан с пользователя."""
-
         user = await self._resolve_user(query)
 
         if not user.is_banned:
@@ -93,9 +85,8 @@ class BanService:
             f"<b>Причина:</b> <i>{result.reason or 'Не указана'}</i>"
         )
 
-
     @staticmethod
-    def fmt_unban_result(user: UserData,) -> str:
+    def fmt_unban_result(user: UserData) -> str:
         return (
         f"✅ Пользователь <code>{user.user_id}</code> "
         f"({user.name}) <b>разблокирован.</b>\n\n"

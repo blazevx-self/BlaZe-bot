@@ -13,7 +13,7 @@ from app.bot.keyboards.tops.tops_keyboard import get_update_top_snap_kb
 router = Router()
 
 @router.message(F.text.lower() == "топ щелк", GhoulRequired())
-async def snap_top_command(message: Message, user: UserData):
+async def snap_top_cmd(message: Message, user: UserData):
     result = await top_service.process_tops(user=user, top_type="snap")
     text = build_top_snap_text(result)
 

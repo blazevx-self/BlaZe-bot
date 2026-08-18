@@ -15,8 +15,6 @@ from app.database.repositories.users_repository import user_repository
 from app.utils.logger import start_logger
 
 class StartService:
-    """Сервис обработки команды /start."""
-
     @staticmethod
     async def process_start(user: UserData, bot: Bot) -> StartResult:
         """Проверяет подписку пользователя и выдаёт стартовый бонус.

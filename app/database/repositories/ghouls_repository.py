@@ -102,7 +102,7 @@ class GhoulRepository:
 
     async def upgrade_stat(self, user_id: int, stat: str, amount: int, price: int) -> bool:
         if stat not in ALLOWED_STATS:
-            raise ValueError(f"Unknown strat: {stat}")
+            raise ValueError(f"Unknown stat: {stat}")
 
         async with DatabaseManager.connect() as db:
             async with db.execute("SELECT money FROM users WHERE user_id = ?", (user_id,)) as cursor:
@@ -111,10 +111,19 @@ class GhoulRepository:
                 if not user_row or user_row['money'] < price:
                     return False
 
-            await db.execute("UPDATE users SET money = money - ? WHERE user_id = ?", (price, user_id))
-            await db.execute(f"UPDATE ghouls SET {stat} = {stat} + ? WHERE user_id = ?", (amount, user_id))
-            await db.commit()
+            cursor_users = await db.execute("UPDATE users SET money = money - ? WHERE user_id = ?", (price, user_id))
+        
+            if cursor_users.rowcount == 0:
+                await db.rollback()
+                return False
 
+            cursor_ghouls = await db.execute(f"UPDATE ghouls SET {stat} = {stat} + ? WHERE user_id = ?", (amount, user_id))
+
+            if cursor_ghouls.rowcount == 0:
+                await db.rollback()
+                return False
+
+            await db.commit()
             return True
 
 ghouls_repository = GhoulRepository()

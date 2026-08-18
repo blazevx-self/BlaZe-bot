@@ -14,16 +14,8 @@ from app.utils.format_num import format_num
 from app.utils.logger import snap_logger
 
 class SnapService:
-    """Сервис игровой механики щелчков"""
-
     @staticmethod
     async def process_snap(user: UserData) -> SnapResult:
-        """Обрабатывает выполнение команды <Щелк>.
-
-        Проверяет кулдаун, начисляет награду, обновляет статистику пользователя
-        и возвращает результат.
-        """
-
         now = int(time.time())
         cooldown_time = game_cfg.snap.cooldown
 

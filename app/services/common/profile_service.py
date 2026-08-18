@@ -10,8 +10,6 @@ from app.utils.truncate_name import truncate_text
 from app.utils.time import days_since_registration
 
 class ProfileService:
-    """Сервис формирования обычного профиля пользователя"""
-
     @staticmethod
     def get_status(user: UserData, days_in_project: int) -> str:
         """Определяет статус пользователя по его общей активности."""
@@ -19,11 +17,7 @@ class ProfileService:
         weights = game_cfg.profile_statuses.weights
         statuses = game_cfg.profile_statuses.statuses
 
-        profile_score = (
-            user.money * weights.money
-            + days_in_project * weights.days_in_project
-        )
-
+        profile_score = days_in_project
         current_status = "Новичок"
 
         for threshold in sorted(statuses):
@@ -37,8 +31,6 @@ class ProfileService:
 
     @staticmethod
     async def build_profile(user: UserData) -> ProfileResult:
-        """Формирует обычный профиль пользователя."""
-        
         user_id = user.user_id
         link = f'<a href="tg://user?id={user_id}"><b>{truncate_text(user.name)}</b></a>'
 

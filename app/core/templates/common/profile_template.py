@@ -1,4 +1,3 @@
-# Шаблон обычного профиля пользователя
 def profile_text(
         user_link: str,
         user_id: int,

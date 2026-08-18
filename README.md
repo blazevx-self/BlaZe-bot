@@ -80,14 +80,19 @@ python -m app.__main__
 
 Для работы проекта используются:
 
-- .env
-- config.yaml
+- `.env` — секретные и окруженческие параметры;
+- `config.yaml` — основные настройки и тексты бота.
 
-Основные параметры:
-```
-- TOKEN
-- ADMIN_ID
-- DATABASE_URL
+Пример переменных окружения находится в `.env.example`.
+
+Основные параметры `.env`:
+
+```env
+BOT_TOKEN=your_bot_token
+ADMIN_ID=your_telegram_id
+DATABASE_URL=your_database_url
+TELEGRAPH_ACCESS_TOKEN=your_telegraph_access_token
+TELEGRAPH_PAGE_PATH=your_telegraph_page_path
 ```
 
 ---

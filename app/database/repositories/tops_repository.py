@@ -20,6 +20,11 @@ class TopsRepository:
                     SELECT user_id, ghoul_nickname, kagune_lvl FROM ghouls WHERE kagune_lvl > 0 ORDER BY kagune_lvl DESC LIMIT ?
                 """
 
+            elif top_type == "coffee":
+                sql = """
+                    SELECT user_id, ghoul_nickname, coffee_total FROM ghouls WHERE coffee_total > 0 ORDER BY coffee_total DESC LIMIT ?
+                """
+
             else:
                 raise ValueError(f"Unknown top type: {top_type}")
 
@@ -60,6 +65,18 @@ class TopsRepository:
                             RANK() OVER 
                         (ORDER BY kagune_lvl DESC) AS rank 
                             FROM ghouls WHERE kagune_lvl > 0 
+                    )
+                    SELECT rank FROM ranked WHERE user_id = ?
+                """
+
+            elif top_type == "coffee":
+                sql = """
+                    WITH ranked AS (
+                        SELECT 
+                            user_id,
+                            RANK() OVER
+                        (ORDER BY coffee_total DESC) AS rank
+                            FROM ghouls WHERE coffee_total > 0    
                     )
                     SELECT rank FROM ranked WHERE user_id = ?
                 """

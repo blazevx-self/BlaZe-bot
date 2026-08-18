@@ -85,6 +85,22 @@ class UserRepository:
 
             await db.commit()
 
+    async def modify_balance(self, user_id: int, amount: int) -> None:
+        async with DatabaseManager.connect() as db:
+            cursor = await db.execute(
+                """
+                UPDATE users
+                SET money = MAX(0, money + ?)
+                WHERE user_id = ?
+                RETURNING money
+                """, (amount, user_id)
+            )
+            
+            row = await cursor.fetchone()
+            await db.commit()
+
+            return row[0]
+
     async def change_data(self, user_id: int, **kwargs) -> None:
         if not kwargs:
            raise ValueError("No fields to update")
@@ -100,7 +116,7 @@ class UserRepository:
             await db.commit()
 
     # Добавление бабла
-    async def add_money(self ,user_id: int, amount: int) -> None:
+    async def add_money(self, user_id: int, amount: int) -> None:
         async with DatabaseManager.connect() as db:
             await db.execute("UPDATE users SET money = money + ? WHERE user_id = ?", (amount, user_id))
             await db.commit()

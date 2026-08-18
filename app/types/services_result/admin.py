@@ -8,3 +8,10 @@ class BanResult:
     user: UserData
     banned_until: datetime | None = None
     reason: str | None = None
+
+@dataclass
+class ModifyBalanceResult:
+    user: UserData
+    amount: int
+    balance: int
+    currency: str = "BC"

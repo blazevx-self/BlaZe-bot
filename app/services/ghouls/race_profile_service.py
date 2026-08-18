@@ -8,15 +8,8 @@ from app.services.ghouls.ghoul_service import ghoul_service
 from app.utils.truncate_name import truncate_text
 
 class RaceProfileService:
-    """Сервис формирования расового профиля игрока."""
-
     @staticmethod
     async def build_race_profile(user: UserData) -> RaceProfileResult:
-        """Формирует расовый профиль гуля.
-
-        Вычисляет суммарную мощь, ранг угрозы и собирает текст профиля.
-        """
-
         power = ghoul_service.calculate_power(user)
         danger_rank = ghoul_service.get_danger_rank(power)
 

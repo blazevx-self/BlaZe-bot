@@ -11,5 +11,3 @@ ALLOWED_CALLBACK_PREFIXES = (
     "stat",
     "locked"
 )
-
-

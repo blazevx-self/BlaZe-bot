@@ -16,16 +16,8 @@ from app.utils.time import format_duration
 from app.utils.logger import coffee_logger
 
 class CoffeeService:
-    """Сервис игровой механики употребления кофе."""
-
     @staticmethod
     async def process_coffee(user: UserData) -> CoffeeResult:
-        """Обрабатывает употребления кофе.
-
-        Проверяет ограничения, выдаёт награду, обновляет данные игрока
-        и возвращает результат
-        """
-
         user_id = user.user_id
         now = int(time.time())
         

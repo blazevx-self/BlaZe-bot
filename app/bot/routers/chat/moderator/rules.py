@@ -40,5 +40,4 @@ async def set_rules(message: Message):
 @router.message(F.text.lower().startswith("удалить правила"), GroupOnlyFilter(), GroupModeratorFilter())
 async def delete_rules(message: Message):
     await chat_service.delete_rules(chat_id=message.chat.id)
-
     await message.reply("<b>Все правила чата были удалены.</b>")

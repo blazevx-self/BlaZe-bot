@@ -53,11 +53,7 @@ def _build_caption(result, word: str) -> str | None:
     )
 
 
-async def _delete_board(
-        bot: Bot,
-        chat_id: int,
-        message_id: int
-) -> bool:
+async def _delete_board(bot: Bot, chat_id: int, message_id: int) -> bool:
     try:
         await bot.delete_message(chat_id=chat_id, message_id=message_id)
         return True
@@ -68,12 +64,7 @@ async def _delete_board(
 
 @router.message(Command("wordle"))
 @router.message(F.text.lower() == "вротли")
-async def wordle_start(message: Message):
-    bot_logger.info(
-        f"[COMMAND] name=\"{message.from_user.first_name}\" | user_id={message.from_user.id} | "
-        f"chat={message.chat.type} | command=\"/wordle\""
-    )
-
+async def wordle_start(message: Message, bot: Bot):
     if not message.from_user:
         return
 
@@ -81,6 +72,11 @@ async def wordle_start(message: Message):
     photo = wordle_service.get_board(telegram_id=user_id)
     
     if photo:
+        old_message_id = wordle_service.get_board_message_id(user_id)
+
+        if old_message_id:
+            await _delete_board(bot, message.chat.id, old_message_id)
+
         sent = await message.reply_photo(
             photo=BufferedInputFile(file=photo, filename="wordle.png"),
             caption="⏳ У вас есть незавершённая игра.\nВведите слово из 5 букв чтобы продолжить."
@@ -110,9 +106,10 @@ async def wordle_guess(message: Message, bot: Bot, user: UserData):
     user_id = message.from_user.id
     word = message.text.strip()
 
+    old_message_id = wordle_service.get_board_message_id(user_id)
+
     try:
         result = await wordle_service.make_guess(telegram_id=user_id, word=word, user=user)
-
     except ValueError as e:
         await message.reply(str(e))
         return
@@ -122,8 +119,6 @@ async def wordle_guess(message: Message, bot: Bot, user: UserData):
 
     caption = _build_caption(result, word)
     photo = BufferedInputFile(file=result.image, filename="wordle.png")
-
-    old_message_id = wordle_service.get_board_message_id(user_id)
     
     if old_message_id:
         await _delete_board(bot, message.chat.id, old_message_id)
@@ -134,6 +129,4 @@ async def wordle_guess(message: Message, bot: Bot, user: UserData):
         pass
 
     sent = await message.answer_photo(photo=photo, caption=caption)
-
-    if not result.is_game_over:
-        wordle_service.set_board_message_id(user_id, sent.message_id)
+    wordle_service.set_board_message_id(user_id, sent.message_id)

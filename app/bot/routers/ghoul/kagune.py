@@ -8,6 +8,8 @@ from app.core.enums import ResultStatus
 from app.types.entities import UserData
 
 from app.services.ghouls.kagune_service import kagune_service
+from app.bot.filters.owner_filter import OwnerCallbackFilter
+
 from app.bot.keyboards.ghoul.kagune_keyboard import get_grow_kagune_kb, get_open_kagune_kb
 
 from app.utils.format_num import format_num
@@ -22,7 +24,7 @@ async def kagune_menu(message: Message, user: UserData):
     if result.status == ResultStatus.NO_KAGUNE:
         text = cfg['message']['kagune']['kagune_1'].format(name=message.from_user.first_name)
 
-        await message.reply(text=text, reply_markup=get_open_kagune_kb())
+        await message.reply(text=text, reply_markup=get_open_kagune_kb(user.user_id))
         return
 
     if result.status == ResultStatus.COOLDOWN:
@@ -43,7 +45,7 @@ async def kagune_menu(message: Message, user: UserData):
     await message.reply_animation(animation=result.gif, caption=result.text,)
 
 
-@router.callback_query(F.data == "kagune_new")
+@router.callback_query(F.data.startswith("kagune_new_"), OwnerCallbackFilter())
 async def kagune_open(callback: CallbackQuery, user: UserData):
     result = await kagune_service.process_kagune_open(user=user)
 
@@ -52,11 +54,17 @@ async def kagune_open(callback: CallbackQuery, user: UserData):
         name=callback.from_user.first_name
     )
 
-    await callback.message.edit_text(text=text, reply_markup=get_grow_kagune_kb())
+    await callback.message.edit_media(
+        media=InputMediaAnimation(
+            media=result.gif,
+            caption=text,
+        ),
+        reply_markup=get_grow_kagune_kb(user.user_id)
+    )
     await callback.answer()
 
 
-@router.callback_query(F.data == "kagune_ras")
+@router.callback_query(F.data.startswith("kagune_ras_"), OwnerCallbackFilter())
 async def kagune_grow(callback: CallbackQuery, user: UserData):
     result = await kagune_service.process_kagune(user=user)
 
@@ -70,9 +78,9 @@ async def kagune_grow(callback: CallbackQuery, user: UserData):
 
     if result.status == ResultStatus.NOT_ENOUGH_MONEY:
         missing = result.missing
-        text = cfg['message']['kagune']['not_enough_money'].format(missing=format_num(missing))
+        text = f"💸 Не хватает на балике: {format_num(missing)} BlaZeCoin"
 
-        await callback.answer(text=text, show_alert=True)
+        await callback.answer(text=text, show_alert=False)
         return
 
     if result.status == ResultStatus.SUCCESS:

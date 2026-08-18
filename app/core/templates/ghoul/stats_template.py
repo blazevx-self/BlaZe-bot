@@ -4,7 +4,6 @@ from app.types.entities import UserData
 
 from app.configs.yaml import cfg
 
-# шаблон прокачки характеристик гуля
 def stats_text(user: UserData, stats: dict) -> str:
     return cfg['message']['stats']['stats_text'].format(
         money=format_num(user.money),

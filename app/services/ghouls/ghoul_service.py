@@ -11,7 +11,7 @@ from app.types.entities import UserData
 from app.database.repositories.users_repository import user_repository
 
 class GhoulService:
-    """Сервис игровых механик гулей."""
+    """Общий сервис игровых механик гулей."""
 
     @staticmethod
     async def check_ghoul(
@@ -57,6 +57,11 @@ class GhoulService:
                 break
 
         return current_gif
+
+
+    @staticmethod
+    def get_kagune_obtained_gif() -> str:
+        return cfg["assets"]["kagune"]["obtained_gif"]
 
 
     @staticmethod

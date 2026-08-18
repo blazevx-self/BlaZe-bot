@@ -1,0 +1,11 @@
+class ChatError(Exception):
+    pass
+
+class ChatNotFoundError(ChatError):
+    pass
+
+class ChatValidationError(ChatError):
+    pass
+
+class ChatStateError(ChatError):
+    pass 

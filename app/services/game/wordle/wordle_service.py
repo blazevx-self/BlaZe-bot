@@ -19,8 +19,6 @@ from app.database.repositories.users_repository import user_repository
 from app.utils.logger import wordle_logger
 
 class WordleService:
-    """Сервис управления игровой логикой Wordle."""
-    
     def __init__(self) -> None:
         self._sessions: dict[int, WordleSession] = {}
         self._words = self._load_words()
