@@ -1,129 +1,148 @@
-from aiosqlite import Row
-from app.database.base import DatabaseManager
+from typing import Any
+
+from sqlalchemy import select, update, func, exists
+from sqlalchemy.dialects.postgresql import insert
+
+from app.database.models.ghoul import GhoulOrm
+from app.database.repositories.base import Base
+
 from app.core.constants.game.stats import ALLOWED_STATS
+from app.utils.logger import system_logger
 
-# noinspection PyMethodMayBeStatic
-class GhoulRepository:
-    # КОФЕ
-    async def set_coffee_overdose(self, user_id: int, cooldown_timestamp: int) -> None:
-        async with DatabaseManager.connect() as db:
-            await db.execute("""
-                UPDATE ghouls 
-                SET coffee_cooldown = ?, coffee_session = 0 WHERE user_id = ?
-            """, (cooldown_timestamp, user_id))
-
-            await db.commit()
-
-    async def drink_coffee_success(self, user_id: int, amount: int, current_time: int) -> None:
-        async with DatabaseManager.connect() as db:
-            await db.execute("""
-                UPDATE users SET money = money + ? WHERE user_id = ?
-            """, (amount, user_id))
-
-            await db.execute("""
-                UPDATE ghouls SET coffee_total = coffee_total + 1, coffee_last_time = ? WHERE user_id = ?
-            """, (current_time, user_id))
-
-            await db.commit()
-
-    # КАГУНЕ
-    async def update_kagune_level(self ,user_id: int, new_lvl: int, price: int, timestamp: int) -> None:
-        async with DatabaseManager.connect() as db:
-            await db.execute("""
-                UPDATE ghouls SET kagune_lvl = ?, kagune_last_grow = ? WHERE user_id = ?
-            """, (new_lvl, timestamp, user_id))
-
-            await db.execute("""
-                UPDATE users SET money = money - ? WHERE user_id = ?
-            """, (price, user_id))
-
-            await db.commit()
-
-    async def init_kagune(self ,user_id: int, k_type: str) -> None:
-        async with DatabaseManager.connect() as db:
-            cursor = await db.execute("SELECT kagune_was_obtained FROM ghouls WHERE user_id = ?", (user_id,))
-            row = await cursor.fetchone()
-
-            if row and row[0]:
-                return
-
-            await db.execute("""
-                UPDATE ghouls SET kagune_type = ?, kagune_lvl = 1, kagune_was_obtained = 1 WHERE user_id = ?
-                AND kagune_was_obtained = 0
-            """, (k_type, user_id))
-
-            await db.commit()
-
-    # ЩЕЛК
-    async def process_snap(
-        self,
-        user_id: int,
-        money: int,
-         timestamp: int,
-    ) -> bool:
-        async with DatabaseManager.connect() as db:
-            try:
-                cursor = await db.execute(
-                    """
-                    UPDATE users
-                    SET money = money + ?
-                    WHERE user_id = ?
-                    """, 
-                    (money, user_id),
-                )
-
-                if cursor.rowcount == 0:
-                    return False
-
-                await db.execute(
-                    """
-                    UPDATE ghouls
-                    SET clicks = clicks + 1,
-                    last_click = ?
-                    WHERE user_id = ?
-                    """,
-                (timestamp, user_id),
+class GhoulRepository(Base):
+    async def upsert(self, telegram_id: int, **kwargs: Any) -> GhoulOrm:
+        values = {"telegram_id": telegram_id, **kwargs}
+        
+        update_dict = {
+            k: v for k, v in values.items()
+            if k not in ["id", "telegram_id", "became_ghoul_at"]
+        }     
+        
+        if not update_dict:
+            update_dict = {"updated_at": func.now()} 
+        else:
+            update_dict["updated_at"] = func.now()
+            
+        stmt = (
+            insert(GhoulOrm)
+            .values(**values)
+            .on_conflict_do_update(
+                index_elements=[GhoulOrm.telegram_id],
+                set_=update_dict
             )
-
-                await db.commit()
-                return True
-
-            except Exception:
-                await db.rollback()
-                raise
-
-    # СТАТЫ
-    async def get_stats(self, user_id: int) -> None | Row:
-        async with DatabaseManager.connect() as db:
-            async with db.execute("""
-                SELECT strength, agility, speed, hp, regen FROM ghouls WHERE user_id = ?
-            """, (user_id,)) as cursor:
-                return await cursor.fetchone()
-
-    async def upgrade_stat(self, user_id: int, stat: str, amount: int, price: int) -> bool:
+            .returning(GhoulOrm)
+        )
+        
+        ghoul = await self.session.scalar(stmt)
+        
+        if ghoul is None:
+            system_logger.error(f"Ghoul ({telegram_id}) not found after upsert operation")
+            raise ValueError(f"Ghoul ({telegram_id}) not found")
+        
+        return ghoul
+    
+    
+    async def get(self, telegram_id: int) -> GhoulOrm | None:
+        stmt = select(GhoulOrm).where(GhoulOrm.telegram_id == telegram_id)
+        return await self.session.scalar(stmt)
+    
+    
+    async def get_by_id(self, ghoul_id: int) -> GhoulOrm | None:
+        stmt = select(GhoulOrm).where(GhoulOrm.id == ghoul_id)
+        return await self.session.scalar(stmt)
+    
+    
+    async def exists(self, telegram_id: int) -> bool:
+        stmt = select(exists().where(GhoulOrm.telegram_id == telegram_id))
+        return await self.session.scalar(stmt)
+    
+    
+    async def init_kagune(self, telegram_id: int, kagune_type: str) -> GhoulOrm:
+        stmt = (
+            update(GhoulOrm)
+            .where(
+                GhoulOrm.telegram_id == telegram_id,
+                GhoulOrm.kagune_was_obtained.is_(False)
+            )
+            .values(
+                kagune_type=kagune_type,
+                kagune_strength=1,
+                kagune_was_obtained=True
+            )
+            .returning(GhoulOrm)
+        )
+        
+        ghoul = await self.session.scalar(stmt)
+                
+        if ghoul is None:
+            raise ValueError(f"Cannot initialize kagune for ghoul ({telegram_id})")
+                
+        return ghoul
+    
+    
+    async def update_kagune_strength(self, telegram_id: int, new_strength: int) -> GhoulOrm:
+        stmt = (
+            update(GhoulOrm)
+            .where(GhoulOrm.telegram_id == telegram_id)
+            .values(kagune_strength=new_strength)
+            .returning(GhoulOrm)
+        )
+        
+        ghoul = await self.session.scalar(stmt)
+        
+        if ghoul is None:
+            raise ValueError(f"Ghoul ({telegram_id}) not found") 
+        
+        return ghoul
+            
+    
+    async def increment_snap_count(self, telegram_id: int, timestamp: int) -> GhoulOrm:
+        stmt = (
+            update(GhoulOrm)
+            .where(GhoulOrm.telegram_id == telegram_id)
+            .values(snap_count=GhoulOrm.snap_count + 1)
+            .returning(GhoulOrm)
+        )
+        
+        ghoul = await self.session.scalar(stmt)
+        
+        if ghoul is None:
+            raise ValueError(f"Ghoul ({telegram_id}) not found")
+        
+        return ghoul
+    
+    
+    async def increment_coffee_count(self, telegram_id: int, timestamp: int) -> GhoulOrm:
+        stmt = (
+            update(GhoulOrm)
+            .where(GhoulOrm.telegram_id == telegram_id)
+            .values(coffee_count=GhoulOrm.coffee_count + 1)
+        )
+        
+        ghoul = await self.session.scalar(stmt)
+        
+        if ghoul is None:
+            raise ValueError(f"Ghoul ({telegram_id}) not found")
+        
+        return ghoul
+    
+    
+    async def upgrade_stat(self, telegram_id: int, stat: str, amount: str) -> GhoulOrm:
         if stat not in ALLOWED_STATS:
             raise ValueError(f"Unknown stat: {stat}")
-
-        async with DatabaseManager.connect() as db:
-            async with db.execute("SELECT money FROM users WHERE user_id = ?", (user_id,)) as cursor:
-                user_row = await cursor.fetchone()
-
-                if not user_row or user_row['money'] < price:
-                    return False
-
-            cursor_users = await db.execute("UPDATE users SET money = money - ? WHERE user_id = ?", (price, user_id))
         
-            if cursor_users.rowcount == 0:
-                await db.rollback()
-                return False
-
-            cursor_ghouls = await db.execute(f"UPDATE ghouls SET {stat} = {stat} + ? WHERE user_id = ?", (amount, user_id))
-
-            if cursor_ghouls.rowcount == 0:
-                await db.rollback()
-                return False
-
-            await db.commit()
-            return True
-
-ghouls_repository = GhoulRepository()
+        stat_column = getattr(GhoulOrm, stat)
+        
+        stmt = (
+            update(GhoulOrm)
+            .where(GhoulOrm.telegram_id == telegram_id)
+            .values({stat_column: stat_column + amount})
+            .returning(GhoulOrm)
+        )
+        
+        ghoul = await self.session.scalar(stmt)
+        
+        if ghoul is None:
+            raise ValueError(f"Ghoul ({telegram_id}) not found")
+        
+        return ghoul

@@ -1,4 +1,4 @@
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession, AsyncEngine
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
 from app.configs.settings import settings
 from app.database.models.base import Base
@@ -17,7 +17,7 @@ session_factory = async_sessionmaker(
     expire_on_commit=False,
 )
 
-async def flush_session(engine: AsyncEngine):
+async def resete_session(engine: AsyncEngine):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)

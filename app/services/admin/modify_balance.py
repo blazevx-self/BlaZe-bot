@@ -19,12 +19,12 @@ class ModifyBalanceService:
     
     async def modify_balance(self, query: str | int, amount: int) -> ModifyBalanceResult:
         if amount == 0:
-            raise ValueError("⚠️ Сумма операции не может быть меньше или равна 0.")
+            raise ValueError("⚠️ Сумма операции не может быть равна 0.")
 
         if abs(amount) > MAX_AMOUNT:
             raise ValueError(f"⚠️ Превышен лимит суммы операции ({format_num(MAX_AMOUNT)} BC).")
         
-        user = await user_repository.resolve(query)
+        user = await self._resolve_user(query)
         new_balance = await user_repository.modify_balance(user_id=user.user_id, amount=amount)
         
         return ModifyBalanceResult(

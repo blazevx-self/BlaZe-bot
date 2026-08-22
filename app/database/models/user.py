@@ -16,12 +16,7 @@ class UserOrm(Base):
     username: Mapped[str | None] = mapped_column(nullable=True)
 
     money: Mapped[int] = mapped_column(default=0)
-    donate_money: Mapped[int] = mapped_column(default=0)
-
-    quiz_attempts: Mapped[int] = mapped_column(default=15)
-    quiz_reset_at: Mapped[datetime | None] = mapped_column(nullable=True)
-
-    is_admin: Mapped[bool] = mapped_column(default=False, nullable=False)
+    
     is_subscribed: Mapped[bool] = mapped_column(default=False, nullable=False)
     
     is_banned: Mapped[bool] = mapped_column(default=False)
@@ -30,4 +25,3 @@ class UserOrm(Base):
 
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now())
-

@@ -5,7 +5,7 @@ from aiogram.types import Message, CallbackQuery, InputMediaAnimation
 
 from app.configs.yaml import cfg
 from app.core.enums import ResultStatus
-from app.types.entities import UserData
+from app.types.entities.user import UserData
 
 from app.services.ghouls.kagune_service import kagune_service
 from app.bot.filters.owner_filter import OwnerCallbackFilter

@@ -1,39 +1,17 @@
-from typing import Any, Mapping
-from datetime import datetime
+from app.database.models.user import UserOrm
+from app.types.entities.user import UserData
 
-from app.types.entities import UserData
-
-def row_to_user(row: Mapping[str, Any]) -> UserData:
-
+def orm_to_user(user: UserOrm) -> UserData:
     return UserData(
-        user_id=row["user_id"],
-        name=row["name"],
-        username=row["username"],
-        money=row["money"],
-        is_subscribed=bool(row["is_subscribed"]),
-        is_banned=row["is_banned"],
-        ban_reason=row["ban_reason"],
-        banned_until=row["banned_until"],
-        created_at=datetime.fromisoformat(row["created_at"]),
+        telegram_id=user.telegram_id,
+        name=user.name,
+        username=user.username,
+    
+        money=user.money,
 
-        kagune_was_obtained=bool(row["kagune_was_obtained"]),
-        kagune_lvl=row["kagune_lvl"],
-        kagune_type=row["kagune_type"],
-        kagune_last_grow=row["kagune_last_grow"],
-        kakuja_activated=bool(row["kakuja_activated"]) if "kakuja_activated" in row.keys() else False,
+        is_banned=user.is_banned,
+        ban_reason=user.ban_reason,
+        banned_until=user.banned_until,
 
-        strength=row["strength"],
-        agility=row["agility"],
-        speed=row["speed"],
-        hp=row["hp"],
-        regen=row["regen"],
-
-        level=row["level"],
-
-        last_snap=row["last_click"],
-        snap=row["clicks"],
-
-        coffee_last_time=row["coffee_last_time"],
-        coffee_cooldown=row["coffee_cooldown"],
-        coffee_total=row["coffee_total"],
+        created_at=user.created_at
     )

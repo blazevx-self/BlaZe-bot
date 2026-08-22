@@ -24,7 +24,7 @@ async def modify_balance_cmd(message: Message):
     
     else:
         if len(args) < 3:
-            await message.reply("<b>Использование:</b>\n/modify_balance «id или @username» [+ | - число] ")
+            await message.reply("<b>Использование:</b>\n/modify_balance «id или @username» [+ или - число]")
             return
 
         query = args[1]

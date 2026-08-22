@@ -2,7 +2,6 @@ from aiogram import Router, F
 from aiogram.types import Message
 
 from app.bot.keyboards.common.help_keyboard import get_help_menu_unknown_command
-from app.utils.logger import bot_logger
 
 router = Router()
 
