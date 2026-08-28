@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from app.types.entities import UserData
+from app.types.entities.user import UserData
+from app.types.entities.ghoul import GhoulData
 
 @dataclass
 class BanResult:
@@ -15,3 +16,8 @@ class ModifyBalanceResult:
     amount: int
     balance: int
     currency: str = "BC"
+
+@dataclass
+class AdminUserProfileResult:
+    user: UserData
+    ghoul: GhoulData | None = None

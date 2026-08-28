@@ -1,5 +1,5 @@
 from app.configs.yaml import cfg
-from app.types.entities import UserData
+from app.types.entities.user import UserData
 
 from app.utils.format_num import format_num
 from app.utils.truncate_name import truncate_text

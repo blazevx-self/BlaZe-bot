@@ -8,30 +8,37 @@ from aiogram.enums import ParseMode
 from app.configs.settings import settings
 
 from app.bot.routers.routes import all_routers
+from app.database.database import (
+    session_factory,
+    create_tables,
+    engine,
+    reset_session
+)
+
 from app.utils.logger import system_logger
 
 from app.bot.middleware.logging_middleware import LoggingMiddleware
 from app.bot.middleware.antispam_middleware import AntiSpamGhoulMiddleware
 from app.bot.middleware.antiflood_middleware import AntifloodMiddleware
-from app.bot.middleware.user_sync_middleware import UserSyncMiddleware
+from app.bot.middleware.sync_entities_middleware import SyncEntitiesMiddleware
 from app.bot.middleware.ban_middleware import BanMiddleware
-
-from app.database.init_db import init_db
+from app.bot.middleware.database_middleware import DatabaseMiddleware
 
 async def on_startup():
     system_logger.info("[SYSTEM] Bot started | version=1.0.0 | py=%s", sys.version.split()[0])
 
-
 async def on_shutdown():
     system_logger.info("[SYSTEM] Bot stopped")
-
 
 async def setup_middlewares(dp: Dispatcher) -> None:
     dp.message.middleware(LoggingMiddleware())
     dp.callback_query.middleware(LoggingMiddleware())
 
-    dp.message.middleware(UserSyncMiddleware())
-    dp.callback_query.middleware(UserSyncMiddleware())
+    dp.message.middleware(DatabaseMiddleware(session_factory=session_factory))
+    dp.callback_query.middleware(DatabaseMiddleware(session_factory=session_factory))
+
+    dp.message.middleware(SyncEntitiesMiddleware())
+    dp.callback_query.middleware(SyncEntitiesMiddleware())
 
     dp.message.middleware(BanMiddleware())
 
@@ -40,6 +47,13 @@ async def setup_middlewares(dp: Dispatcher) -> None:
     dp.message.middleware(AntifloodMiddleware(limit_seconds=5, max_requests=15))
     dp.callback_query.middleware(AntifloodMiddleware(limit_seconds=5, max_requests=15))
 
+async def init_database(reset: bool = False):
+    if reset:
+        await reset_session(engine)
+        system_logger.info("[DB] Database reset")
+    else:
+        await create_tables(engine)
+        system_logger.info("[DB] Database initialized")
 
 async def main():
     bot = Bot(
@@ -51,9 +65,10 @@ async def main():
     )
 
     try:
+        await init_database(reset=False)
+
         dp = Dispatcher()
-        
-        await init_db()
+
         await setup_middlewares(dp)
 
         dp.include_routers(*all_routers)

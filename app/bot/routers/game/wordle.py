@@ -4,12 +4,10 @@ from aiogram.filters import Command
 from aiogram.types import Message, BufferedInputFile
 
 from app.core.constants.game.wordle import MAX_ATTEMPTS, WORD_LENGTH
-from app.types.entities import UserData
+from app.types.entities.user import UserData
 
-from app.services.game.wordle.wordle_service import wordle_service
+from app.services.game.wordle.wordle_service import WordleService
 from app.bot.filters.wordle_filter import WordleGameFilter
-
-from app.utils.logger import bot_logger
 
 router = Router()
 
@@ -64,7 +62,7 @@ async def _delete_board(bot: Bot, chat_id: int, message_id: int) -> bool:
 
 @router.message(Command("wordle"))
 @router.message(F.text.lower() == "вротли")
-async def wordle_start(message: Message, bot: Bot):
+async def wordle_start(message: Message, bot: Bot, wordle_service: WordleService):
     if not message.from_user:
         return
 
@@ -99,7 +97,12 @@ async def wordle_start(message: Message, bot: Bot):
     wordle_service.set_board_message_id(user_id, sent.message_id)
 
 @router.message(WordleGameFilter())
-async def wordle_guess(message: Message, bot: Bot, user: UserData):
+async def wordle_guess(
+        message: Message,
+        bot: Bot,
+        user: UserData,
+        wordle_service: WordleService
+):
     if not message.from_user or not message.text:
         return
 

@@ -9,21 +9,23 @@ from app.configs.game import game_cfg
 from app.core.enums import ResultStatus
 
 from app.types.services_result.common import StartResult
-from app.types.entities import UserData
+from app.types.entities.user import UserData
 
-from app.database.repositories.users_repository import user_repository
+from app.database.repositories.users_repository import UserRepository
 from app.utils.logger import start_logger
 
 class StartService:
-    @staticmethod
-    async def process_start(user: UserData, bot: Bot) -> StartResult:
+    def __init__(self, user_repo: UserRepository):
+        self.user_repo = user_repo
+
+    async def start(self, user: UserData, bot: Bot) -> StartResult:
         """Проверяет подписку пользователя и выдаёт стартовый бонус.
 
         Если бонус уже был получен или пользователь не подписан,
         возвращает стандартное приветственное сообщение.
         """
 
-        user_id = user.user_id
+        user_id = user.telegram_id
 
         #Проверка подписки на канал через Telegram API
         try:
@@ -45,7 +47,7 @@ class StartService:
         if is_subscribed and not user.is_subscribed:
             bonus = game_cfg.start.bonus_amount
 
-            await user_repository.activate_subscribed_bonus(user_id=user_id, bonus=bonus)
+            await self.user_repo.activate_subscribed_bonus(telegram_id=user_id, bonus=bonus)
             
             start_logger.info(f"[START] Subscription bonus issued | user_id={user_id} | bonus={bonus}")
 
@@ -60,5 +62,3 @@ class StartService:
             status=ResultStatus.SUCCESS,
             text=text
         )
-
-start_service = StartService()

@@ -1,4 +1,5 @@
 import random
+
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 def get_quiz_keyboard(options_str: str, question_id: int, user_id: int) -> InlineKeyboardMarkup:

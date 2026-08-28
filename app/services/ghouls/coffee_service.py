@@ -1,85 +1,104 @@
-import time
 import random
 
 from app.configs.yaml import cfg
 from app.configs.game import game_cfg
 
 from app.core.enums import ResultStatus
+from app.core.enums.cooldown_action import CooldownAction
 
 from app.types.services_result.ghoul import CoffeeResult
-from app.types.entities import UserData
+from app.types.entities.user import UserData
+from app.types.entities.ghoul import GhoulData
 
-from app.database.repositories.ghouls_repository import ghouls_repository
+from app.services.cooldown_service import CooldownService
+
+from app.database.repositories.ghouls_repository import GhoulRepository
+from app.database.repositories.users_repository import UserRepository
 
 from app.utils.format_num import format_num
 from app.utils.time import format_duration
 from app.utils.logger import coffee_logger
 
 class CoffeeService:
-    @staticmethod
-    async def process_coffee(user: UserData) -> CoffeeResult:
-        user_id = user.user_id
-        now = int(time.time())
-        
-        # проверяем требования щелчков для кофе
-        required_snap = game_cfg.coffee.required_snap
+    def __init__(
+        self,
+        ghoul_repo: GhoulRepository,
+        user_repo: UserRepository,
+        cooldown_service: CooldownService
+    ):
+        self.ghoul_repo = ghoul_repo
+        self.user_repo = user_repo
+        self.cooldown_service = cooldown_service
 
-        if user.snap < required_snap:
-            needed = required_snap - user.snap
+    async def drink_coffee(self, user: UserData, ghoul: GhoulData) -> CoffeeResult:
+        user_id = user.telegram_id
+        required_snap = game_cfg.coffee.required_snap
+        reward = game_cfg.coffee.award
+
+        # проверяем требования щелчков для кофе
+        if ghoul.snap_count < required_snap:
+            needed = required_snap - ghoul.snap_count
 
             return CoffeeResult(
                 status=ResultStatus.NOT_ENOUGH_SNAP,
-                text=cfg['message']['coffee']['coffee_snap_limit'].format(needed=needed),
+                text=cfg['message']['coffee']['coffee_snap_limit'].format(needed=needed)
             )
         
         # Проверяем кулдаун передозировки
-        cooldown = user.coffee_cooldown
+        overdose_remaining = await self.cooldown_service.remaining(
+            telegram_id=user_id,
+            action=CooldownAction.COFFEE_OVERDOSE
+        )
 
-        if cooldown and now < cooldown:
-            remaining = cooldown - now
-
+        if overdose_remaining > 0:
             return CoffeeResult(
                 status=ResultStatus.OVERDOSE_COOLDOWN,
-                text=cfg['message']['coffee']['overdose_2'].format(time=format_duration(remaining))
+                text=cfg['message']['coffee']['overdose_2'].format(time=format_duration(overdose_remaining))
             )
 
-        wait_time = game_cfg.coffee.cooldown
-        overdose_time = game_cfg.coffee.overdose_cooldown
-        last_drink = user.coffee_last_time
+        coffee_remaining = await self.cooldown_service.remaining(
+            telegram_id=user_id,
+            action=CooldownAction.COFFEE
+        )
 
         # Слишком частое употребление
-        if last_drink != 0 and now - last_drink < wait_time:
-            cooldown_time = now + overdose_time
-
-            await ghouls_repository.set_coffee_overdose(
-                user_id=user_id,
-                cooldown_timestamp=cooldown_time
+        if coffee_remaining > 0:
+            await self.cooldown_service.set(
+                telegram_id=user_id,
+                action=CooldownAction.COFFEE_OVERDOSE,
+                duration=game_cfg.coffee.overdose_cooldown
             )
 
             return CoffeeResult(
                 status=ResultStatus.OVERDOSE,
                 text=cfg['message']['coffee']['overdose_1']
             )
-        # Выдаём награду
-        money = game_cfg.coffee.award
 
         try:
-            await ghouls_repository.drink_coffee_success(
-                user_id=user_id,
-                amount=money,
-                current_time=now
+            await self.ghoul_repo.increment_coffee_count(telegram_id=user_id)
+
+            new_money = await self.user_repo.change_money(
+                telegram_id=user_id,
+                amount=reward
             )
 
+            await self.cooldown_service.set(
+                telegram_id=user_id,
+                action=CooldownAction.COFFEE,
+                duration=game_cfg.coffee.cooldown
+            )
         except Exception:
-            coffee_logger.exception(f"[COFFEE] Reward issuing failed | user_id={user_id} | reward={money}")
+            coffee_logger.exception(f"[COFFEE] Drink coffee failed | user_id={user_id} | reward={reward}")
             raise
 
-        coffee_total = user.coffee_total + 1
+        ghoul.coffee_count += 1
+        user.money = new_money
+        coffee_total = ghoul.coffee_count
 
-        coffee_logger.info(f"[COFFEE] Success drink | user_id={user_id} | reward={money} | total={coffee_total}")
+        coffee_logger.info(f"[COFFEE] Success drink | user_id={user_id} | reward={reward} | total_coffee={coffee_total}")
 
         text = cfg['message']['coffee']['coffee_up'].format(
-            money=format_num(money),
+            money=format_num(reward),
             coffee_total=format_num(coffee_total)
         )
 
@@ -90,6 +109,3 @@ class CoffeeService:
             text=text,
             gif=coffee_gif
         )
-
-coffee_service = CoffeeService()
-

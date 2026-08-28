@@ -3,10 +3,13 @@ from datetime import datetime
 from sqlalchemy import select, update
 from sqlalchemy.dialects.postgresql import insert
 
+from app.core.exceptions.user import UserNotFoundError
+from app.types.entities.user import UserData
+
 from app.database.models.user import UserOrm
 from app.database.repositories.base import Base
 
-from app.utils.logger import system_logger
+from app.utils.logger import database_logger
 
 class UserRepository(Base):
     async def upsert(
@@ -15,7 +18,7 @@ class UserRepository(Base):
         name: str,
         username: str | None = None,
     ) -> UserOrm:
-        system_logger.debug(f"[DB] Upserting user: telegram_id={telegram_id} | name={name} | username={username}")
+        database_logger.debug(f"[DB] Upserting user: telegram_id={telegram_id} | name={name} | username={username}")
         
         stmt = (
             insert(UserOrm)
@@ -37,16 +40,15 @@ class UserRepository(Base):
         user = await self.session.scalar(stmt)
         
         if user is None:
-            system_logger.error(f"[DB] User ({telegram_id}) not found after UPSERT")
-            raise ValueError(f"User ({telegram_id}) not found after UPSERT")
+            database_logger.error(f"[DB] User ({telegram_id}) not found after UPSERT")
+            raise UserNotFoundError(f"User ({telegram_id}) not found after UPSERT")
 
-        system_logger.debug(f"[DB] User upserted successfully: id={user.id}")
+        database_logger.debug(f"[DB] User upserted successfully: id={user.id}")
 
         return user
-    
 
-    async def get(self, search_parameter: int | str) -> UserOrm:
-        system_logger.debug(f"[DB] Get user | search_parameter={search_parameter}")
+    async def get(self, search_parameter: int | str) -> UserOrm | None:
+        database_logger.debug(f"[DB] Get user | search_parameter={search_parameter}")
 
         if isinstance(search_parameter, int):
             search_column = UserOrm.telegram_id
@@ -61,13 +63,23 @@ class UserRepository(Base):
         user = await self.session.scalar(stmt)
 
         if user is None:
-            system_logger.debug(f"[DB] User not found | {search_type}={search_parameter}")
+            database_logger.debug(f"[DB] User not found | {search_type}={search_parameter}")
             return None
 
-        system_logger.debug(f"[DB] User found | id={user.id}")
+        database_logger.debug(f"[DB] User found | id={user.id}")
 
         return user
-    
+
+    async def resolve(self, query: str | int) -> UserData | None:
+        if isinstance(query, int):
+            return await self.get(query)
+
+        q = query.strip()
+
+        if q.lstrip("-").isdigit():
+            return await self.get(int(q))
+
+        return await self.get(q.lstrip("@"))
 
     async def activate_subscribed_bonus(self, telegram_id: int, bonus: int) -> UserOrm:
         stmt = (
@@ -83,26 +95,24 @@ class UserRepository(Base):
         user = await self.session.scalar(stmt)
 
         if user is None:
-            raise ValueError(f"User ({telegram_id}) not found")
+            raise UserNotFoundError(f"User ({telegram_id}) not found")
 
         return user
-    
 
-    async def change_money(self, telegram_id: int, amount: int) -> UserOrm:
+    async def change_money(self, telegram_id: int, amount: int) -> int:
         stmt = (
             update(UserOrm)
             .where(UserOrm.telegram_id == telegram_id)
             .values(money=UserOrm.money + amount)
-            .returning(UserOrm)
+            .returning(UserOrm.money)
         )
         
-        user = await self.session.scalar(stmt)
+        balance = await self.session.scalar(stmt)
         
-        if user is None:
-            raise ValueError(f"User ({telegram_id}) not found")
+        if balance is None:
+            raise UserNotFoundError(f"User ({telegram_id}) not found")
         
-        return user
-
+        return balance
 
     async def change_data(self, telegram_id: int, **kwargs) -> UserOrm:
         if not kwargs:
@@ -118,10 +128,9 @@ class UserRepository(Base):
         user = await self.session.scalar(stmt)
 
         if user is None:
-            raise ValueError(f"User ({telegram_id}) not found")
+            raise UserNotFoundError(f"User ({telegram_id}) not found")
 
         return user
-
 
     async def ban(
         self,
@@ -136,7 +145,6 @@ class UserRepository(Base):
             banned_until=banned_until,
         )
 
-
     async def unban(self, telegram_id: int) -> UserOrm:
         return await self.change_data(
             telegram_id,
@@ -144,6 +152,3 @@ class UserRepository(Base):
             ban_reason=None,
             banned_until=None,
         )
-        
-
-    async def get_top_balance(self, telegram_id: int, )

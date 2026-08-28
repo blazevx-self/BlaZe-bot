@@ -17,5 +17,3 @@ class TelegraphService:
     @property
     def url(self) -> str:
         return f"https://telegra.ph/{settings.TELEGRAPH_PAGE_PATH}"
-
-telegraph_service = TelegraphService()

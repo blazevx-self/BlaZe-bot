@@ -1,13 +1,13 @@
-import time
-
 from aiogram import Router, F
 from aiogram.types import Message
 
 from app.configs.yaml import cfg
 from app.core.enums import ResultStatus
-from app.types.entities import UserData
 
-from app.services.ghouls.snap_service import snap_service
+from app.types.entities.user import UserData
+from app.types.entities.ghoul import GhoulData
+
+from app.services.ghouls.snap_service import SnapService
 from app.bot.filters.ghoul_filters import GhoulRequired
 
 from app.utils.time import format_duration
@@ -15,8 +15,13 @@ from app.utils.time import format_duration
 router = Router()
 
 @router.message(F.text.lower() == 'щелк', GhoulRequired())
-async def snap(message: Message, user: UserData):
-    result = await snap_service.process_snap(user=user)
+async def snap(
+        message: Message,
+        user: UserData,
+        ghoul: GhoulData,
+        snap_service: SnapService
+):
+    result = await snap_service.snap_finger(user=user, ghoul=ghoul)
 
     if result.status == ResultStatus.COOLDOWN:
         remaining = result.remaining

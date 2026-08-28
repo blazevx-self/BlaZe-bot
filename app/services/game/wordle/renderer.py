@@ -47,7 +47,6 @@ def load_font(size: int) -> ImageFont.FreeTypeFont:
         system_logger.error(f"Error loading font: {e}")
         return ImageFont.load_default()
 
-
 def render_board(guesses: list[GuessResult], cell_size: int = 48, gap: int = 5) -> bytes:
     """Нарисовать сетку 6x5 и вернуть PNG-байты"""
 

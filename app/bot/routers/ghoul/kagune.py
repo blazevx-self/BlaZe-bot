@@ -1,13 +1,13 @@
-import time
-
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery, InputMediaAnimation
 
 from app.configs.yaml import cfg
 from app.core.enums import ResultStatus
-from app.types.entities.user import UserData
 
-from app.services.ghouls.kagune_service import kagune_service
+from app.types.entities.user import UserData
+from app.types.entities.ghoul import GhoulData
+
+from app.services.ghouls.kagune_service import KaguneService
 from app.bot.filters.owner_filter import OwnerCallbackFilter
 
 from app.bot.keyboards.ghoul.kagune_keyboard import get_grow_kagune_kb, get_open_kagune_kb
@@ -18,13 +18,18 @@ from app.utils.time import format_duration
 router = Router()
 
 @router.message(F.text.lower() == "растить кагуне")
-async def kagune_menu(message: Message, user: UserData):
-    result = await kagune_service.process_kagune(user=user)
+async def kagune_menu(
+    message: Message,
+    user: UserData,
+    ghoul: GhoulData,
+    kagune_service: KaguneService
+):
+    result = await kagune_service.upgrade_kagune(user=user, ghoul=ghoul)
 
     if result.status == ResultStatus.NO_KAGUNE:
         text = cfg['message']['kagune']['kagune_1'].format(name=message.from_user.first_name)
 
-        await message.reply(text=text, reply_markup=get_open_kagune_kb(user.user_id))
+        await message.reply(text=text, reply_markup=get_open_kagune_kb(user.telegram_id))
         return
 
     if result.status == ResultStatus.COOLDOWN:
@@ -44,10 +49,14 @@ async def kagune_menu(message: Message, user: UserData):
 
     await message.reply_animation(animation=result.gif, caption=result.text,)
 
-
 @router.callback_query(F.data.startswith("kagune_new_"), OwnerCallbackFilter())
-async def kagune_open(callback: CallbackQuery, user: UserData):
-    result = await kagune_service.process_kagune_open(user=user)
+async def obtained_kagune(
+    callback: CallbackQuery,
+    user: UserData,
+    ghoul: GhoulData,
+    kagune_service: KaguneService
+):
+    result = await kagune_service.obtaining_kagune(user=user, ghoul=ghoul)
 
     text = cfg['message']['kagune']['kagune_2'].format(
         chosen_type=result.kagune_type,
@@ -59,14 +68,18 @@ async def kagune_open(callback: CallbackQuery, user: UserData):
             media=result.gif,
             caption=text,
         ),
-        reply_markup=get_grow_kagune_kb(user.user_id)
+        reply_markup=get_grow_kagune_kb(user.telegram_id)
     )
     await callback.answer()
 
-
 @router.callback_query(F.data.startswith("kagune_ras_"), OwnerCallbackFilter())
-async def kagune_grow(callback: CallbackQuery, user: UserData):
-    result = await kagune_service.process_kagune(user=user)
+async def kagune_grow(
+    callback: CallbackQuery,
+    user: UserData,
+    ghoul: GhoulData,
+    kagune_service: KaguneService
+):
+    result = await kagune_service.upgrade_kagune(user=user, ghoul=ghoul)
 
     if result.status == ResultStatus.COOLDOWN:
         remaining = result.remaining

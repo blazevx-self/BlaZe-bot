@@ -2,13 +2,13 @@ from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
 
-from app.services.admin.ban_service import ban_service
+from app.services.admin.ban_service import BanService
 from app.bot.filters.admin_filter import AdminFilter
 
 router = Router()
 
 @router.message(Command("ban_bot"), AdminFilter())
-async def ban_bot(message: Message):
+async def ban_bot(message: Message, ban_service: BanService):
     if not message.text:
         return
 
@@ -53,9 +53,8 @@ async def ban_bot(message: Message):
 
     await message.reply(ban_service.fmt_ban_result(result))
 
-
 @router.message(Command("unban_bot"), AdminFilter())
-async def unban_user(message: Message):
+async def unban_user(message: Message, ban_service: BanService):
     if not message.text:
         return
 

@@ -7,6 +7,9 @@ from app.database.models.ghoul import GhoulOrm
 from app.database.repositories.base import Base
 
 from app.core.constants.game.stats import ALLOWED_STATS
+from app.core.exceptions.ghoul import GhoulNotFound, KaguneInitializationError
+from app.core.exceptions.ghoul import InvalidStatError
+
 from app.utils.logger import system_logger
 
 class GhoulRepository(Base):
@@ -37,26 +40,22 @@ class GhoulRepository(Base):
         
         if ghoul is None:
             system_logger.error(f"Ghoul ({telegram_id}) not found after upsert operation")
-            raise ValueError(f"Ghoul ({telegram_id}) not found")
+            raise GhoulNotFound(f"Ghoul ({telegram_id}) not found")
         
         return ghoul
-    
-    
+
     async def get(self, telegram_id: int) -> GhoulOrm | None:
         stmt = select(GhoulOrm).where(GhoulOrm.telegram_id == telegram_id)
         return await self.session.scalar(stmt)
-    
-    
+
     async def get_by_id(self, ghoul_id: int) -> GhoulOrm | None:
         stmt = select(GhoulOrm).where(GhoulOrm.id == ghoul_id)
         return await self.session.scalar(stmt)
-    
-    
+
     async def exists(self, telegram_id: int) -> bool:
         stmt = select(exists().where(GhoulOrm.telegram_id == telegram_id))
         return await self.session.scalar(stmt)
-    
-    
+
     async def init_kagune(self, telegram_id: int, kagune_type: str) -> GhoulOrm:
         stmt = (
             update(GhoulOrm)
@@ -75,11 +74,10 @@ class GhoulRepository(Base):
         ghoul = await self.session.scalar(stmt)
                 
         if ghoul is None:
-            raise ValueError(f"Cannot initialize kagune for ghoul ({telegram_id})")
+            raise KaguneInitializationError(f"Cannot initialize kagune for ghoul ({telegram_id})")
                 
         return ghoul
-    
-    
+
     async def update_kagune_strength(self, telegram_id: int, new_strength: int) -> GhoulOrm:
         stmt = (
             update(GhoulOrm)
@@ -91,12 +89,11 @@ class GhoulRepository(Base):
         ghoul = await self.session.scalar(stmt)
         
         if ghoul is None:
-            raise ValueError(f"Ghoul ({telegram_id}) not found") 
+            raise GhoulNotFound(f"Ghoul ({telegram_id}) not found")
         
         return ghoul
-            
     
-    async def increment_snap_count(self, telegram_id: int, timestamp: int) -> GhoulOrm:
+    async def increment_snap_count(self, telegram_id: int) -> GhoulOrm:
         stmt = (
             update(GhoulOrm)
             .where(GhoulOrm.telegram_id == telegram_id)
@@ -107,42 +104,41 @@ class GhoulRepository(Base):
         ghoul = await self.session.scalar(stmt)
         
         if ghoul is None:
-            raise ValueError(f"Ghoul ({telegram_id}) not found")
+            raise GhoulNotFound(f"Ghoul ({telegram_id}) not found")
         
         return ghoul
-    
-    
-    async def increment_coffee_count(self, telegram_id: int, timestamp: int) -> GhoulOrm:
+
+    async def increment_coffee_count(self, telegram_id: int) -> GhoulOrm:
         stmt = (
             update(GhoulOrm)
             .where(GhoulOrm.telegram_id == telegram_id)
             .values(coffee_count=GhoulOrm.coffee_count + 1)
-        )
-        
-        ghoul = await self.session.scalar(stmt)
-        
-        if ghoul is None:
-            raise ValueError(f"Ghoul ({telegram_id}) not found")
-        
-        return ghoul
-    
-    
-    async def upgrade_stat(self, telegram_id: int, stat: str, amount: str) -> GhoulOrm:
-        if stat not in ALLOWED_STATS:
-            raise ValueError(f"Unknown stat: {stat}")
-        
-        stat_column = getattr(GhoulOrm, stat)
-        
-        stmt = (
-            update(GhoulOrm)
-            .where(GhoulOrm.telegram_id == telegram_id)
-            .values({stat_column: stat_column + amount})
             .returning(GhoulOrm)
         )
         
         ghoul = await self.session.scalar(stmt)
         
         if ghoul is None:
-            raise ValueError(f"Ghoul ({telegram_id}) not found")
+            raise GhoulNotFound(f"Ghoul ({telegram_id}) not found")
+        
+        return ghoul
+
+    async def upgrade_stat(self, telegram_id: int, stat: str, amount: int) -> GhoulOrm:
+        if stat not in ALLOWED_STATS:
+            raise InvalidStatError(f"Unknown stat: {stat}")
+        
+        stat_column = getattr(GhoulOrm, stat)
+        
+        stmt = (
+            update(GhoulOrm)
+            .where(GhoulOrm.telegram_id == telegram_id)
+            .values(**{stat: stat_column + amount})
+            .returning(GhoulOrm)
+        )
+        
+        ghoul = await self.session.scalar(stmt)
+        
+        if ghoul is None:
+            raise GhoulNotFound(f"Ghoul ({telegram_id}) not found")
         
         return ghoul

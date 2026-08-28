@@ -1,107 +1,131 @@
-import time
-
 from app.configs.game import game_cfg
 from app.configs.yaml import cfg
+
 from app.core.enums import ResultStatus
+from app.core.enums.cooldown_action import CooldownAction
+from app.core.exceptions.ghoul import KaguneInitializationError
 
 from app.types.services_result.ghoul import KaguneResult
-from app.types.entities import UserData
+from app.types.entities.user import UserData
+from app.types.entities.ghoul import GhoulData
 
-from app.database.repositories.ghouls_repository import ghouls_repository
-from app.services.ghouls.ghoul_service import ghoul_service
+from app.database.repositories.ghouls_repository import GhoulRepository
+from app.database.repositories.users_repository import UserRepository
+
+from app.services.ghouls.ghoul_service import GhoulService
+from app.services.cooldown_service import CooldownService
 
 from app.utils.format_num import format_num
 from app.utils.logger import kagune_logger
 
 class KaguneService:
-    @staticmethod
-    async def process_kagune_open(user: UserData) -> KaguneResult:
-        user_id = user.user_id
+    def __init__(
+        self,
+        ghoul_repo: GhoulRepository,
+        user_repo: UserRepository,
+        ghoul_service: GhoulService,
+        cooldown_service: CooldownService
+    ):
+        self.ghoul_repo = ghoul_repo
+        self.user_repo = user_repo
+        self.ghoul_service = ghoul_service
+        self.cooldown_service = cooldown_service
+
+    async def obtaining_kagune(self, user: UserData, ghoul: GhoulData | None) -> KaguneResult:
+        if ghoul is not None and ghoul.kagune_was_obtained:
+            return KaguneResult(status=ResultStatus.ALREADY_GHOUL)
+
+        user_id = user.telegram_id
         kagune_type = game_cfg.kagune.random_type()
 
-        try:
-            await ghouls_repository.init_kagune(user_id=user_id, k_type=kagune_type)
+        if ghoul is None:
+            await self.ghoul_repo.upsert(telegram_id=user_id, name=user.name)
 
-        except Exception:
-            kagune_logger.exception(f"[KAGUNE] Open failed | user_id={user_id} | type={kagune_type}")
-            raise
-        
-        user.kagune_was_obtained = True
-        user.kagune_lvl = 1
-        user.kagune_type = kagune_type
+        try:
+            await self.ghoul_repo.init_kagune(
+                telegram_id=user_id,
+                kagune_type=kagune_type
+            )
+        except KaguneInitializationError:
+            kagune_logger.warning(f"[KAGUNE] Initialization failed | user_id={user_id}")
+            return KaguneResult(status=ResultStatus.ERROR)
 
         kagune_logger.info(f"[KAGUNE] First kagune obtained | user_id={user_id} | type={kagune_type}")
 
         return KaguneResult(
             status=ResultStatus.SUCCESS,
             kagune_type=kagune_type,
-            gif=ghoul_service.get_kagune_obtained_gif()
+            gif=self.ghoul_service.get_kagune_obtained_gif()
         )
 
+    async def upgrade_kagune(self, user: UserData, ghoul: GhoulData) -> KaguneResult:
+        user_id = user.telegram_id
 
-    @staticmethod
-    async def process_kagune(user: UserData) -> KaguneResult:
-        user_id = user.user_id
-
-        if not user.kagune_was_obtained:
+        if not ghoul.kagune_was_obtained:
             kagune_logger.debug(f"[KAGUNE] Upgrade denied | user_id={user_id} | reason=no_kagune")
             return KaguneResult(status=ResultStatus.NO_KAGUNE)
 
-        now = int(time.time())
-        cooldown = game_cfg.kagune.cooldown
+        remaining = await self.cooldown_service.remaining(
+            telegram_id=user_id,
+            action=CooldownAction.KAGUNE_GROW
+        )
 
         # ограничение скорости прокачки (ап раз в 15 минут)
-        if now - user.kagune_last_grow < cooldown:
-            remaining = cooldown - (now - user.kagune_last_grow)
-
+        if remaining > 0:
             return KaguneResult(
                 status=ResultStatus.COOLDOWN,
                 remaining=remaining
             )
 
-        current_money = user.money
-        level = int(user.kagune_lvl)
-        price = ghoul_service.get_price(level)
+        level = ghoul.kagune_strength
+        price = self.ghoul_service.get_price(level)
 
         # проверка баланса перед апом
-        if current_money < price:
+        if user.money < price:
             return KaguneResult(
                 status=ResultStatus.NOT_ENOUGH_MONEY,
-                missing=price - current_money
+                missing=price - user.money
             )
 
         new_level = level + 1
-        
+
         try:
-            await ghouls_repository.update_kagune_level(
-                user_id=user_id,
-                new_lvl=new_level,
-                price=price,
-                timestamp=now
+            await self.ghoul_repo.update_kagune_strength(
+                telegram_id=user_id,
+                new_strength=new_level
             )
-        
+
+            new_balance = await self.user_repo.change_money(
+                telegram_id=user_id,
+                amount=-price
+            )
+
+            await self.cooldown_service.set(
+                telegram_id=user_id,
+                action=CooldownAction.KAGUNE_GROW,
+                duration=game_cfg.kagune.cooldown
+            )
         except Exception:
-            kagune_logger.exception(f"[KAGUNE] Upgrade failed | user_id={user_id} | old_level={level} | new_level={new_level}")
+            kagune_logger.exception(f"[KAGUNE] Upgrade kagune failed | user_id={user_id} | price={price}")
             raise
 
-        user.money = current_money - price
-        user.kagune_lvl = new_level
-        user.kagune_last_grow = now
+        ghoul.kagune_strength = new_level
+        user.money = new_balance
 
         kagune_logger.info(
             f"[KAGUNE] Level upgraded | user_id={user_id} | "
-            f"old_level={level} | new_level={user.kagune_lvl} | price={price}"
+            f"old_level={level} | new_level={ghoul.kagune_strength} | price={price}"
         )
         
         text = cfg['message']['kagune']['kagune_up'].format(
-                new_lvl=new_level,
+                new_lvl=ghoul.kagune_strength,
                 price=format_num(price)
             )
 
         return KaguneResult(
             status=ResultStatus.SUCCESS,
             text=text,
-            gif=ghoul_service.get_kagune_gif(new_level)
+            gif=self.ghoul_service.get_kagune_gif(
+                ghoul.kagune_strength
+            )
         )
-
-kagune_service = KaguneService()

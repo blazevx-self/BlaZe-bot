@@ -4,9 +4,12 @@ from datetime import timezone, datetime
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject, CallbackQuery, Message
 
-from app.database.repositories.users_repository import user_repository
+from app.database.repositories.users_repository import UserRepository
 
 class BanMiddleware(BaseMiddleware):
+    def __init__(self, user_repo: UserRepository):
+        self.user_repo = user_repo
+
     async def __call__(
             self,
             handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
@@ -22,7 +25,7 @@ class BanMiddleware(BaseMiddleware):
         else:
             return await handler(event, data)
 
-        user = await user_repository.get_user_by_id(user_id)
+        user = await self.user_repo.get(user_id)
 
         if not user:
             return await handler(event, data)
@@ -31,10 +34,8 @@ class BanMiddleware(BaseMiddleware):
             return await handler(event, data)
 
         if user.banned_until:
-            banned_until = datetime.fromisoformat(user.banned_until)
-
-            if datetime.now(timezone.utc) >= banned_until:
-                await user_repository.unban(user_id)
+            if datetime.now(timezone.utc) >= user.banned_until:
+                await self.user_repo.unban(telegram_id=user.telegram_id)
                 return await handler(event, data)
 
         text = f"🚫 <b>Вы заблокированы.</b>\n\n<b>Причина:</b> <i>{user.ban_reason or 'Не указана'}</i>"

@@ -3,16 +3,17 @@ from aiogram import Router
 from aiogram.types import ChatMemberUpdated
 from aiogram.filters.chat_member_updated import (
     ChatMemberUpdatedFilter,
-    IS_MEMBER, IS_NOT_MEMBER,
+    IS_MEMBER,
+    IS_NOT_MEMBER
 )
 
-from app.services.chat_service.chat_service import chat_service
+from app.services.chat_service.chat_service import ChatService
 
 router = Router()
 
 @router.chat_member(ChatMemberUpdatedFilter(IS_MEMBER >> IS_NOT_MEMBER))
-async def left_chat_member(event: ChatMemberUpdated) -> None:
-    goodbye_message = await chat_service.get_goodbye_message(chat_id=event.chat.id)
+async def left_chat_member(event: ChatMemberUpdated, chat_service: ChatService) -> None:
+    goodbye_message = await chat_service.get_goodbye_message(telegram_id=event.chat.id)
 
     if not goodbye_message:
         return

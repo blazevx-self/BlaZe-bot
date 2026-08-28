@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 
 from sqlalchemy import func, BigInteger, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
@@ -12,7 +12,7 @@ class QuizOrm(Base):
 
     question: Mapped[str] = mapped_column(nullable=False)
     options: Mapped[str] = mapped_column(nullable=False)
-    correct_answer: Mapped[str] = mapped_column(nullable=False)
+    correct: Mapped[str] = mapped_column(nullable=False)
 
 class UserQuizHistoryOrm(Base):
     __tablename__ = "user_quiz_history"
@@ -21,6 +21,7 @@ class UserQuizHistoryOrm(Base):
     telegram_id: Mapped[int] = mapped_column(BigInteger, index=True, nullable=False)
 
     question_id: Mapped[int] = mapped_column(ForeignKey("quiz_questions.id"), nullable=False)
+    quiz_date: Mapped[date] = mapped_column(nullable=False, index=True)
     is_correct: Mapped[bool] = mapped_column(default=False, nullable=False)
     earned: Mapped[int] = mapped_column(default=0, nullable=False)
 

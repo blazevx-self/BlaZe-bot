@@ -2,13 +2,13 @@ from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
 
-from app.services.admin.modify_balance import balance_service
+from app.services.admin.modify_balance_service import ModifyBalanceService
 from app.bot.filters.admin_filter import AdminFilter
 
 router = Router()
 
 @router.message(Command("modify_balance"), AdminFilter())
-async def modify_balance_cmd(message: Message):
+async def modify_balance_cmd(message: Message, modify_balance_service: ModifyBalanceService):
     if not message.text:
         return
     
@@ -41,9 +41,9 @@ async def modify_balance_cmd(message: Message):
         return
 
     try:
-        result = await balance_service.modify_balance(query, amount)
+        result = await modify_balance_service.modify_balance(query, amount)
     except ValueError as e:
         await message.reply(str(e))
         return
     
-    await message.answer(balance_service.fmt_operation_result(result))
+    await message.answer(modify_balance_service.fmt_operation_result(result))

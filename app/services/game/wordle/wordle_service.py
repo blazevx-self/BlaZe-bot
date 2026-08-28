@@ -5,24 +5,27 @@ import random
 from pathlib import Path
 
 from app.configs.game import game_cfg
+
 from app.core.constants.game.wordle import WORD_LENGTH
 from app.core.constants.system.paths import WORDLE_WORDS_PATH
 from app.core.enums.letterstate import LetterState
 
-from app.types.entities import UserData
+from app.types.entities.user import UserData
 from app.types.services_result.game import GuessResult, WordleResult
 from app.types.services_result.game import WordleSession
 
 from app.services.game.wordle.renderer import render_board
-from app.database.repositories.users_repository import user_repository
+from app.database.repositories.users_repository import UserRepository
 
 from app.utils.logger import wordle_logger
+from ghouls.ghoul_service import GhoulService
+
 
 class WordleService:
-    def __init__(self) -> None:
+    def __init__(self, user_repo: UserRepository) -> None:
         self._sessions: dict[int, WordleSession] = {}
         self._words = self._load_words()
-
+        self.user_repo = user_repo
 
     @staticmethod
     def _load_words() -> list[str]:
@@ -32,7 +35,6 @@ class WordleService:
             for word in path.read_text(encoding="utf-8").splitlines()
             if len(word.strip()) == WORD_LENGTH
         ]
-
 
     @staticmethod
     def _validate_word(word: str) -> str:
@@ -45,7 +47,6 @@ class WordleService:
             raise ValueError("Допустимы только буквы.")
 
         return word
-
 
     @staticmethod
     def _calculate_states(target: str, word: str) -> list[LetterState]:
@@ -70,7 +71,6 @@ class WordleService:
 
         return states
 
-
     def start_game(self, telegram_id: int) -> bytes:
         """Создаёт новую игровую сессию и возвращает игровое поле."""
         
@@ -79,13 +79,11 @@ class WordleService:
         wordle_logger.info(f"[WORDLE] Game started | user_id={telegram_id}")
         return render_board(session.guesses)
 
-
     def has_active_game(self, telegram_id: int) -> bool:
         """Проверяет наличие активной игровой сессии пользователя."""
 
         session = self._sessions.get(telegram_id)
         return session is not None and not session.is_game_over
-
 
     def get_board(self, telegram_id: int) -> bytes | None:
         """Возвращает текущее игровое поле пользователя."""
@@ -97,13 +95,11 @@ class WordleService:
 
         return render_board(session.guesses)
 
-
     def finish_game(self, telegram_id: int) -> str | None:
         """Завершает игру и возвращает загаданное слово."""
 
         session = self._sessions.pop(telegram_id, None)
         return session.target_word if session else None
-
 
     async def make_guess(
         self,
@@ -112,6 +108,8 @@ class WordleService:
         user: UserData,
     ) -> WordleResult | None:
         """Обрабатывает попытку пользователя и возвращает результат игры."""
+
+        user_id = user.telegram_id
 
         session = self._sessions.get(telegram_id)
 
@@ -124,7 +122,7 @@ class WordleService:
         guess = GuessResult(word=word, states=states)
         session.guesses.append(guess)
 
-        wordle_logger.info(f"[WORDLE] Guess | user_id={user.user_id} | word={word} | attempts={session.attempts_used}")
+        wordle_logger.info(f"[WORDLE] Guess | user_id={user_id} | word={word} | attempts={session.attempts_used}")
 
         is_game_over = session.is_game_over
         image = render_board(session.guesses)
@@ -135,12 +133,12 @@ class WordleService:
             if session.is_win: 
                 earned = game_cfg.wordle.award 
                 
-                wordle_logger.info(f"[WORDLE] Win | user_id={user.user_id} | attempts={session.attempts_used} | earned={earned}" ) 
-                await user_repository.add_money(user_id=user.user_id, amount=earned) 
-                wordle_logger.info(f"[WORDLE] Reward applied | user_id={user.user_id} | amount={earned}" ) 
+                wordle_logger.info(f"[WORDLE] Win | user_id={user_id} | attempts={session.attempts_used} | earned={earned}" )
+                await self.user_repo.change_money(telegram_id=user_id, amount=earned)
+                wordle_logger.info(f"[WORDLE] Reward applied | user_id={user_id} | amount={earned}" )
             
             else: 
-                wordle_logger.info(f"[WORDLE] Loss | user_id={user.user_id} | attempts={session.attempts_used}") 
+                wordle_logger.info(f"[WORDLE] Loss | user_id={user_id} | attempts={session.attempts_used}")
             
             self._sessions.pop(telegram_id, None)
 
@@ -156,16 +154,12 @@ class WordleService:
             earned=earned
         )
 
-
     def set_board_message_id(self, telegram_id: int, message_id: int) -> None:
         session = self._sessions.get(telegram_id)
         
         if session:
             session.board_message_id = message_id
-        
 
     def get_board_message_id(self, telegram_id: int) -> int | None:
         session = self._sessions.get(telegram_id)
         return session.board_message_id if session else None
-
-wordle_service = WordleService()

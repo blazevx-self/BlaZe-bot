@@ -71,6 +71,7 @@ def get_logger(name: str, folder: str, level=logging.INFO):
 bot_logger = get_logger("bot", "bot")
 callback_logger = get_logger("callbacks", "callbacks")
 system_logger = get_logger("system", "system")
+database_logger = get_logger("database", "database")
 
 security_logger = get_logger("security", "security")
 error_logger = get_logger("errors", "errors")

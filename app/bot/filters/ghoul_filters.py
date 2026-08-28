@@ -1,15 +1,17 @@
 from aiogram.filters import BaseFilter
 from aiogram.types import Message, CallbackQuery
 
-from app.services.ghouls.ghoul_service import ghoul_service
 from app.configs.yaml import cfg
+from app.services.ghouls.ghoul_service import GhoulService
 
 class GhoulRequired(BaseFilter):
     """Фильтр доступа.
 
     Разрешает выполнение обработчика только пользователем,
-    получившим кагуне.
-    """
+    получившим кагуне."""
+
+    def __init__(self, ghoul_service: GhoulService):
+        self.ghoul_service = ghoul_service
 
     async def __call__(
             self,
@@ -21,8 +23,8 @@ class GhoulRequired(BaseFilter):
         if not event.from_user:
             return False
 
-        user = kwargs.get('user')
-        is_ghoul = await ghoul_service.check_ghoul(event.from_user.id, cached_user=user)
+        ghoul = kwargs.get('ghoul')
+        is_ghoul = await self.ghoul_service.check_ghoul(user_id=event.from_user.id, cached_ghoul=ghoul)
 
         if is_ghoul:
             return True
@@ -34,6 +36,3 @@ class GhoulRequired(BaseFilter):
             await event.answer(cfg['message']['not_ghoul']['not_ghoul_callback'], show_alert=False)
 
         return False
-
-
-

@@ -4,19 +4,18 @@ from app.core.constants.game.wordle import MAX_ATTEMPTS
 from app.core.enums import ResultStatus
 from app.core.enums.letterstate import LetterState
 
+from app.database.models.quiz import QuizOrm
 
 @dataclass
 class QuizStartResult:
     status: ResultStatus
-    question: dict | None = None
+    question: QuizOrm | None = None
     left: int | None = None
-
 
 @dataclass
 class QuizAnswerResult:
     status: ResultStatus
     text: str | None = None
-
 
 @dataclass(slots=True, frozen=True)
 class GuessResult:
@@ -35,7 +34,6 @@ class GuessResult:
         }
 
         return "".join(emojis[state] for state in self.states)
-
 
 @dataclass(slots=True)
 class WordleSession:
@@ -58,7 +56,6 @@ class WordleSession:
     @property
     def is_game_over(self) -> bool:
         return self.is_win or self.attempts_used >= MAX_ATTEMPTS
-
 
 @dataclass
 class WordleResult:

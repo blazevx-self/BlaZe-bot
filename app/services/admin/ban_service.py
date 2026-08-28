@@ -2,12 +2,17 @@ from datetime import datetime, timedelta, timezone
 
 from app.configs.settings import settings
 
-from app.types.entities import UserData
+from app.core.exceptions.user import UserNotFoundError
+
+from app.types.entities.user import UserData
 from app.types.services_result.admin import BanResult
 
-from app.database.repositories.users_repository import user_repository
+from app.database.repositories.users_repository import UserRepository
 
 class BanService:
+    def __init__(self, user_repo: UserRepository):
+        self.user_repo = user_repo
+
     @staticmethod
     def _parse_duration(value: str) -> datetime | None:
         """'7d', '24h', '30m' -> datetime. Всё остальное -> None (перманентно)."""
@@ -22,15 +27,13 @@ class BanService:
 
         return None
 
-    @staticmethod
-    async def _resolve_user(query: str | int) -> UserData:
-        user = await user_repository.resolve(query)
+    async def _resolve_user(self, query: str | int) -> UserData:
+        user = await self.user_repo.resolve(query)
 
         if not user:
-            raise ValueError(f"⚠️ Пользователь не найден: {query}")
+            raise UserNotFoundError(f"⚠️ Пользователь не найден: {query}")
 
         return user
-
 
     async def ban(
         self,
@@ -44,7 +47,7 @@ class BanService:
             raise ValueError("🚫 Пользователь уже забанен.")
 
 
-        if user.user_id == settings.ADMIN_ID:
+        if user.telegram_id == settings.ADMIN_ID:
             raise ValueError("⚠️ Нельзя забанить владельца бота.")
 
         banned_until = self._parse_duration(duration)
@@ -52,7 +55,11 @@ class BanService:
         if duration and banned_until is None:
             reason = f"{duration} {reason or ''}".strip()
 
-        await user_repository.ban(user.user_id, reason, banned_until)
+        await self.user_repo.ban(
+            telegram_id=user.telegram_id,
+            reason=reason,
+            banned_until=banned_until
+        )
 
         return BanResult(
             user=user,
@@ -66,10 +73,9 @@ class BanService:
         if not user.is_banned:
             raise ValueError("☕️ Пользователь не забанен.")
 
-        await user_repository.unban(user.user_id)
+        await self.user_repo.unban(telegram_id=user.telegram_id)
 
         return user
-
 
     @staticmethod
     def fmt_ban_result(result: BanResult) -> str:
@@ -80,7 +86,7 @@ class BanService:
         )
 
         return (
-            f"🚫 Пользователь <code>{result.user.user_id}</code> "
+            f"🚫 Пользователь <code>{result.user.telegram_id}</code> "
             f"({result.user.name}) <b>заблокирован {until}.</b>\n\n"
             f"<b>Причина:</b> <i>{result.reason or 'Не указана'}</i>"
         )
@@ -88,8 +94,6 @@ class BanService:
     @staticmethod
     def fmt_unban_result(user: UserData) -> str:
         return (
-        f"✅ Пользователь <code>{user.user_id}</code> "
+        f"✅ Пользователь <code>{user.telegram_id}</code> "
         f"({user.name}) <b>разблокирован.</b>\n\n"
     )
-
-ban_service = BanService()

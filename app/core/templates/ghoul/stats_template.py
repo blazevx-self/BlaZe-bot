@@ -1,25 +1,26 @@
-from app.services.ghouls.stats.calculate_stats_service import calculate_price, STAT_LIMITS
-from app.utils.format_num import format_num
-from app.types.entities import UserData
-
 from app.configs.yaml import cfg
 
-def stats_text(user: UserData, stats: dict) -> str:
+from app.types.entities.user import UserData
+from app.types.entities.ghoul import GhoulData
+
+from app.services.ghouls.stats.calculate_stats_service import calculate_price, STAT_LIMITS
+from app.utils.format_num import format_num
+
+def stats_text(user: UserData, ghoul: GhoulData) -> str:
     return cfg['message']['stats']['stats_text'].format(
         money=format_num(user.money),
 
-        strength=stats["strength"],
-        agility=stats["agility"],
-        speed=stats["speed"],
-        hp=stats["hp"],
-        regen=stats["regen"],
+        strength=ghoul.strength,
+        dexterity=ghoul.dexterity,
+        speed=ghoul.speed,
+        hp=ghoul.hp,
+        regen=ghoul.regen,
 
-        p_strength=make_prices_string(stats["strength"], "strength"),
-        p_agility=make_prices_string(stats["agility"], "agility"),
-        p_speed=make_prices_string(stats["speed"], "speed"),
-        p_hp=make_prices_string(stats["hp"], "hp"),
-        p_regen=make_prices_string(stats["regen"], "regen"))
-
+        p_strength=make_prices_string(ghoul.strength, "strength"),
+        p_dexterity=make_prices_string(ghoul.dexterity, "dexterity"),
+        p_speed=make_prices_string(ghoul.speed, "speed"),
+        p_hp=make_prices_string(ghoul.hp, "hp"),
+        p_regen=make_prices_string(ghoul.regen, "regen"))
 
 def make_prices_string(current_stat: int, stat_name: str) -> str:
     """Форматирование цены статов в сообщении"""
@@ -33,5 +34,3 @@ def make_prices_string(current_stat: int, stat_name: str) -> str:
     p5 = calculate_price(current_stat, 5)
 
     return f"\n└ <code>+1: {format_num(p1)}|+3: {format_num(p3)}|+5: {format_num(p5)}</code>"
-
-

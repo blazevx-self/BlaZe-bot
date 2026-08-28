@@ -13,5 +13,8 @@ def orm_to_user(user: UserOrm) -> UserData:
         ban_reason=user.ban_reason,
         banned_until=user.banned_until,
 
+        quiz_reset_date=user.quiz_reset_date,
+        quiz_questions_left=user.quiz_questions_left,
+
         created_at=user.created_at
     )

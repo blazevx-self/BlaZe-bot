@@ -1,92 +1,82 @@
-from aiosqlite import Row
-from app.database.base import DatabaseManager
+from sqlalchemy import select, func
 
-# noinspection PyMethodMayBeStatic
-class TopsRepository:
-    async def get_top(self, top_type: str, limit: int) -> list[Row]:
-        async with DatabaseManager.connect() as db:
-            if top_type == "money":
-                sql = """
-                    SELECT user_id, name, money FROM users WHERE money > 0 ORDER BY money DESC LIMIT ?
-                """
+from app.database.repositories.base import Base
 
-            elif top_type == "snap":
-                sql = """
-                    SELECT user_id, ghoul_nickname, clicks FROM ghouls WHERE clicks > 0 ORDER BY clicks DESC LIMIT ?
-                """
+from app.database.models.user import UserOrm
+from app.database.models.ghoul import GhoulOrm
 
-            elif top_type == "kagune":
-                sql = """
-                    SELECT user_id, ghoul_nickname, kagune_lvl FROM ghouls WHERE kagune_lvl > 0 ORDER BY kagune_lvl DESC LIMIT ?
-                """
+class TopsRepository(Base):
+    async def get_top(self, top_type: str, limit: int):
+        if top_type == "money":
+            stmt = (
+                select(UserOrm)
+                .where(UserOrm.money > 0)
+                .order_by(UserOrm.money.desc())
+                .limit(limit)
+            )
+        
+        elif top_type == "snap":
+            stmt = (
+                select(GhoulOrm)
+                .where(GhoulOrm.snap_count > 0)
+                .order_by(GhoulOrm.snap_count.desc())
+                .limit(limit)
+            )
+        
+        elif top_type == "kagune":
+            stmt = (
+                select(GhoulOrm)
+                .where(GhoulOrm.kagune_strength > 0)
+                .order_by(GhoulOrm.kagune_strength.desc())
+                .limit(limit)
+            )
+                    
+        elif top_type == "coffee":
+            stmt = (
+                select(GhoulOrm)
+                .where(GhoulOrm.coffee_count > 0)
+                .order_by(GhoulOrm.coffee_count.desc())
+                .limit(limit)
+            )   
+        
+        else:
+            raise ValueError(f"Unknown top type: {top_type}")
+         
+        result = await self.session.scalars(stmt)
+        
+        return list(result)
 
-            elif top_type == "coffee":
-                sql = """
-                    SELECT user_id, ghoul_nickname, coffee_total FROM ghouls WHERE coffee_total > 0 ORDER BY coffee_total DESC LIMIT ?
-                """
+    async def get_rank(self, telegram_id: int, top_type: str) -> int | None:
+        if top_type == "money":
+            model = UserOrm
+            value_column = UserOrm.money
 
-            else:
-                raise ValueError(f"Unknown top type: {top_type}")
+        elif top_type == "snap":
+           model = GhoulOrm
+           value_column = GhoulOrm.snap_count
 
-            async with db.execute(sql, (limit,)) as cursor:
-                return await cursor.fetchall()
+        elif top_type == "kagune":
+            model = GhoulOrm
+            value_column = GhoulOrm.kagune_strength
 
-    async def get_rank(self, user_id: int, top_type: str) -> int | None:
-        async with DatabaseManager.connect() as db:
-            if top_type == "money":
-                sql = """
-                    WITH ranked AS (
-                        SELECT 
-                            user_id, 
-                            RANK() OVER 
-                        (ORDER BY money DESC) AS rank 
-                            FROM users WHERE money > 0
-                    )
-                    SELECT rank FROM ranked WHERE user_id = ?
-                """
+        elif top_type == "coffee":
+            model = GhoulOrm
+            value_column = GhoulOrm.coffee_count
 
-            elif top_type == "snap":
-                sql = """
-                    WITH ranked AS (
-                        SELECT 
-                            user_id, 
-                            RANK() OVER 
-                        (ORDER BY clicks DESC) AS rank 
-                            FROM ghouls WHERE clicks > 0
-                    )
-                    SELECT rank FROM ranked WHERE user_id = ?
-                """
-
-            elif top_type == "kagune":
-                sql = """
-                    WITH ranked AS (
-                        SELECT 
-                            user_id, 
-                            RANK() OVER 
-                        (ORDER BY kagune_lvl DESC) AS rank 
-                            FROM ghouls WHERE kagune_lvl > 0 
-                    )
-                    SELECT rank FROM ranked WHERE user_id = ?
-                """
-
-            elif top_type == "coffee":
-                sql = """
-                    WITH ranked AS (
-                        SELECT 
-                            user_id,
-                            RANK() OVER
-                        (ORDER BY coffee_total DESC) AS rank
-                            FROM ghouls WHERE coffee_total > 0    
-                    )
-                    SELECT rank FROM ranked WHERE user_id = ?
-                """
-
-            else:
-                raise ValueError(f"Unknown top type: {top_type}")
-
-            async with db.execute(sql, (user_id,)) as cursor:
-                row = await cursor.fetchone()
-                return row['rank'] if row else 0
-
-
-tops_repository = TopsRepository()
+        else:
+            raise ValueError(f"Unknown top type: {top_type}")
+        
+        rank = func.rank().over(order_by=value_column.desc()).label("rank")
+        
+        ranked = (
+            select(
+                model.telegram_id,
+                rank
+            )
+            .where(value_column > 0)
+            .subquery()
+        )
+        
+        stmt = select(ranked.c.rank).where(ranked.c.telegram_id == telegram_id)
+        
+        return await self.session.scalar(stmt)

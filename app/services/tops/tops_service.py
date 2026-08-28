@@ -1,34 +1,41 @@
 import asyncio
 
-from app.core.enums import ResultStatus
 from app.configs.game import game_cfg
+from app.core.enums import ResultStatus
 
-from app.types.entities import UserData
 from app.types.services_result.tops import TopResult
+from app.types.entities.user import UserData
+from app.types.entities.ghoul import GhoulData
 
-from app.database.repositories.tops_repository import tops_repository
+from app.database.repositories.tops_repository import TopsRepository
 
 class TopsService:
-    @staticmethod
-    async def process_tops(user: UserData, top_type: str) -> TopResult:
+    def __init__(self, tops_repo: TopsRepository):
+        self.tops_repo = tops_repo
+
+    async def process_tops(
+        self,
+        user: UserData,
+        top_type: str,
+        ghoul: GhoulData | None = None
+    ) -> TopResult:
         limit = game_cfg.tops.get_limit(top_type)
 
         leaderboard, rank = await asyncio.gather(
-            tops_repository.get_top(
+            self.tops_repo.get_top(
                 top_type=top_type,
                 limit=limit
             ),
-            tops_repository.get_rank(
-                user_id=user.user_id,
+            self.tops_repo.get_rank(
+                telegram_id=user.telegram_id,
                 top_type=top_type
             )
         )
 
         return TopResult(
             status=ResultStatus.SUCCESS,
+            user=user,
+            ghoul=ghoul,
             top_user=leaderboard,
-            rank=rank or 0,
-            user=user
+            rank=rank or 0
         )
-
-top_service = TopsService()

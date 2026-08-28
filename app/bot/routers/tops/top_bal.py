@@ -4,9 +4,10 @@ from aiogram.exceptions import TelegramBadRequest
 
 from app.core.templates.common.balance_template import process_balance
 from app.core.templates.tops.top_bal_template import build_top_bal_text
-from app.types.entities import UserData
 
-from app.services.tops.tops_service import top_service
+from app.types.entities.user import UserData
+
+from app.services.tops.tops_service import TopsService
 from app.bot.filters.owner_filter import OwnerCallbackFilter
 
 from app.bot.keyboards.tops.tops_keyboard import (
@@ -18,10 +19,11 @@ from app.bot.keyboards.tops.tops_keyboard import (
 router = Router()
 
 async def _send_or_edit_top_bal(
-        event: Message | CallbackQuery,
-        user: UserData,
-        reply_markup,
-        is_refresh: bool = False
+    event: Message | CallbackQuery,
+    user: UserData,
+    top_service: TopsService,
+    reply_markup,
+    is_refresh: bool = False
 ):
     result = await top_service.process_tops(user=user, top_type="money")
     text = build_top_bal_text(result)
@@ -47,43 +49,57 @@ async def _send_or_edit_top_bal(
         else:
             raise
 
-
 @router.message(F.text.lower() == 'топ балик')
-async def top_money_cmd(message: Message, user: UserData):
-    await _send_or_edit_top_bal(event=message, user=user, reply_markup=get_top_money_kb(user.user_id))
-
+async def top_money_cmd(message: Message, user: UserData, top_service: TopsService):
+    await _send_or_edit_top_bal(
+        event=message,
+        user=user,
+        reply_markup=get_top_money_kb(user.telegram_id),
+        top_service=top_service
+    )
 
 @router.callback_query(F.data.startswith('update_top_money_'), OwnerCallbackFilter())
-async def refresh_top_bal(callback: CallbackQuery, user: UserData):
+async def refresh_top_bal(callback: CallbackQuery, user: UserData, top_service: TopsService):
     await _send_or_edit_top_bal(
         event=callback,
         user=user,
-        reply_markup=get_balance_top_money_kb(user.user_id),
-        is_refresh=True
+        reply_markup=get_balance_top_money_kb(user.telegram_id),
+        is_refresh=True,
+        top_service=top_service
     )
-
 
 @router.callback_query(F.data.startswith('update_only_top_money_'), OwnerCallbackFilter())
-async def update_top_only(callback: CallbackQuery, user: UserData):
+async def update_top_only(callback: CallbackQuery, user: UserData, top_service: TopsService):
     await _send_or_edit_top_bal(
         event=callback,
         user=user,
-        reply_markup=get_top_money_kb(user.user_id),
-        is_refresh=True
+        reply_markup=get_top_money_kb(user.telegram_id),
+        is_refresh=True,
+        top_service=top_service
     )
 
-
 @router.callback_query(F.data.startswith('money_top_'), OwnerCallbackFilter())
-async def ghoul_top_top(callback: CallbackQuery, user: UserData):
-    await _send_or_edit_top_bal(event=callback,user=user, reply_markup=get_balance_top_money_kb(user.user_id))
-
+async def ghoul_top_top(callback: CallbackQuery, user: UserData, top_service: TopsService):
+    await _send_or_edit_top_bal(
+        event=callback,
+        user=user,
+        reply_markup=get_balance_top_money_kb(user.telegram_id),
+        top_service=top_service
+    )
 
 @router.callback_query(F.data.startswith('back_to_top_'), OwnerCallbackFilter())
-async def back_to_balance(callback: CallbackQuery, user: UserData):
-    await _send_or_edit_top_bal(event=callback, user=user, reply_markup=get_top_money_kb(user.user_id))
-
+async def back_to_balance(callback: CallbackQuery, user: UserData, top_service: TopsService):
+    await _send_or_edit_top_bal(
+        event=callback,
+        user=user,
+        reply_markup=get_top_money_kb(user.telegram_id),
+        top_service=top_service
+    )
 
 @router.callback_query(F.data.startswith('back_balance_'), OwnerCallbackFilter())
 async def back_to_top(callback: CallbackQuery, user: UserData):
     text = process_balance(user=user, from_top=True)
-    await callback.message.edit_text(text=text, reply_markup=get_back_to_top_kb(user.user_id))
+    await callback.message.edit_text(
+        text=text,
+        reply_markup=get_back_to_top_kb(user.telegram_id)
+    )

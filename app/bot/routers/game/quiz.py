@@ -7,33 +7,34 @@ from aiogram.types import Message, CallbackQuery
 from app.configs.yaml import cfg
 from app.core.enums import ResultStatus
 
-from app.types.entities import UserData
+from app.types.entities.user import UserData
 
-from app.services.game.quiz_service import quiz_service
+from app.services.game.quiz_service import QuizService
 from app.bot.filters.owner_filter import OwnerCallbackFilter
 
 from app.bot.keyboards.game.quiz_keyboard import get_quiz_again_kb
 from app.bot.keyboards.game.quiz_keyboard import get_quiz_keyboard
 
-from app.utils.logger import bot_logger
-
-
 async def _send_question_ui(message_or_call, q, left, user_id):
-    markup = get_quiz_keyboard(options_str=q['options'], question_id=q['id'], user_id=user_id)
-    text = f"{escape(q['question'])}\n\n<i>осталось вопросов: {left}</i>"
+    markup = get_quiz_keyboard(
+        options_str=q.question,
+        question_id=q.id,
+        user_id=user_id
+    )
+
+    text = f"{escape(q.question)}\n\n<i>осталось вопросов: {left}</i>"
 
     if isinstance(message_or_call, CallbackQuery):
         await message_or_call.message.edit_text(text=text, reply_markup=markup)
     else:
         await message_or_call.reply(text=text, reply_markup=markup)
 
-
 router = Router()
 
 @router.message(Command("quiz"))
 @router.message(F.text.lower() == "викторина")
-async def quiz(message: Message, user: UserData):
-    result = await quiz_service.process_quiz_start(user=user)
+async def quiz(message: Message, user: UserData, quiz_service: QuizService):
+    result = await quiz_service.quiz_start(user=user)
 
     if result.status == ResultStatus.LIMIT:
         await message.reply(cfg['message']['quiz']['quiz_limit'])
@@ -47,18 +48,17 @@ async def quiz(message: Message, user: UserData):
         message_or_call=message,
         q=result.question,
         left=result.left,
-        user_id=user.user_id
+        user_id=user.telegram_id
     )
 
-
 @router.callback_query(F.data.startswith(f"q_"), OwnerCallbackFilter())
-async def quiz_handler(callback: CallbackQuery, user: UserData):
+async def quiz_handler(callback: CallbackQuery, user: UserData, quiz_service: QuizService):
     data = callback.data.split("_")
 
     question_id = int(data[1])
     user_choice = "_".join(data[2:-1])
 
-    result = await quiz_service.process_quiz_answer(
+    result = await quiz_service.quiz_answer(
         user=user,
         question_id=question_id,
         user_choice=user_choice
@@ -73,18 +73,17 @@ async def quiz_handler(callback: CallbackQuery, user: UserData):
         return
 
     if result.status == ResultStatus.LIMIT_REACHED:
-        await callback.message.edit_text(text=result.text, reply_markup=get_quiz_again_kb(user.user_id))
+        await callback.message.edit_text(text=result.text, reply_markup=get_quiz_again_kb(user.telegram_id))
         await callback.answer()
 
         return
 
-    await callback.message.edit_text(text=result.text, reply_markup=get_quiz_again_kb(user.user_id))
+    await callback.message.edit_text(text=result.text, reply_markup=get_quiz_again_kb(user.telegram_id))
     await callback.answer()
 
-
 @router.callback_query(F.data.startswith("quiz_again_"), OwnerCallbackFilter())
-async def quiz_again(callback: CallbackQuery, user: UserData):    
-    result = await quiz_service.process_quiz_start(user=user)
+async def quiz_again(callback: CallbackQuery, user: UserData, quiz_service: QuizService):
+    result = await quiz_service.quiz_start(user=user)
 
     if result.status == ResultStatus.LIMIT:
         await callback.answer(cfg['message']['quiz']['quiz_limit'], show_alert=True)
@@ -98,6 +97,6 @@ async def quiz_again(callback: CallbackQuery, user: UserData):
         message_or_call=callback,
         q=result.question,
         left=result.left,
-        user_id=user.user_id
+        user_id=user.telegram_id
     )
     await callback.answer()

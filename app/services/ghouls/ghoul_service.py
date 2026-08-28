@@ -1,5 +1,3 @@
-from typing import Optional
-
 from app.configs.game import game_cfg
 from app.configs.yaml import cfg
 
@@ -7,30 +5,34 @@ from app.core.constants.game.stats import POWER_FIELDS
 from app.core.constants.game.kagune import KAGUNE_MULTIPLIER
 from app.core.constants.game.ranks import DANGER_RANKS
 
-from app.types.entities import UserData
-from app.database.repositories.users_repository import user_repository
+from app.types.entities.ghoul import GhoulData
+
+from app.database.repositories.ghouls_repository import GhoulRepository
 
 class GhoulService:
     """Общий сервис игровых механик гулей."""
 
-    @staticmethod
+    def __init__(self, ghoul_repo: GhoulRepository):
+        self.ghoul_repo = ghoul_repo
+
     async def check_ghoul(
-            user_id: int,
-            cached_user: Optional[UserData] = None
+        self,
+        user_id: int,
+        cached_ghoul: GhoulData | None = None
     ) -> bool:
-        """Проверка: получил ли юзер кагуне
-           Если данные уже прилетели из мидлвара
-           (passed_user_data), юзаем их,
-           если нет - делаем один точечный запрос в бд
-        """
+        """Проверяет, получил ли пользователь кагуне.
 
-        user = cached_user
+           Если GhoulData уже загружен из мидлвара -
+           используем его.
 
-        if user is None:
-            user = await user_repository.get_user_by_id(user_id)
+           Иначе выполняем точечный запрос в БД."""
 
-        return bool(user and user.kagune_was_obtained)
+        if cached_ghoul is not None:
+            return cached_ghoul.kagune_was_obtained
 
+        ghoul = await self.ghoul_repo.get(user_id)
+
+        return bool(ghoul and ghoul.kagune_was_obtained)
 
     @staticmethod
     def get_price(level: int) -> int:
@@ -40,7 +42,6 @@ class GhoulService:
         multiplier = game_cfg.kagune.price_multiplier
 
         return int(base * (multiplier ** (level - 1)))
-
 
     @staticmethod
     def get_kagune_gif(level: int) -> str:
@@ -58,31 +59,28 @@ class GhoulService:
 
         return current_gif
 
-
     @staticmethod
     def get_kagune_obtained_gif() -> str:
         return cfg["assets"]["kagune"]["obtained_gif"]
 
-
     @staticmethod
-    def calculate_power(user: UserData) -> int:
+    def calculate_power(ghoul: GhoulData) -> int:
         """Подсчёт боевой мощи.
           Складывает текущие статы из бд и уровень кагуне
         """
 
-        base_power = sum(getattr(user, field, 0) for field in POWER_FIELDS)
-        base_power += user.kagune_lvl
+        base_power = sum(getattr(ghoul, field, 0) for field in POWER_FIELDS)
+        base_power += ghoul.kagune_strength
 
         # Определяем тип кагуне.
-        kagune_type = (user.kagune_type or "").lower().strip()
+        kagune_type = (ghoul.kagune_type or "").lower().strip()
         multiplier = KAGUNE_MULTIPLIER.get(kagune_type, 1.0)
 
         # Проверяем форму Какуджа (на будущее)
-        if user.kakuja_activated:
+        if ghoul.is_kakuja:
             multiplier += 0.50
 
         return int(base_power * multiplier)
-
 
     @staticmethod
     def get_danger_rank(power: int) -> str:
@@ -94,5 +92,3 @@ class GhoulService:
                 return rank
 
         return "SSS+"
-
-ghoul_service = GhoulService()

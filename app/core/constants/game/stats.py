@@ -1,6 +1,6 @@
 STATS_KEYBOARD = {
     "strength": "💪",
-    "agility": "🤸",
+    "dexterity": "🤸",
     "speed": "🏃",
     "hp": "❤️",
     "regen": "❣️"
@@ -8,18 +8,18 @@ STATS_KEYBOARD = {
 
 STAT_NAMES = {
     "strength": "💪 Сила",
-    "agility": "🤸 Ловкость",
+    "dexterity": "🤸 Ловкость",
     "speed": "🏃 Скорость",
     "hp": "❤️ Макс. здоровье",
     "regen": "❣️ Регенерация"
 }
 
 STAT_LIMITS = {
-    "strength": 120,
-    "agility": 105,
-    "speed": 108,
-    "hp": 115,
-    "regen": 110
+    "strength": 100,
+    "dexterity": 100,
+    "speed": 100,
+    "hp": 100,
+    "regen": 100
 }
 
 UNLOCK_LEVELS = {
@@ -30,7 +30,7 @@ UNLOCK_LEVELS = {
 
 ALLOWED_STATS = (
     "strength",
-    "agility",
+    "dexterity",
     "speed",
     "hp",
     "regen"
@@ -39,7 +39,7 @@ ALLOWED_STATS = (
 
 POWER_FIELDS = (
     "strength",
-    "agility",
+    "dexterity",
     "speed",
     "hp",
     "regen",

@@ -13,6 +13,7 @@ class ResultStatus(StrEnum):
     NOT_ENOUGH_SNAP="not_enough_snap"
 
     NO_KAGUNE = "no_kagune"
+    ALREADY_GHOUL = "already_ghoul"
 
     LIMIT = "limit"
     NO_QUESTIONS = "no_questions"

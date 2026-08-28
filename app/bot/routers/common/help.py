@@ -8,8 +8,6 @@ from app.core.templates.common.help_template import build_help_text
 from app.bot.keyboards.common.start_keyboard import start_keyboard
 from app.bot.keyboards.common.help_keyboard import get_help_menu, get_help_menu_back
 
-from app.utils.logger import bot_logger
-
 router = Router()
 
 @router.message(Command('help'))
@@ -20,7 +18,6 @@ async def help_me(message: Message) -> None:
         link_preview_options=LinkPreviewOptions(is_disabled=False),
     )
 
-
 @router.callback_query(F.data == 'help')
 async def help_cb(callback: CallbackQuery) -> None:
     await callback.message.edit_text(
@@ -30,12 +27,8 @@ async def help_cb(callback: CallbackQuery) -> None:
     )
     await callback.answer()
 
-
 @router.callback_query(F.data == 'back')
 async def back_me(callback: CallbackQuery):
     text = '<tg-emoji emoji-id="5289581576001167896">🤨</tg-emoji> ' + cfg['message']['help']['back_help']
-
     await callback.message.edit_text(text=text, reply_markup=start_keyboard())
     await callback.answer()
-
-

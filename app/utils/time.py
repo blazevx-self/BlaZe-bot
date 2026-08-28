@@ -30,7 +30,6 @@ def parse_seconds(total_seconds: int) -> TimeComponents:
         total_seconds=total_seconds
     )
 
-
 def format_duration(total_seconds: int, show_seconds: bool = True) -> str:
     """Форматирует длительность в читаемую строку, например '2ч. и 15мин.'."""
     
@@ -57,7 +56,6 @@ def format_duration(total_seconds: int, show_seconds: bool = True) -> str:
         return " и ".join(parts)
 
     return parts[0]
-
 
 def days_since_registration(created_at: datetime) -> int:
     """Возвращает количество дней, прошедших с момента регистрации пользователя."""

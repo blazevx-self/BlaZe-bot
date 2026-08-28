@@ -2,6 +2,10 @@ from aiogram.filters import BaseFilter
 from aiogram.types import CallbackQuery
 
 class OwnerCallbackFilter(BaseFilter):
+    """Проверяет, принадлежит та или иная кнопка пользователю.
+
+    Если кнопка не его, бот ответит уведомлением, что это не его кнопка"""
+
     async def __call__(self, callback: CallbackQuery) -> bool:
         if not callback.data:
             return False

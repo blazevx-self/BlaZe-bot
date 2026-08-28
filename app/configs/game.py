@@ -3,7 +3,6 @@ import random
 from random import randint
 from dataclasses import dataclass, field
 
-
 @dataclass(slots=True, frozen=True)
 class StartConfig:
     bonus_amount: int = 10000
@@ -12,11 +11,9 @@ class StartConfig:
     telegraph_link: str = "https://telegra.ph/BlaZe--Bot--Pomoshch-08-18-2"
     channel_link: str = "https://t.me/+H67pSJL-qYU5Y2Qy"
 
-
 @dataclass(slots=True, frozen=True)
 class ProfileStatusWeights:
     days_in_project: float = 15.0
-
 
 @dataclass(slots=True, frozen=True)
 class ProfileStatusConfig:
@@ -38,7 +35,6 @@ class ProfileStatusConfig:
         365: "Легенда проекта",
     })
 
-
 @dataclass(slots=True, frozen=True)
 class KaguneConfig:
     start_price: int = 500
@@ -59,12 +55,10 @@ class KaguneConfig:
             k=1,
         )[0]
 
-
 @dataclass(slots=True, frozen=True)
 class StatsPriceConfig:
     base_price: int = 250
     price_multiplier: float = 1.04
-
 
 @dataclass(slots=True, frozen=True)
 class CoffeeConfig:
@@ -78,7 +72,6 @@ class CoffeeConfig:
     def award(self) -> int:
         return randint(self.min_award, self.max_award)
 
-
 @dataclass(slots=True, frozen=True)
 class SnapConfig:
     min_award: int = 500
@@ -88,7 +81,6 @@ class SnapConfig:
     @property
     def award(self) -> int:
         return randint(self.min_award, self.max_award)
-
 
 @dataclass(slots=True, frozen=True)
 class QuizConfig:
@@ -100,7 +92,6 @@ class QuizConfig:
     @property
     def award(self) -> int:
         return randint(self.min_award, self.max_award)
-
 
 @dataclass(slots=True, frozen=True)
 class TopsConfig:
@@ -117,7 +108,6 @@ class TopsConfig:
             "coffee": self.coffee_limit,
         }[top_type]
 
-
 @dataclass(slots=True, frozen=True)
 class WordleConfig:
     min_award: int = 3000
@@ -126,7 +116,6 @@ class WordleConfig:
     @property
     def award(self) -> int:
         return randint(self.min_award, self.max_award)
-
 
 @dataclass(slots=True, frozen=True)
 class EconomyConfig:

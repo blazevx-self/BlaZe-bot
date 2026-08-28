@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 
 from sqlalchemy import func
 from sqlalchemy.orm import Mapped, mapped_column
@@ -22,6 +22,9 @@ class UserOrm(Base):
     is_banned: Mapped[bool] = mapped_column(default=False)
     ban_reason: Mapped[str | None] = mapped_column(nullable=True)
     banned_until: Mapped[datetime | None] = mapped_column(nullable=True)
+    
+    quiz_reset_date: Mapped[date | None] = mapped_column(nullable=True)
+    quiz_questions_left: Mapped[int] = mapped_column(default=15, nullable=False)
 
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now())

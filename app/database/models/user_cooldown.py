@@ -37,5 +37,5 @@ class UserCooldownOrm(Base):
             "telegram_id",
             "action",
             name="uq_user_cooldown_action",
-        )
+        ),
     )

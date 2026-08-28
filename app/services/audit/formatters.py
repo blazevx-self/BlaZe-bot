@@ -1,4 +1,4 @@
-from app.types.entities import UserData
+from app.types.entities.user import UserData
 
 def build_user_info(from_user, user_db=None) -> str:
     """Единый формат user_info для логов."""
@@ -6,7 +6,7 @@ def build_user_info(from_user, user_db=None) -> str:
     if isinstance(user_db, UserData):
         return (
             f"name=\"{user_db.name}\" | "
-            f"user_id={user_db.user_id}"
+            f"user_id={user_db.telegram_id}"
         )
 
     if from_user is not None:
