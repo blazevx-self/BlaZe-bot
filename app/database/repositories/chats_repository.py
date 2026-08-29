@@ -33,7 +33,7 @@ class ChatRepository(Base):
         chat = await self.session.scalar(stmt)
 
         if chat is None:
-            ChatNotFoundError(f"Chat ({telegram_id}) not found after upsert")
+            raise ChatNotFoundError(f"Chat ({telegram_id}) not found after upsert")
 
         return chat
 

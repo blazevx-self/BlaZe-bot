@@ -4,9 +4,12 @@ from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery
 
-from app.configs.yaml import cfg
-from app.core.enums import ResultStatus
+from dependency_injector.wiring import inject, Provide
 
+from app.containers import Container
+from app.configs.yaml import cfg
+
+from app.core.enums import ResultStatus
 from app.types.entities.user import UserData
 
 from app.services.game.quiz_service import QuizService
@@ -32,8 +35,12 @@ async def _send_question_ui(message_or_call, q, left, user_id):
 router = Router()
 
 @router.message(Command("quiz"))
-@router.message(F.text.lower() == "викторина")
-async def quiz(message: Message, user: UserData, quiz_service: QuizService):
+@inject
+async def quiz(
+    message: Message,
+    user: UserData,
+    quiz_service: QuizService = Provide[Container.quiz_service]
+):
     result = await quiz_service.quiz_start(user=user)
 
     if result.status == ResultStatus.LIMIT:
@@ -52,7 +59,12 @@ async def quiz(message: Message, user: UserData, quiz_service: QuizService):
     )
 
 @router.callback_query(F.data.startswith(f"q_"), OwnerCallbackFilter())
-async def quiz_handler(callback: CallbackQuery, user: UserData, quiz_service: QuizService):
+@inject
+async def quiz_handler(
+    callback: CallbackQuery,
+    user: UserData,
+    quiz_service: QuizService = Provide[Container.quiz_service]
+):
     data = callback.data.split("_")
 
     question_id = int(data[1])
@@ -82,7 +94,12 @@ async def quiz_handler(callback: CallbackQuery, user: UserData, quiz_service: Qu
     await callback.answer()
 
 @router.callback_query(F.data.startswith("quiz_again_"), OwnerCallbackFilter())
-async def quiz_again(callback: CallbackQuery, user: UserData, quiz_service: QuizService):
+@inject
+async def quiz_again(
+    callback: CallbackQuery,
+    user: UserData,
+    quiz_service: QuizService = Provide[Container.quiz_service]
+):
     result = await quiz_service.quiz_start(user=user)
 
     if result.status == ResultStatus.LIMIT:

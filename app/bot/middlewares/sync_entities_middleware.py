@@ -27,7 +27,7 @@ class SyncEntitiesMiddleware(BaseMiddleware):
         tg_user = data.get('event_from_user')
 
         if not tg_user or tg_user.is_bot:
-            return await handler(event, data)
+            return None
 
         session: AsyncSession = data['session']
 

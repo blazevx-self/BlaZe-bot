@@ -2,13 +2,21 @@ from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
 
+from dependency_injector.wiring import inject, Provide
+
+from app.containers import Container
 from app.services.admin.player_lookup_service import PlayerLookupService
+
 from app.bot.filters.admin_filter import AdminFilter
 
 router = Router()
 
 @router.message(Command('admin_profile'), AdminFilter())
-async def admin_profile_cmd(message: Message, player_lookup_service: PlayerLookupService):
+@inject
+async def admin_profile_cmd(
+    message: Message,
+    player_lookup_service: PlayerLookupService = Provide[Container.player_lookup_service]
+):
     if not message.text:
         return
 

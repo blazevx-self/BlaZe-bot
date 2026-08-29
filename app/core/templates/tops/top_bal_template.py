@@ -18,8 +18,8 @@ def build_top_bal_text(result: TopResult) -> str:
     rank_message = cfg['message']['tops']['top_money']['rank_messages']
 
     for position, top_user in enumerate(top_users, start=1):
-        money = format_num(top_user['money'])
-        safe_name = hd.quote(truncate_text(top_user['name']))
+        money = format_num(top_user.user.money)
+        safe_name = hd.quote(truncate_text(top_user.user.name))
 
         prefix = prefixes.get(str(position), f"{position}.")
         name = f"<b>{safe_name}</b>" if position <= 3 else safe_name

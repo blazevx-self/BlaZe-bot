@@ -36,7 +36,6 @@ ALLOWED_STATS = (
     "regen"
 )
 
-
 POWER_FIELDS = (
     "strength",
     "dexterity",

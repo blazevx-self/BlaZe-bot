@@ -23,7 +23,7 @@ class BanService:
         units = {"m": "minutes", "h": "hours", "d": "days"}
 
         if len(value) >= 2 and value[-1] in units and value[:-1].isdigit():
-            return datetime.now(timezone.utc) + timedelta(**{units[value[-1]]: int(value[:-1])})
+            return datetime.utcnow() + timedelta(**{units[value[-1]]: int(value[:-1])})
 
         return None
 

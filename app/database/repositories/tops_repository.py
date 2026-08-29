@@ -5,46 +5,48 @@ from app.database.repositories.base import Base
 from app.database.models.user import UserOrm
 from app.database.models.ghoul import GhoulOrm
 
+from app.database.mappers.user_mapper import orm_to_user
+from app.database.mappers.ghoul_mapper import orm_to_ghoul
+
+from app.types.services_result.tops import TopUser
+
 class TopsRepository(Base):
-    async def get_top(self, top_type: str, limit: int):
+    async def get_top(self, top_type: str, limit: int) -> list[TopUser]:
         if top_type == "money":
-            stmt = (
-                select(UserOrm)
-                .where(UserOrm.money > 0)
-                .order_by(UserOrm.money.desc())
-                .limit(limit)
-            )
-        
+            value_column = UserOrm.money
+
         elif top_type == "snap":
-            stmt = (
-                select(GhoulOrm)
-                .where(GhoulOrm.snap_count > 0)
-                .order_by(GhoulOrm.snap_count.desc())
-                .limit(limit)
-            )
-        
+            value_column = GhoulOrm.snap_count
+
         elif top_type == "kagune":
-            stmt = (
-                select(GhoulOrm)
-                .where(GhoulOrm.kagune_strength > 0)
-                .order_by(GhoulOrm.kagune_strength.desc())
-                .limit(limit)
-            )
-                    
+            value_column = GhoulOrm.kagune_strength
+
         elif top_type == "coffee":
-            stmt = (
-                select(GhoulOrm)
-                .where(GhoulOrm.coffee_count > 0)
-                .order_by(GhoulOrm.coffee_count.desc())
-                .limit(limit)
-            )   
-        
+            value_column = GhoulOrm.coffee_count
+
         else:
             raise ValueError(f"Unknown top type: {top_type}")
-         
-        result = await self.session.scalars(stmt)
-        
-        return list(result)
+
+        stmt = (
+            select(UserOrm, GhoulOrm)
+            .outerjoin(
+                GhoulOrm,
+                GhoulOrm.telegram_id == UserOrm.telegram_id
+            )
+            .where(value_column > 0)
+            .order_by(value_column.desc())
+            .limit(limit)
+        )
+
+        result = await self.session.execute(stmt)
+
+        return [
+            TopUser(
+                user=orm_to_user(user),
+                ghoul=orm_to_ghoul(ghoul) if ghoul else None
+            )
+            for user, ghoul in result.all()
+        ]
 
     async def get_rank(self, telegram_id: int, top_type: str) -> int | None:
         if top_type == "money":

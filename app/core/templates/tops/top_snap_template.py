@@ -17,8 +17,8 @@ def build_top_snap_text(result: TopResult) -> str:
     prefixes = cfg['message']['tops']['prefixes']
 
     for position, top_user in enumerate(top_users, start=1):
-        snap = format_num(top_user['snap_count'])
-        safe_name = hd.quote(truncate_text(top_user['name']))
+        snap = format_num(top_user.ghoul.snap_count)
+        safe_name = hd.quote(truncate_text(top_user.ghoul.name))
 
         prefix = prefixes.get(str(position), f"{position}.")
         name = f"<b>{safe_name}</b>" if position <= 3 else safe_name

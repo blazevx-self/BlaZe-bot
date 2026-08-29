@@ -253,7 +253,7 @@ message:
     incorrect:
       <tg-emoji emoji-id="5260342697075416641">❌</tg-emoji>неверно
     no_questions: |
-      🧠 <b>Нихуя ты задрот! Ты ответил абсолютно на все вопросы в квизе.</b>
+      🧠 <b>Ты ответил абсолютно на все вопросы в викторине.</b>
       
       Твой IQ социально выше, чем у тупого и криворукого разраба. Сиди кури сигаретку и жди, пока этот ленивый уебок завезёт новые паки вопросов. 🚬
 
@@ -265,7 +265,7 @@ message:
       💸 <b>Балик:</b> <code>{money} BlazeCoin</code>
     
       💪 <b>Сила:</b> <code>{strength}/120 {p_strength}</code>
-      🤸 <b>Ловкость:</b> <code>{agility}/105 {p_agility}</code>
+      🤸 <b>Ловкость:</b> <code>{dexterity}/105 {p_dexterity}</code>
       🏃 <b>Скорость:</b> <code>{speed}/108 {p_speed}</code>
       ❤️ <b>Макс. здоровье</b>: <code>{hp}/115 {p_hp}</code>
       ️️❣️ <b>Регенерация:</b> <code>{regen}/110 {p_regen}</code>

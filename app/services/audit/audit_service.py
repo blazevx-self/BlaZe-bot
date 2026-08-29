@@ -16,7 +16,7 @@ class AuditService:
     - security проверки (SecurityService)
     - уведомления админа (NotifierService)
 
-    Используется в middleware для единой точки аудита событий.
+    Используется в middlewares для единой точки аудита событий.
     """
 
     @staticmethod

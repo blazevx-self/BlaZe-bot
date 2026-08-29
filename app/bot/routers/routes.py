@@ -15,7 +15,6 @@ all_routers = (
     ping.router,
     balance.router,
 
-
     coffee.router,
     kagune.router,
     snap.router,

@@ -13,7 +13,7 @@ class TopsService:
     def __init__(self, tops_repo: TopsRepository):
         self.tops_repo = tops_repo
 
-    async def process_tops(
+    async def tops(
         self,
         user: UserData,
         top_type: str,

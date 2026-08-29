@@ -1,17 +1,10 @@
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent
+APP_DIR = Path(__file__).resolve().parent.parent.parent.parent
+BASE_DIR = APP_DIR.parent
 
-
-while BASE_DIR != BASE_DIR.parent:
-    if BASE_DIR.name == "BlaZe-bot":
-        break
-    BASE_DIR = BASE_DIR.parent
-else:
-    raise RuntimeError("Project root not found")
-
-
-YAML_PATH = BASE_DIR / 'config.yaml'
+YAML_PATH = APP_DIR / 'configs' / 'config.yaml'
 ENV_PATH = BASE_DIR / '.env'
-FONT_PATH = BASE_DIR / "app" /"assets" / "fonts" / "Rubik.ttf"
-WORDLE_WORDS_PATH = "app/assets/wordle/words.txt"
+FONT_PATH = APP_DIR / "assets" / "fonts" / "Rubik.ttf"
+WORDLE_WORDS_PATH = APP_DIR / "assets" / "wordle" / "words.txt"
+QUIZ_PATH = APP_DIR / "assets" / "json" / "quiz.json"

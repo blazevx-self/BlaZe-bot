@@ -1,9 +1,12 @@
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery, InputMediaAnimation
 
-from app.configs.yaml import cfg
-from app.core.enums import ResultStatus
+from dependency_injector.wiring import inject, Provide
 
+from app.containers import Container
+from app.configs.yaml import cfg
+
+from app.core.enums import ResultStatus
 from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 
@@ -18,11 +21,12 @@ from app.utils.time import format_duration
 router = Router()
 
 @router.message(F.text.lower() == "растить кагуне")
+@inject
 async def kagune_menu(
     message: Message,
     user: UserData,
     ghoul: GhoulData,
-    kagune_service: KaguneService
+    kagune_service: KaguneService = Provide[Container.kagune_service]
 ):
     result = await kagune_service.upgrade_kagune(user=user, ghoul=ghoul)
 
@@ -50,11 +54,12 @@ async def kagune_menu(
     await message.reply_animation(animation=result.gif, caption=result.text,)
 
 @router.callback_query(F.data.startswith("kagune_new_"), OwnerCallbackFilter())
+@inject
 async def obtained_kagune(
     callback: CallbackQuery,
     user: UserData,
     ghoul: GhoulData,
-    kagune_service: KaguneService
+    kagune_service: KaguneService = Provide[Container.kagune_service]
 ):
     result = await kagune_service.obtaining_kagune(user=user, ghoul=ghoul)
 
@@ -73,11 +78,12 @@ async def obtained_kagune(
     await callback.answer()
 
 @router.callback_query(F.data.startswith("kagune_ras_"), OwnerCallbackFilter())
+@inject
 async def kagune_grow(
     callback: CallbackQuery,
     user: UserData,
     ghoul: GhoulData,
-    kagune_service: KaguneService
+    kagune_service: KaguneService = Provide[Container.kagune_service]
 ):
     result = await kagune_service.upgrade_kagune(user=user, ghoul=ghoul)
 

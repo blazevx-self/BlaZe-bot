@@ -42,7 +42,7 @@ class PlayerLookupService:
             
             f"🛡 <b>Состояние:</b>\n"
             f"└ <b>Статус:</b> <code>{'🚫 Заблокирован' if user.is_banned else '✅ Активен'}</code>\n"
-            f"└ <b>Подписка на канал:</b> <code>{'✅ Активна' if user.is_subscribed else '❌ Неактивна'}</code>\n\n"
+            f"└ <b>Бонус за подписку:</b> <code>{'✅ Получен' if user.is_subscribed else '❌ Не получен'}</code>\n\n"
             
             f"📅 <b>Регистрация:</b> <code>{user.created_at.strftime('%d.%m.%Y %H:%M')}</code>"
         )
@@ -88,7 +88,7 @@ class PlayerLookupService:
                 )
 
             text += (
-                f"\n\n📊 <b>Статистика</b>\n"
+                f"\n\n📊 <b>Статистика гуля</b>\n"
                 f"└ <b>Сломано пальцев:</b> <code>{ghoul.snap_count}</code>\n"
                 f"└ <b>Выпито кофе:</b> <code>{ghoul.coffee_count}</code>\n"
                 f"└ <b>Съедено людей:</b> <code>{ghoul.eat_humans}</code>\n"

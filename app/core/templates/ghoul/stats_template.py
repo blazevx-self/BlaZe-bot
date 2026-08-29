@@ -20,7 +20,8 @@ def stats_text(user: UserData, ghoul: GhoulData) -> str:
         p_dexterity=make_prices_string(ghoul.dexterity, "dexterity"),
         p_speed=make_prices_string(ghoul.speed, "speed"),
         p_hp=make_prices_string(ghoul.hp, "hp"),
-        p_regen=make_prices_string(ghoul.regen, "regen"))
+        p_regen=make_prices_string(ghoul.regen, "regen")
+    )
 
 def make_prices_string(current_stat: int, stat_name: str) -> str:
     """Форматирование цены статов в сообщении"""

@@ -5,9 +5,9 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
+from app.containers import Container
 from app.configs.settings import settings
 
-from app.bot.routers.routes import all_routers
 from app.database.database import (
     session_factory,
     create_tables,
@@ -15,14 +15,17 @@ from app.database.database import (
     reset_session
 )
 
-from app.utils.logger import system_logger
+from app.bot.middlewares.logging_middleware import LoggingMiddleware
+from app.bot.middlewares.antispam_middleware import AntiSpamGhoulMiddleware
+from app.bot.middlewares.antiflood_middleware import AntifloodMiddleware
+from app.bot.middlewares.sync_entities_middleware import SyncEntitiesMiddleware
+from app.bot.middlewares.ban_middleware import BanMiddleware
+from app.bot.middlewares.database_middleware import DatabaseMiddleware
 
-from app.bot.middleware.logging_middleware import LoggingMiddleware
-from app.bot.middleware.antispam_middleware import AntiSpamGhoulMiddleware
-from app.bot.middleware.antiflood_middleware import AntifloodMiddleware
-from app.bot.middleware.sync_entities_middleware import SyncEntitiesMiddleware
-from app.bot.middleware.ban_middleware import BanMiddleware
-from app.bot.middleware.database_middleware import DatabaseMiddleware
+from app.bot.routers.routes import all_routers
+
+from app.qestions_loader import seed_quiz_questions
+from app.utils.logger import system_logger
 
 async def on_startup():
     system_logger.info("[SYSTEM] Bot started | version=1.0.0 | py=%s", sys.version.split()[0])
@@ -31,14 +34,13 @@ async def on_shutdown():
     system_logger.info("[SYSTEM] Bot stopped")
 
 async def setup_middlewares(dp: Dispatcher) -> None:
-    dp.message.middleware(LoggingMiddleware())
-    dp.callback_query.middleware(LoggingMiddleware())
-
-    dp.message.middleware(DatabaseMiddleware(session_factory=session_factory))
-    dp.callback_query.middleware(DatabaseMiddleware(session_factory=session_factory))
+    dp.update.middleware(DatabaseMiddleware(session_factory=session_factory))
 
     dp.message.middleware(SyncEntitiesMiddleware())
     dp.callback_query.middleware(SyncEntitiesMiddleware())
+
+    dp.message.middleware(LoggingMiddleware())
+    dp.callback_query.middleware(LoggingMiddleware())
 
     dp.message.middleware(BanMiddleware())
 
@@ -55,6 +57,8 @@ async def init_database(reset: bool = False):
         await create_tables(engine)
         system_logger.info("[DB] Database initialized")
 
+    await seed_quiz_questions()
+
 async def main():
     bot = Bot(
         token=settings.BOT_TOKEN.get_secret_value(),
@@ -62,6 +66,17 @@ async def main():
             parse_mode=ParseMode.HTML,
             link_preview_is_disabled=True
         )
+    )
+
+    container = Container(bot=bot)
+
+    container.wire(
+        modules=[__name__],
+        packages=[
+            "app.bot.routers",
+            "app.bot.middlewares",
+            "app.bot.filters",
+        ]
     )
 
     try:

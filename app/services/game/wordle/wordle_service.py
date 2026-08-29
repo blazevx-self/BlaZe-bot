@@ -18,14 +18,11 @@ from app.services.game.wordle.renderer import render_board
 from app.database.repositories.users_repository import UserRepository
 
 from app.utils.logger import wordle_logger
-from ghouls.ghoul_service import GhoulService
-
 
 class WordleService:
-    def __init__(self, user_repo: UserRepository) -> None:
+    def __init__(self) -> None:
         self._sessions: dict[int, WordleSession] = {}
         self._words = self._load_words()
-        self.user_repo = user_repo
 
     @staticmethod
     def _load_words() -> list[str]:
@@ -106,6 +103,7 @@ class WordleService:
         telegram_id: int,
         word: str,
         user: UserData,
+        user_repo: UserRepository
     ) -> WordleResult | None:
         """Обрабатывает попытку пользователя и возвращает результат игры."""
 
@@ -131,14 +129,20 @@ class WordleService:
 
         if is_game_over: 
             if session.is_win: 
-                earned = game_cfg.wordle.award 
-                
-                wordle_logger.info(f"[WORDLE] Win | user_id={user_id} | attempts={session.attempts_used} | earned={earned}" )
-                await self.user_repo.change_money(telegram_id=user_id, amount=earned)
-                wordle_logger.info(f"[WORDLE] Reward applied | user_id={user_id} | amount={earned}" )
+                earned = game_cfg.wordle.award
+
+                await user_repo.change_money(telegram_id=user_id, amount=earned)
+
+                wordle_logger.info(
+                    f"[WORDLE] Win | user_id={user_id} | "
+                    f"attempts={session.attempts_used} | earned={earned}"
+                )
             
             else: 
-                wordle_logger.info(f"[WORDLE] Loss | user_id={user_id} | attempts={session.attempts_used}")
+                wordle_logger.info(
+                    f"[WORDLE] Loss | user_id={user_id} | "
+                    f"attempts={session.attempts_used} | word={session.target_word}"
+                )
             
             self._sessions.pop(telegram_id, None)
 

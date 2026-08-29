@@ -2,6 +2,9 @@ from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.exceptions import TelegramBadRequest
 
+from dependency_injector.wiring import inject, Provide
+
+from app.containers import Container
 from app.core.templates.common.balance_template import process_balance
 from app.core.templates.tops.top_bal_template import build_top_bal_text
 
@@ -21,11 +24,11 @@ router = Router()
 async def _send_or_edit_top_bal(
     event: Message | CallbackQuery,
     user: UserData,
-    top_service: TopsService,
     reply_markup,
+    top_service: TopsService = Provide[Container.tops_service],
     is_refresh: bool = False
 ):
-    result = await top_service.process_tops(user=user, top_type="money")
+    result = await top_service.tops(user=user, top_type="money")
     text = build_top_bal_text(result)
 
     if isinstance(event, Message):
@@ -50,7 +53,12 @@ async def _send_or_edit_top_bal(
             raise
 
 @router.message(F.text.lower() == 'топ балик')
-async def top_money_cmd(message: Message, user: UserData, top_service: TopsService):
+@inject
+async def top_money_cmd(
+    message: Message,
+    user: UserData,
+    top_service: TopsService = Provide[Container.tops_service]
+):
     await _send_or_edit_top_bal(
         event=message,
         user=user,
@@ -59,7 +67,12 @@ async def top_money_cmd(message: Message, user: UserData, top_service: TopsServi
     )
 
 @router.callback_query(F.data.startswith('update_top_money_'), OwnerCallbackFilter())
-async def refresh_top_bal(callback: CallbackQuery, user: UserData, top_service: TopsService):
+@inject
+async def refresh_top_bal(
+    callback: CallbackQuery,
+    user: UserData,
+    top_service: TopsService = Provide[Container.tops_service]
+):
     await _send_or_edit_top_bal(
         event=callback,
         user=user,
@@ -69,7 +82,12 @@ async def refresh_top_bal(callback: CallbackQuery, user: UserData, top_service: 
     )
 
 @router.callback_query(F.data.startswith('update_only_top_money_'), OwnerCallbackFilter())
-async def update_top_only(callback: CallbackQuery, user: UserData, top_service: TopsService):
+@inject
+async def update_top_only(
+    callback: CallbackQuery,
+    user: UserData,
+    top_service: TopsService = Provide[Container.tops_service]
+):
     await _send_or_edit_top_bal(
         event=callback,
         user=user,
@@ -79,7 +97,12 @@ async def update_top_only(callback: CallbackQuery, user: UserData, top_service: 
     )
 
 @router.callback_query(F.data.startswith('money_top_'), OwnerCallbackFilter())
-async def ghoul_top_top(callback: CallbackQuery, user: UserData, top_service: TopsService):
+@inject
+async def ghoul_top_top(
+    callback: CallbackQuery,
+    user: UserData,
+    top_service: TopsService = Provide[Container.tops_service]
+):
     await _send_or_edit_top_bal(
         event=callback,
         user=user,
@@ -88,7 +111,12 @@ async def ghoul_top_top(callback: CallbackQuery, user: UserData, top_service: To
     )
 
 @router.callback_query(F.data.startswith('back_to_top_'), OwnerCallbackFilter())
-async def back_to_balance(callback: CallbackQuery, user: UserData, top_service: TopsService):
+@inject
+async def back_to_balance(
+    callback: CallbackQuery,
+    user: UserData,
+    top_service: TopsService = Provide[Container.tops_service]
+):
     await _send_or_edit_top_bal(
         event=callback,
         user=user,

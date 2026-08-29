@@ -84,7 +84,10 @@ class UserRepository(Base):
     async def activate_subscribed_bonus(self, telegram_id: int, bonus: int) -> UserOrm:
         stmt = (
             update(UserOrm)
-            .where(UserOrm.telegram_id == telegram_id)
+            .where(
+                UserOrm.telegram_id == telegram_id,
+                UserOrm.is_subscribed.is_(False)
+            )
             .values(
                 money=UserOrm.money + bonus,
                 is_subscribed=True

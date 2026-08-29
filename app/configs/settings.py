@@ -1,13 +1,13 @@
-from pydantic import SecretStr
+from pydantic import SecretStr, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
-    DATABASE_URL: str
-    BOT_TOKEN: SecretStr
-    ADMIN_ID: int
+    DATABASE_URL: str = Field(default=...)
+    BOT_TOKEN: SecretStr = Field(default=...)
+    ADMIN_ID: int = Field(default=...)
 
-    TELEGRAPH_ACCESS_TOKEN: SecretStr
-    TELEGRAPH_PAGE_PATH: str
+    TELEGRAPH_ACCESS_TOKEN: SecretStr = Field(default=...)
+    TELEGRAPH_PAGE_PATH: str = Field(default=...)
 
     model_config = SettingsConfigDict(
         env_file='.env',

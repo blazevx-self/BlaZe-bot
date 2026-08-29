@@ -2,6 +2,9 @@ from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.exceptions import TelegramBadRequest
 
+from dependency_injector.wiring import inject, Provide
+
+from app.containers import Container
 from app.core.templates.tops.top_snap_template import build_top_snap_text
 
 from app.types.entities.user import UserData
@@ -15,25 +18,27 @@ from app.bot.keyboards.tops.tops_keyboard import get_update_top_snap_kb
 router = Router()
 
 @router.message(F.text.lower() == "топ щелк", GhoulRequired())
+@inject
 async def snap_top_cmd(
     message: Message,
     user: UserData,
-    top_service: TopsService,
-    ghoul: GhoulData
+    ghoul: GhoulData,
+    top_service: TopsService = Provide[Container.tops_service]
 ):
-    result = await top_service.process_tops(user=user, ghoul=ghoul, top_type="snap")
+    result = await top_service.tops(user=user, ghoul=ghoul, top_type="snap")
     text = build_top_snap_text(result)
 
     await message.reply(text=text, reply_markup=get_update_top_snap_kb())
 
 @router.callback_query(F.data == "update_top_snap")
+@inject
 async def refresh_snap_top(
     callback: CallbackQuery,
     user: UserData,
-    top_service: TopsService,
-    ghoul: GhoulData
+    ghoul: GhoulData,
+    top_service: TopsService = Provide[Container.tops_service]
 ):
-    result = await top_service.process_tops(user=user, ghoul=ghoul, top_type="snap")
+    result = await top_service.tops(user=user, ghoul=ghoul, top_type="snap")
     text = build_top_snap_text(result)
 
     try:

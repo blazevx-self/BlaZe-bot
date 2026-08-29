@@ -7,6 +7,7 @@ from app.configs.yaml import cfg
 from app.configs.game import game_cfg
 
 from app.core.enums import ResultStatus
+from app.core.exceptions.user import UserNotFoundError
 
 from app.types.services_result.common import StartResult
 from app.types.entities.user import UserData
@@ -27,6 +28,15 @@ class StartService:
 
         user_id = user.telegram_id
 
+        if user.is_subscribed:
+            return StartResult(
+                status=ResultStatus.SUCCESS,
+                text=(
+                    f"<tg-emoji emoji-id='5289581576001167896'>🤨</tg-emoji> "
+                    f"{cfg['message']['start']}"
+                ),
+            )
+
         #Проверка подписки на канал через Telegram API
         try:
             member = await bot.get_chat_member(
@@ -44,17 +54,20 @@ class StartService:
             start_logger.warning(f"[START] Subscription check failed | user_id={user_id} | error={e}")
             is_subscribed = False
 
-        if is_subscribed and not user.is_subscribed:
+        if is_subscribed:
             bonus = game_cfg.start.bonus_amount
 
-            await self.user_repo.activate_subscribed_bonus(telegram_id=user_id, bonus=bonus)
-            
-            start_logger.info(f"[START] Subscription bonus issued | user_id={user_id} | bonus={bonus}")
+            try:
+                await self.user_repo.activate_subscribed_bonus(telegram_id=user_id, bonus=bonus)
+            except UserNotFoundError:
+                pass
+            else:
+                start_logger.info(f"[START] Subscription bonus issued | user_id={user_id} | bonus={bonus}")
 
-            return StartResult(
-                status=ResultStatus.SUCCESS,
-                text=cfg['message']['text_is_subscription'].format(bonus_money=bonus)
-            )
+                return StartResult(
+                    status=ResultStatus.SUCCESS,
+                    text=cfg['message']['text_is_subscription'].format(bonus_money=bonus)
+                )
 
         text = f"<tg-emoji emoji-id='5289581576001167896'>🤨</tg-emoji> {cfg['message']['start']}"
 

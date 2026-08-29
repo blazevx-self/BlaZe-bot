@@ -11,11 +11,13 @@ class ModifyBalanceService:
     def __init__(self, user_repo: UserRepository):
         self.user_repo = user_repo
 
-    async def _resolve_user(self, query: str | int) -> UserData:
+    async def _resolve_user(self, query: str | int) -> UserData | None:
         user = await self.user_repo.resolve(query)
 
         if not user:
             raise UserNotFoundError(f"⚠️ Пользователь не найден: {query}")
+
+        return user
 
     async def modify_balance(self, query: str | int, amount: int) -> ModifyBalanceResult:
         if amount == 0:

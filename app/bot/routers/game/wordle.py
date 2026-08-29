@@ -3,10 +3,16 @@ from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Command
 from aiogram.types import Message, BufferedInputFile
 
+from dependency_injector.wiring import inject, Provide
+
+from app.containers import Container
 from app.core.constants.game.wordle import MAX_ATTEMPTS, WORD_LENGTH
+
 from app.types.entities.user import UserData
 
 from app.services.game.wordle.wordle_service import WordleService
+from app.database.repositories import UserRepository
+
 from app.bot.filters.wordle_filter import WordleGameFilter
 
 router = Router()
@@ -62,7 +68,12 @@ async def _delete_board(bot: Bot, chat_id: int, message_id: int) -> bool:
 
 @router.message(Command("wordle"))
 @router.message(F.text.lower() == "вротли")
-async def wordle_start(message: Message, bot: Bot, wordle_service: WordleService):
+@inject
+async def wordle_start(
+    message: Message,
+    bot: Bot,
+    wordle_service: WordleService = Provide[Container.wordle_service]
+):
     if not message.from_user:
         return
 
@@ -77,7 +88,7 @@ async def wordle_start(message: Message, bot: Bot, wordle_service: WordleService
 
         sent = await message.reply_photo(
             photo=BufferedInputFile(file=photo, filename="wordle.png"),
-            caption="⏳ У вас есть незавершённая игра.\nВведите слово из 5 букв чтобы продолжить."
+            caption="⏳ У вас есть незавершённая игра.\n\nВведите слово из 5 букв чтобы продолжить."
         )
         wordle_service.set_board_message_id(user_id, sent.message_id)
         return
@@ -94,14 +105,17 @@ async def wordle_start(message: Message, bot: Bot, wordle_service: WordleService
             "⬛ — буквы нет в слове"
         )
     )
+
     wordle_service.set_board_message_id(user_id, sent.message_id)
 
 @router.message(WordleGameFilter())
+@inject
 async def wordle_guess(
-        message: Message,
-        bot: Bot,
-        user: UserData,
-        wordle_service: WordleService
+    message: Message,
+    bot: Bot,
+    user: UserData,
+    user_repo: UserRepository = Provide[Container.user_repo],
+    wordle_service: WordleService = Provide[Container.wordle_service]
 ):
     if not message.from_user or not message.text:
         return
@@ -112,7 +126,12 @@ async def wordle_guess(
     old_message_id = wordle_service.get_board_message_id(user_id)
 
     try:
-        result = await wordle_service.make_guess(telegram_id=user_id, word=word, user=user)
+        result = await wordle_service.make_guess(
+            telegram_id=user_id,
+            word=word,
+            user=user,
+            user_repo=user_repo,
+        )
     except ValueError as e:
         await message.reply(str(e))
         return

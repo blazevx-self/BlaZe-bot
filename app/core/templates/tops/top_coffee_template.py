@@ -17,8 +17,8 @@ def build_top_coffee_text(result: TopResult) -> str:
     prefixes = cfg['message']['tops']['prefixes']
 
     for position, top_user in enumerate(top_users, start=1):
-        coffee = format_num(top_user['coffee_count'])
-        safe_name = hd.quote(truncate_text(top_user['name']))
+        coffee = format_num(top_user.ghoul.coffee_count)
+        safe_name = hd.quote(truncate_text(top_user.ghoul.name))
 
         prefix = prefixes.get(str(position), f"{position}.")
         name = f"<b>{safe_name}</b>" if position <= 3 else safe_name

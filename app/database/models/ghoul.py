@@ -21,7 +21,7 @@ class GhoulOrm(Base):
     snap_count: Mapped[int] = mapped_column(default=0)
     coffee_count: Mapped[int] = mapped_column(default=0)
 
-    kagune_type: Mapped[str] = mapped_column(String(32), default=None)
+    kagune_type: Mapped[str | None] = mapped_column(String(32), nullable=True)
     kagune_strength: Mapped[int] = mapped_column(default=0)
     kagune_was_obtained: Mapped[bool] = mapped_column(default=False) 
 

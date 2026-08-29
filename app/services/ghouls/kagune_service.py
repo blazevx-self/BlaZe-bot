@@ -39,7 +39,11 @@ class KaguneService:
         kagune_type = game_cfg.kagune.random_type()
 
         if ghoul is None:
-            await self.ghoul_repo.upsert(telegram_id=user_id, name=user.name)
+            await self.ghoul_repo.upsert(
+                telegram_id=user_id,
+                name=user.name,
+                kagune_type=kagune_type
+            )
 
         try:
             await self.ghoul_repo.init_kagune(
@@ -61,7 +65,7 @@ class KaguneService:
     async def upgrade_kagune(self, user: UserData, ghoul: GhoulData) -> KaguneResult:
         user_id = user.telegram_id
 
-        if not ghoul.kagune_was_obtained:
+        if not ghoul or not ghoul.kagune_was_obtained:
             kagune_logger.debug(f"[KAGUNE] Upgrade denied | user_id={user_id} | reason=no_kagune")
             return KaguneResult(status=ResultStatus.NO_KAGUNE)
 

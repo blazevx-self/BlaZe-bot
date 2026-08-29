@@ -2,13 +2,21 @@ from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
 
+from dependency_injector.wiring import inject, Provide
+
+from app.containers import Container
 from app.services.admin.modify_balance_service import ModifyBalanceService
+
 from app.bot.filters.admin_filter import AdminFilter
 
 router = Router()
 
 @router.message(Command("modify_balance"), AdminFilter())
-async def modify_balance_cmd(message: Message, modify_balance_service: ModifyBalanceService):
+@inject
+async def modify_balance_cmd(
+    message: Message,
+    modify_balance_service: ModifyBalanceService = Provide[Container.modify_balance_service]
+):
     if not message.text:
         return
     
@@ -17,6 +25,10 @@ async def modify_balance_cmd(message: Message, modify_balance_service: ModifyBal
     if message.reply_to_message and message.reply_to_message.from_user:
         if message.reply_to_message.from_user.is_bot:
             await message.reply("⚠️ Нельзя изменить баланс боту.")
+            return
+
+        if len(args) < 2:
+            await message.reply("<b>Использование при ответе:</b>\n/modify_balance [+ или - число]")
             return
 
         query = str(message.reply_to_message.from_user.id)
