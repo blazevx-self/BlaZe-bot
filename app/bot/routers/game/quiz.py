@@ -1,3 +1,4 @@
+import json
 from html import escape
 
 from aiogram import Router, F
@@ -20,7 +21,7 @@ from app.bot.keyboards.game.quiz_keyboard import get_quiz_keyboard
 
 async def _send_question_ui(message_or_call, q, left, user_id):
     markup = get_quiz_keyboard(
-        options_str=q.question,
+        options_str=q.options,
         question_id=q.id,
         user_id=user_id
     )
@@ -68,7 +69,12 @@ async def quiz_handler(
     data = callback.data.split("_")
 
     question_id = int(data[1])
-    user_choice = "_".join(data[2:-1])
+    option_index = int(data[2])
+
+    question = await quiz_service.quiz_repo.get_question_by_id(question_id)
+
+    options = json.loads(question.options)
+    user_choice = options[option_index]
 
     result = await quiz_service.quiz_answer(
         user=user,

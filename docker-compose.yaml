@@ -1,34 +1,39 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: blaze_postgres
+    container_name: ${POSTGRES_CONTAINER_NAME}
     restart: unless-stopped
+
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: "1401"
-      POSTGRES_DB: blaze_bot
-    ports:
-      - "5432:5432"
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 5
+
     networks:
       - app_network
 
   pgadmin:
     image: dpage/pgadmin4
-    container_name: blaze_pgadmin
+    container_name: ${PGADMIN_CONTAINER_NAME}
     restart: unless-stopped
+
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+
     ports:
       - "5050:80"
+
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     depends_on:
@@ -38,17 +43,22 @@ services:
 
   bot:
     build: .
-    container_name: blaze_bot_app
+    container_name: ${BOT_CONTAINER_NAME}
     restart: unless-stopped
+
     env_file:
       - .env
+
     environment:
       - PYTHONUNBUFFERED=1
+
     volumes:
       - .:/app
+
     depends_on:
       postgres:
         condition: service_healthy
+
     networks:
       - app_network
 

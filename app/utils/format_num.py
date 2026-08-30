@@ -7,19 +7,22 @@ def format_num(amount: int | None) -> str:
     if amount is None:
         return "0"
 
+    sign = "-" if amount < 0 else ""
+    amount = abs(amount)
+
     if amount >= 1_000_000_000_000_000:
-        return f"{amount / 1_000_000_000_000_000:.1f}Q" # 1.0Q+
+        return f"{sign}{amount / 1_000_000_000_000_000:.1f}Q"
 
     if amount >= 1_000_000_000_000:
-        return f"{amount / 1_000_000_000_000:.1f}T"  # 1.0T+
+        return f"{sign}{amount / 1_000_000_000_000:.1f}T"
 
-    elif amount >= 1_000_000_000:
-        return f"{amount / 1_000_000_000:.1f}B" # 1.0B+
+    if amount >= 1_000_000_000:
+        return f"{sign}{amount / 1_000_000_000:.1f}B"
 
-    elif amount >= 1_000_000:
-        return f"{amount / 1_000_000:.1f}M"    # 1.0M+
+    if amount >= 1_000_000:
+        return f"{sign}{amount / 1_000_000:.1f}M"
 
-    elif amount >= 1_000:
-        return f"{amount / 1_000:.1f}K"        # 1.0K+
+    if amount >= 1_000:
+        return f"{sign}{amount / 1_000:.1f}K"
 
-    return str(amount)
+    return f"{sign}{amount}"

@@ -7,7 +7,7 @@ from app.database.models.quiz import QuizOrm, UserQuizHistoryOrm
 from app.database.models.user import UserOrm
 
 class QuizRepository(Base):
-    async def get_question_by_id(self, question_id: int) -> QuizOrm | None:
+    async def get_question_by_id(self, question_id: int) -> QuizOrm:
         stmt = select(QuizOrm).where(QuizOrm.id == question_id)
         return await self.session.scalar(stmt)
 

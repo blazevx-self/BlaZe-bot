@@ -62,9 +62,3 @@ class UserCooldownRepository(Base):
             UserCooldownOrm.action == action
         )
         await self.session.execute(stmt)
-
-    async def cleanup_expired(self) -> None:
-        stmt = delete(UserCooldownOrm).where(
-            UserCooldownOrm.expires_at <= int(time.time())
-        )
-        await self.session.execute(stmt)

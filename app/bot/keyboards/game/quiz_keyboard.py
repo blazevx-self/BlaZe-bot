@@ -1,16 +1,17 @@
+import json
 import random
 
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 def get_quiz_keyboard(options_str: str, question_id: int, user_id: int) -> InlineKeyboardMarkup:
-    options = options_str.split('|')
+    options = list(enumerate(json.loads(options_str)))
     random.shuffle(options)
 
     keyboard = []
     row = []
 
-    for opt in options:
-        btn = InlineKeyboardButton(text=opt, callback_data=f"q_{question_id}_{opt}_{user_id}")
+    for index, opt in options:
+        btn = InlineKeyboardButton(text=opt, callback_data=f"q_{question_id}_{index}_{user_id}")
         row.append(btn)
 
         if len(row) == 2:
