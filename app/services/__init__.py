@@ -1,6 +1,7 @@
 from .admin.ban_service import BanService
 from .admin.modify_balance_service import ModifyBalanceService
 from .admin.player_lookup_service import PlayerLookupService
+from .admin.field_edit import FieldEditService
 from .chat_service.chat_service import ChatService
 from .common.profile_service import ProfileService
 from .common.start_service import StartService
@@ -19,6 +20,7 @@ __all__ = [
     "BanService",
     "ModifyBalanceService",
     "PlayerLookupService",
+    "FieldEditService",
     "ChatService",
     "StartService",
     "ProfileService",

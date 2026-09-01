@@ -5,6 +5,7 @@ from aiogram.types import Message
 from dependency_injector.wiring import inject, Provide
 
 from app.containers import Container
+from app.core.exceptions.user import UserNotFoundError
 
 from app.services.admin.ban_service import BanService
 from app.bot.filters.admin_filter import AdminFilter
@@ -54,7 +55,7 @@ async def ban_bot(
             reason=reason,
         )
 
-    except ValueError as e:
+    except (UserNotFoundError, ValueError) as e:
         await message.reply(str(e))
         return
 
@@ -86,7 +87,7 @@ async def unban_user(
 
     try:
         user = await ban_service.unban(query)
-    except ValueError as e:
+    except (UserNotFoundError, ValueError) as e:
         await message.answer(str(e))
         return
 

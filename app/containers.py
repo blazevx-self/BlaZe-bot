@@ -21,6 +21,7 @@ from app.services import (
     GhoulService,
     KaguneService,
     ModifyBalanceService,
+    FieldEditService,
     PlayerLookupService,
     ProfileService,
     QuizService,
@@ -52,6 +53,7 @@ class Container(containers.DeclarativeContainer):
     ban_service = providers.Factory(BanService, user_repo=user_repo)
     modify_balance_service = providers.Factory(ModifyBalanceService, user_repo=user_repo)
     player_lookup_service = providers.Factory(PlayerLookupService, user_repo=user_repo, ghoul_repo=ghoul_repo)
+    field_edit_service = providers.Factory(FieldEditService, user_repo=user_repo, ghoul_repo=ghoul_repo)
 
     chat_service = providers.Factory(ChatService, chat_repo=chat_repo)
 

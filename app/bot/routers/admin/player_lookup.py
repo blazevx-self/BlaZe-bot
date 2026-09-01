@@ -5,8 +5,9 @@ from aiogram.types import Message
 from dependency_injector.wiring import inject, Provide
 
 from app.containers import Container
-from app.services.admin.player_lookup_service import PlayerLookupService
+from app.core.exceptions.user import UserNotFoundError
 
+from app.services.admin.player_lookup_service import PlayerLookupService
 from app.bot.filters.admin_filter import AdminFilter
 
 router = Router()
@@ -36,9 +37,10 @@ async def admin_profile_cmd(
 
         query = args[1].strip()
 
-    profile = await player_lookup_service.get_profile(query)
-
-    if profile is None:
-        await message.reply(f"⚠️ Пользователь не найден.")
+    try:
+        profile = await player_lookup_service.get_profile(query)
+    except (UserNotFoundError, ValueError) as e:
+        await message.reply(str(e))
+        return
 
     await message.reply(player_lookup_service.fmt_profile_user(profile))

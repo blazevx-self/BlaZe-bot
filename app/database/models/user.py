@@ -1,6 +1,6 @@
 from datetime import datetime, date
 
-from sqlalchemy import func
+from sqlalchemy import func, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import BigInteger
 
@@ -21,7 +21,7 @@ class UserOrm(Base):
     
     is_banned: Mapped[bool] = mapped_column(default=False)
     ban_reason: Mapped[str | None] = mapped_column(nullable=True)
-    banned_until: Mapped[datetime | None] = mapped_column(nullable=True)
+    banned_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     
     quiz_reset_date: Mapped[date | None] = mapped_column(nullable=True)
     quiz_questions_left: Mapped[int] = mapped_column(default=15, nullable=False)

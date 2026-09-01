@@ -1,5 +1,5 @@
 from typing import Any, Callable, Dict, Awaitable
-from datetime import timezone, datetime
+from datetime import datetime
 
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject, CallbackQuery, Message

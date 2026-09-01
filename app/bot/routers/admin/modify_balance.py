@@ -5,8 +5,9 @@ from aiogram.types import Message
 from dependency_injector.wiring import inject, Provide
 
 from app.containers import Container
-from app.services.admin.modify_balance_service import ModifyBalanceService
+from app.core.exceptions.user import UserNotFoundError
 
+from app.services.admin.modify_balance_service import ModifyBalanceService
 from app.bot.filters.admin_filter import AdminFilter
 
 router = Router()
@@ -48,13 +49,13 @@ async def modify_balance_cmd(
 
     try:
         amount = int(raw_amount)
-    except ValueError:
+    except (UserNotFoundError, ValueError):
         await message.reply("⚠️ Сумма должна быть целым числом.")
         return
 
     try:
         result = await modify_balance_service.modify_balance(query, amount)
-    except ValueError as e:
+    except (UserNotFoundError, ValueError) as e:
         await message.reply(str(e))
         return
     

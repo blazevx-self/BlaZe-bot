@@ -18,6 +18,7 @@ from app.utils.time import format_duration
 router = Router()
 
 @router.message(F.text.lower() == 'щелк', GhoulRequired())
+@router.message(F.text.lower() == 'щёлк', GhoulRequired())
 @inject
 async def snap(
     message: Message,

@@ -1,7 +1,6 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, UTC
 
 from app.configs.settings import settings
-
 from app.core.exceptions.user import UserNotFoundError
 
 from app.types.entities.user import UserData
@@ -23,7 +22,7 @@ class BanService:
         units = {"m": "minutes", "h": "hours", "d": "days"}
 
         if len(value) >= 2 and value[-1] in units and value[:-1].isdigit():
-            return datetime.utcnow() + timedelta(**{units[value[-1]]: int(value[:-1])})
+            return datetime.now(UTC) + timedelta(**{units[value[-1]]: int(value[:-1])})
 
         return None
 

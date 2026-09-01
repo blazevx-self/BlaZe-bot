@@ -7,8 +7,6 @@ from aiogram.filters.chat_member_updated import (
     ChatMemberUpdatedFilter,
     IS_MEMBER, IS_NOT_MEMBER,
 )
-
-from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramAPIError
 
 from dependency_injector.wiring import inject, Provide
@@ -28,31 +26,6 @@ async def bot_added(
     chat_repo: ChatRepository = Provide[Container.chat_repo]
 ) -> None:
     if event.chat.type not in ("group", "supergroup"):
-        return
-
-    bot_member = await event.bot.get_chat_member(
-        chat_id=event.chat.id,
-        user_id=event.bot.id,
-    )
-
-    if bot_member.status != ChatMemberStatus.ADMINISTRATOR:
-        await event.bot.send_message(
-            chat_id=event.chat.id,
-            text=(
-                "⚠️ <b>Для корректной работы мне нужны права администратора.</b>\n\n"
-                "Назначьте меня администратором, чтобы работали "
-                "приветствия, уведомления о выходе участников "
-                "и другие функции."
-            )
-        )
-
-        bot_logger.warning(
-            f"[BOT] Added without admin rights | "
-            f"chat_id={event.chat.id} | "
-            f"title={event.chat.title!r} | "
-            f"username={event.chat.username!r}"
-        )
-
         return
 
     await chat_repo.upsert(

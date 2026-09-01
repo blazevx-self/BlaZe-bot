@@ -56,6 +56,24 @@ class GhoulRepository(Base):
         stmt = select(exists().where(GhoulOrm.telegram_id == telegram_id))
         return await self.session.scalar(stmt)
 
+    async def change_data(self, telegram_id: int, **kwargs: Any) -> GhoulOrm:
+        if not kwargs:
+            raise ValueError("No fields to update")
+
+        stmt = (
+            update(GhoulOrm)
+            .where(GhoulOrm.telegram_id == telegram_id)
+            .values(**kwargs)
+            .returning(GhoulOrm)
+        )
+
+        ghoul = await self.session.scalar(stmt)
+
+        if ghoul is None:
+            raise GhoulNotFound(f"Ghoul ({telegram_id}) not found")
+
+        return ghoul
+
     async def init_kagune(self, telegram_id: int, kagune_type: str) -> GhoulOrm:
         stmt = (
             update(GhoulOrm)
