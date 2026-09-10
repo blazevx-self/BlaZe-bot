@@ -37,6 +37,9 @@ def format_duration(total_seconds: int, show_seconds: bool = True) -> str:
 
     parts = []
 
+    if time.days:
+        parts.append(f"{time.days}д.")
+
     if time.hours:
         parts.append(f'{time.hours}ч.')
 

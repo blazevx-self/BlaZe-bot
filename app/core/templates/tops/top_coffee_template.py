@@ -18,7 +18,7 @@ def build_top_coffee_text(result: TopResult) -> str:
 
     for position, top_user in enumerate(top_users, start=1):
         coffee = format_num(top_user.ghoul.coffee_count)
-        safe_name = hd.quote(truncate_text(top_user.ghoul.name))
+        safe_name = hd.quote(truncate_text(top_user.user.name))
 
         prefix = prefixes.get(str(position), f"{position}.")
         name = f"<b>{safe_name}</b>" if position <= 3 else safe_name

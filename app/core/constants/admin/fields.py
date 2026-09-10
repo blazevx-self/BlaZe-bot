@@ -17,7 +17,6 @@ ALLOWED_GHOUL_FIELDS = {
     'snap_count',
     'coffee_count',
 
-    'kagune_type',
     'kagune_strength',
     'kagune_was_obtained',
 

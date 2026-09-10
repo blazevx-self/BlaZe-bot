@@ -36,7 +36,7 @@ async def ban_bot(
 
         if len(args) < 2:
             await message.reply(
-                "<b>Использование:</b> /ban_bot «id или @username» [длительность] [причина]\n\n"
+                "ℹ️ <b>Использование:</b> /ban_bot «id или @username» [длительность] [причина]\n\n"
                 "<b>Длительность:</b> <code>30m, 24h, 7d</code>\n"
                 "<b>Без неё</b> — <code>навсегда.</code>\n\n"
                 "<b>Причина:</b> <code>текст</code>\n"
@@ -53,6 +53,7 @@ async def ban_bot(
             query=query,
             duration=duration,
             reason=reason,
+            admin_id=message.from_user.id
         )
 
     except (UserNotFoundError, ValueError) as e:
@@ -80,7 +81,7 @@ async def unban_user(
 
     else:
         if len(args) < 2:
-            await message.reply("<b>Использование:</b> /unban «id или @username»")
+            await message.reply("ℹ️ <b>Использование:</b> /unban «id или @username»")
             return
 
         query = args[1]

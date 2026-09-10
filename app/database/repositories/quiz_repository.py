@@ -87,9 +87,9 @@ class QuizRepository(Base):
         
         return history
 
-    async def clear_history(self, telegram_id: int) -> None:
+    async def clear_old_history(self, telegram_id: int) -> None:
         stmt = delete(UserQuizHistoryOrm).where(
             UserQuizHistoryOrm.telegram_id == telegram_id,
-            UserQuizHistoryOrm.quiz_date == date.today()
+            UserQuizHistoryOrm.quiz_date < date.today()
         )
         await self.session.execute(stmt)

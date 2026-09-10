@@ -18,7 +18,7 @@ def build_top_kagune_text(result: TopResult) -> str:
 
     for position, top_user in enumerate(top_users, start=1):
         kagune = format_num(top_user.ghoul.kagune_strength)
-        safe_name = hd.quote(truncate_text(top_user.ghoul.name))
+        safe_name = hd.quote(truncate_text(top_user.user.name))
 
         prefix = prefixes.get(str(position), f"{position}.")
         name = f"<b>{safe_name}</b>" if position <= 3 else safe_name
@@ -31,7 +31,7 @@ def build_top_kagune_text(result: TopResult) -> str:
         strongest = top_users[0]
 
         text += cfg['message']['tops']['top_kagune']['top_1_status'].format(
-            name=hd.quote(truncate_text(strongest.ghoul.name))
+            name=hd.quote(truncate_text(strongest.user.name))
         )
 
     if user_rank and user_rank > len(top_users) and ghoul:

@@ -41,7 +41,6 @@ class KaguneService:
         if ghoul is None:
             await self.ghoul_repo.upsert(
                 telegram_id=user_id,
-                name=user.name,
                 kagune_type=kagune_type
             )
 

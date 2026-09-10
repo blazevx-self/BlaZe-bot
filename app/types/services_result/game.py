@@ -3,6 +3,10 @@ from dataclasses import dataclass, field
 from app.core.constants.game.wordle import MAX_ATTEMPTS
 from app.core.enums import ResultStatus
 from app.core.enums.letterstate import LetterState
+from app.core.enums.lottery import LotteryColor
+
+from app.types.entities.user import UserData
+from app.types.entities.ghoul import GhoulData
 
 from app.database.models.quiz import QuizOrm
 
@@ -69,4 +73,14 @@ class WordleResult:
     board_message_id: int | None = None
     earned: int = 0
 
-
+@dataclass(slots=True, frozen=True)
+class LotteryResult:
+    ghoul: GhoulData
+    user: UserData
+    bet_amount: int
+    chosen_color: LotteryColor
+    winning_color: LotteryColor
+    is_won: bool
+    earned: int
+    video: bytes
+    text: str | None = None

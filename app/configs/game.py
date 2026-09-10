@@ -3,6 +3,8 @@ import random
 from random import randint
 from dataclasses import dataclass, field
 
+from app.core.enums.lottery import LotteryColor
+
 @dataclass(slots=True, frozen=True)
 class StartConfig:
     bonus_amount: int = 10000
@@ -38,7 +40,7 @@ class ProfileStatusConfig:
 @dataclass(slots=True, frozen=True)
 class KaguneConfig:
     start_price: int = 500
-    price_multiplier: float = 1.05
+    price_multiplier: float = 1.06
     cooldown: int = 15 * 60
 
     types_chance: dict[str, int] = field(default_factory=lambda: {
@@ -118,6 +120,34 @@ class WordleConfig:
         return randint(self.min_award, self.max_award)
 
 @dataclass(slots=True, frozen=True)
+class LotteryConfig:
+    min_bet: int = 100
+    max_bet: int = 1000000
+
+    colors: dict[LotteryColor, tuple[float, int]] = field(
+        default_factory=lambda: {
+            LotteryColor.RED: (1.8, 28),
+            LotteryColor.BLUE: (2.5, 22),
+            LotteryColor.GREEN: (3.0, 20),
+            LotteryColor.YELLOW: (5.0, 13),
+            LotteryColor.WHITE: (10.0, 10),
+        }
+    )
+
+    def get_multiplier(self, color: LotteryColor) -> float:
+        return self.colors[color][0]
+
+    def get_chance(self, color: LotteryColor) -> int:
+        return self.colors[color][1]
+
+    def get_random_color(self) -> LotteryColor:
+        return random.choices(
+            population=list(self.colors),
+            weights=[chance for _, chance in self.colors.values()],
+            k=1,
+        )[0]
+
+@dataclass(slots=True, frozen=True)
 class EconomyConfig:
     start: StartConfig = field(default_factory=StartConfig)
     profile_statuses: ProfileStatusConfig = field(default_factory=ProfileStatusConfig)
@@ -128,5 +158,6 @@ class EconomyConfig:
     quiz: QuizConfig = field(default_factory=QuizConfig)
     tops: TopsConfig = field(default_factory=TopsConfig)
     wordle: WordleConfig = field(default_factory=WordleConfig)
+    lottery: LotteryConfig = field(default_factory=LotteryConfig)
 
 game_cfg = EconomyConfig()

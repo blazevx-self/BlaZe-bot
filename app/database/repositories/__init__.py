@@ -4,6 +4,8 @@ from .quiz_repository import QuizRepository
 from .tops_repository import TopsRepository
 from .user_cooldown_repository import UserCooldownRepository
 from .users_repository import UserRepository
+from .lottery_repository import LotteryRepository
+from .rp_commands import RpCommandRepository
 
 __all__ = [
     "UserRepository",
@@ -12,4 +14,6 @@ __all__ = [
     "QuizRepository",
     "TopsRepository",
     "ChatRepository",
+    "LotteryRepository",
+    "RpCommandRepository",
 ]

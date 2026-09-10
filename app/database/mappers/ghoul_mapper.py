@@ -4,8 +4,7 @@ from app.types.entities.ghoul import GhoulData
 def orm_to_ghoul(ghoul: GhoulOrm) -> GhoulData:
     return GhoulData(
         telegram_id=ghoul.telegram_id,
-        
-        name=ghoul.name,
+
         level=ghoul.level,
         rc_money=ghoul.rc_money,
         

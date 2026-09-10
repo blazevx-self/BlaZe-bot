@@ -29,7 +29,10 @@ async def set_field(
             return
 
         if len(args) < 3:
-            await message.reply("<b>Использование при ответе:</b>\n/set_field «поле» «значение»")
+            await message.reply(
+                "ℹ️ <b>Использование при ответе:</b>\n/set_field «поле» «значение»\n\n"
+                f"{field_edit_service.fmt_fields_help()}"
+            )
             return
 
         query = str(message.reply_to_message.from_user.id)
@@ -38,7 +41,10 @@ async def set_field(
 
     else:
         if len(args) < 4:
-            await message.reply("<b>Использование:</b>\n/set_field «id или @username» «поле» «значение»")
+            await message.reply(
+                "ℹ️ <b>Использование:</b>\n/set_field «id или @username» «поле» «значение»\n\n"
+                f"{field_edit_service.fmt_fields_help()}"
+            )
             return
 
         query = args[1].strip()
@@ -55,7 +61,8 @@ async def set_field(
         result = await field_edit_service.set_field(
             query=query,
             field=field,
-            value=value
+            value=value,
+            admin_id=message.from_user.id
         )
     except (UserNotFoundError, ValueError) as e:
         await message.reply(str(e))

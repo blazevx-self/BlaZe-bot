@@ -1,6 +1,6 @@
-from enum import Enum
+from enum import StrEnum
 
-class LetterState(str, Enum):
+class LetterState(StrEnum):
     CORRECT = "correct"
     PRESENT = "present"
     ABSENT = "absent"

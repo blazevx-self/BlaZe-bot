@@ -31,3 +31,9 @@ class FieldEditResult:
     field: str
     value: int
     is_ghoul_field: bool
+
+@dataclass
+class ResetResult:
+    telegram_id: int
+    user_deleted: bool
+    ghoul_deleted: bool

@@ -6,6 +6,8 @@ from app.types.services_result.admin import FieldEditResult
 from app.database.repositories.users_repository import UserRepository
 from app.database.repositories.ghouls_repository import GhoulRepository
 
+from app.utils.logger import admin_logger
+
 class FieldEditService:
     def __init__(self, user_repo: UserRepository, ghoul_repo: GhoulRepository):
         self.user_repo = user_repo
@@ -33,7 +35,8 @@ class FieldEditService:
         self,
         query: str | int,
         field: str,
-        value: int
+        value: int,
+        admin_id: int
     ) -> FieldEditResult:
         user = await self._resolve_user(query)
 
@@ -57,7 +60,15 @@ class FieldEditService:
         if not ghoul:
             raise ValueError("⚠️ У пользователя нет профиля гуля")
 
-        updated = await self.ghoul_repo.change_data(user.telegram_id, **{field: value})
+        updated = await self.ghoul_repo.change_data(user.telegram_id,**{field: value})
+
+        admin_logger.info(
+            f"[SET_FIELD] Admin changed field | "
+            f"admin_id={admin_id} | "
+            f"user_id={user.telegram_id} | "
+            f"field={field} | "
+            f"value={value}"
+        )
 
         return FieldEditResult(
             target=updated,
@@ -77,6 +88,6 @@ class FieldEditService:
     @staticmethod
     def fmt_fields_help() -> str:
         return (
-            f"Поля пользователя: {', '.join(sorted(ALLOWED_USER_FIELDS))}\n"
-            f"Поля гуля: {', '.join(sorted(ALLOWED_GHOUL_FIELDS))}"
+            f"👤 <b>Поля пользователя:</b>\n<code>{', '.join(sorted(ALLOWED_USER_FIELDS))}</code>\n\n"
+            f"🧬 <b>Поля гуля:</b>\n<code>{', '.join(sorted(ALLOWED_GHOUL_FIELDS))}</code>"
         )

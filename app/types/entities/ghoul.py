@@ -4,7 +4,6 @@ from dataclasses import dataclass
 class GhoulData:    
     telegram_id: int
 
-    name: str
     rc_money: int
     level: int = 1
 

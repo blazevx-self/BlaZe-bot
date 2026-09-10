@@ -160,3 +160,13 @@ class GhoulRepository(Base):
             raise GhoulNotFound(f"Ghoul ({telegram_id}) not found")
         
         return ghoul
+
+    async def delete(self, telegram_id: int) -> bool:
+        ghoul = await self.get(telegram_id)
+
+        if ghoul is None:
+            return False
+
+        await self.session.delete(ghoul)
+
+        return True

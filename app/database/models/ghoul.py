@@ -12,8 +12,6 @@ class GhoulOrm(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     telegram_id: Mapped[int] = mapped_column(BigInteger, unique=True, index=True, nullable=False)
 
-    name: Mapped[str] = mapped_column(nullable=False)
-
     rc_money: Mapped[int] = mapped_column(default=0)
 
     level: Mapped[int] = mapped_column(default=1)

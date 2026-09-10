@@ -155,3 +155,13 @@ class UserRepository(Base):
             ban_reason=None,
             banned_until=None,
         )
+
+    async def delete(self, telegram_id: int) -> bool:
+        user = await self.get(telegram_id)
+
+        if not user:
+            return False
+
+        await self.session.delete(user)
+
+        return True

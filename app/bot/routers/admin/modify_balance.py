@@ -29,7 +29,7 @@ async def modify_balance_cmd(
             return
 
         if len(args) < 2:
-            await message.reply("<b>Использование при ответе:</b>\n/modify_balance [+ или - число]")
+            await message.reply("ℹ️ <b>Использование при ответе:</b>\n/modify_balance [+ или - число]")
             return
 
         query = str(message.reply_to_message.from_user.id)
@@ -37,7 +37,7 @@ async def modify_balance_cmd(
     
     else:
         if len(args) < 3:
-            await message.reply("<b>Использование:</b>\n/modify_balance «id или @username» [+ или - число]")
+            await message.reply("ℹ️ <b>Использование:</b>\n/modify_balance «id или @username» [+ или - число]")
             return
 
         query = args[1]
@@ -54,7 +54,11 @@ async def modify_balance_cmd(
         return
 
     try:
-        result = await modify_balance_service.modify_balance(query, amount)
+        result = await modify_balance_service.modify_balance(
+            query=query,
+            amount=amount,
+            admin_id=message.from_user.id
+        )
     except (UserNotFoundError, ValueError) as e:
         await message.reply(str(e))
         return

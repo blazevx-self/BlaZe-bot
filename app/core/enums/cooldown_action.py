@@ -1,6 +1,6 @@
-from enum import Enum
+from enum import StrEnum
 
-class CooldownAction(str, Enum):
+class CooldownAction(StrEnum):
     SNAP = "snap"
     COFFEE = "coffee"
     COFFEE_OVERDOSE = "coffee_overdose"

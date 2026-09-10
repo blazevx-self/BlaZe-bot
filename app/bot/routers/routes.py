@@ -1,13 +1,13 @@
 from app.bot.routers.ghoul import kagune, snap, coffee, stats, race_profile
-from app.bot.routers.common import start, help, bot, unknown_commands, profile, balance
+from app.bot.routers.common import start, help, bot, unknown_commands, profile, balance, rp_commands
 
-from app.bot.routers.game import quiz, wordle
+from app.bot.routers.game import quiz, wordle, lottery
 from app.bot.routers.tops import top_bal, top_click, top_kagune, top_coffee
 
 from app.bot.routers.chat.moderator import rules, welcome_message, goodbye_message
 from app.bot.routers.chat.chat_member_update import new_chat_member, left_chat_member
 
-from app.bot.routers.admin import ban, modify_balance, player_lookup, field_edit
+from app.bot.routers.admin import ban, modify_balance, player_lookup, field_edit, reset
 
 all_routers = (
     start.router,
@@ -25,6 +25,7 @@ all_routers = (
 
     wordle.router,
     quiz.router,
+    lottery.router,
 
     top_bal.router,
     top_click.router,
@@ -38,10 +39,13 @@ all_routers = (
     modify_balance.router,
     player_lookup.router,
     field_edit.router,
+    reset.router,
 
     rules.router,
     goodbye_message.router,
     welcome_message.router,
+
+    rp_commands.router,
 
     unknown_commands.router,
 )

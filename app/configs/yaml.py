@@ -27,4 +27,3 @@ def load_config() -> dict:
     return data
 
 cfg = load_config()
-

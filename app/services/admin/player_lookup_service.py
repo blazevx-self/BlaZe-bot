@@ -65,12 +65,12 @@ class PlayerLookupService:
 
             text += (
                 f"\n\n🧬 <b>Гуль</b>\n"
-                f"└ <b>Уровень:</b> <code>{ghoul.level}</code>\n"
+                f"└ <b>Уровень:</b> <code>{format_num(ghoul.level)}</code>\n"
                 f"└ <b>RC-клетки:</b> <code>{format_num(ghoul.rc_money)}</code>\n"
-                f"└ <b>Сила:</b> <code>{ghoul.strength}/{STAT_LIMITS['strength']}</code>\n"
-                f"└ <b>Скорость:</b> <code>{ghoul.speed}/{STAT_LIMITS['speed']}</code>\n"
-                f"└ <b>Ловкость:</b> <code>{ghoul.dexterity}/{STAT_LIMITS['dexterity']}</code>\n"
-                f"└ <b>Здоровье:</b> <code>{ghoul.hp}/{STAT_LIMITS['hp']}</code>\n"
+                f"└ <b>Сила:</b> <code>{format_num(ghoul.strength)}/{STAT_LIMITS['strength']}</code>\n"
+                f"└ <b>Скорость:</b> <code>{format_num(ghoul.speed)}/{STAT_LIMITS['speed']}</code>\n"
+                f"└ <b>Ловкость:</b> <code>{format_num(ghoul.dexterity)}/{STAT_LIMITS['dexterity']}</code>\n"
+                f"└ <b>Здоровье:</b> <code>{format_num(ghoul.hp)}/{STAT_LIMITS['hp']}</code>\n"
                 f"└ <b>Регенерация:</b> <code>{ghoul.regen}/{STAT_LIMITS['regen']}</code>\n"
                 f"└ <b>Какуджа:</b> <code>{'✅ есть' if ghoul.is_kakuja else '❌ Нет'}</code>"
             )
@@ -79,7 +79,7 @@ class PlayerLookupService:
                 text += (
                     f"\n\n👁 <b>Кагуне</b>\n"
                     f"└ <b>Тип:</b> <code>{ghoul.kagune_type or '—'}</code>\n"
-                    f"└ <b>Сила:</b> <code>{ghoul.kagune_strength}</code>"
+                    f"└ <b>Сила:</b> <code>{format_num(ghoul.kagune_strength)}</code>"
                 )
             else:
                 text += (
@@ -89,10 +89,10 @@ class PlayerLookupService:
 
             text += (
                 f"\n\n📊 <b>Статистика гуля</b>\n"
-                f"└ <b>Сломано пальцев:</b> <code>{ghoul.snap_count}</code>\n"
-                f"└ <b>Выпито кофе:</b> <code>{ghoul.coffee_count}</code>\n"
-                f"└ <b>Съедено людей:</b> <code>{ghoul.eat_humans}</code>\n"
-                f"└ <b>Съедено гулей:</b> <code>{ghoul.eat_ghouls}</code>"
+                f"└ <b>Сломано пальцев:</b> <code>{format_num(ghoul.snap_count)}</code>\n"
+                f"└ <b>Выпито кофе:</b> <code>{format_num(ghoul.coffee_count)}</code>\n"
+                f"└ <b>Съедено людей:</b> <code>{format_num(ghoul.eat_humans)}</code>\n"
+                f"└ <b>Съедено гулей:</b> <code>{format_num(ghoul.eat_ghouls)}</code>"
             )
 
         return text

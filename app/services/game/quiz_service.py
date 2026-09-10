@@ -27,6 +27,9 @@ class QuizService:
         """
 
         user_id = user.telegram_id
+
+        await self.quiz_repo.clear_old_history(user_id)
+
         can_play, quiz_question_left = await self.quiz_repo.get_quiz_access(
             telegram_id=user_id,
             daily_limit=game_cfg.quiz.day_limit

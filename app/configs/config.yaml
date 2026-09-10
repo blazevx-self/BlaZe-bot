@@ -267,15 +267,37 @@ message:
     no_questions_callback: |
       Ты ответил на все вопросы! Жди обновы.
 
+  lottery:
+    win: |
+      🎰 Депнул на <b>{chosen_color}</b>
+      
+      🟢 <b>Выиграл!</b>
+      Победный цвет был <b>{winning_color}</b>
+      
+      💰 Твой выигрыш: <b>+{earned}</b> BlaZeCoin
+      📈 Множитель: <b>×{multiplier}</b>
+
+      💵 Баланс: <b>{money}</b> BlaZeCoin
+
+    lose: |
+      🎰 Депнул на <b>{chosen_color}!</b>
+      
+      🔴 <b>Проиграл!</b>
+      Победный цвет был <b>{winning_color}</b>
+      
+      💸 Ты потерял: <b>{bet}</b> BlaZeCoin
+      
+      💵 Баланс: <b>{money}</b> BlaZeCoin
+
   stats:
     stats_text: |
       💸 <b>Балик:</b> <code>{money} BlazeCoin</code>
     
-      💪 <b>Сила:</b> <code>{strength}/120 {p_strength}</code>
-      🤸 <b>Ловкость:</b> <code>{dexterity}/105 {p_dexterity}</code>
-      🏃 <b>Скорость:</b> <code>{speed}/108 {p_speed}</code>
-      ❤️ <b>Макс. здоровье</b>: <code>{hp}/115 {p_hp}</code>
-      ️️❣️ <b>Регенерация:</b> <code>{regen}/110 {p_regen}</code>
+      💪 <b>Сила:</b> <code>{strength}/100 {p_strength}</code>
+      🤸 <b>Ловкость:</b> <code>{dexterity}/100 {p_dexterity}</code>
+      🏃 <b>Скорость:</b> <code>{speed}/100 {p_speed}</code>
+      ❤️ <b>Макс. здоровье</b>: <code>{hp}/100 {p_hp}</code>
+      ️️❣️ <b>Регенерация:</b> <code>{regen}/100 {p_regen}</code>
     notifications:
       invalid_stat: "⚠️ Неизвестный стат"
       invalid_amount: "⚠️ Ошибка прокачки"

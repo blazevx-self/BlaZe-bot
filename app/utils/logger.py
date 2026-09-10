@@ -4,11 +4,9 @@ from pathlib import Path
 from rich.logging import RichHandler
 from logging.handlers import TimedRotatingFileHandler
 
-
 # Форматтеры для файлов и красивого цветного терминала
 FILE_FORMATTER = logging.Formatter("[%(asctime)s] %(levelname)s | %(message)s", datefmt="%H:%M:%S")
 CONSOLE_FORMATTER = logging.Formatter("%(message)s")
-
 
 def setup_file_logger(
         name: str,
@@ -73,6 +71,9 @@ callback_logger = get_logger("callbacks", "callbacks")
 system_logger = get_logger("system", "system")
 database_logger = get_logger("database", "database")
 
+admin_logger = get_logger("admin", "admin")
+rp_command_logger = get_logger("rp_command", "rp_command")
+
 security_logger = get_logger("security", "security")
 error_logger = get_logger("errors", "errors")
 
@@ -80,6 +81,7 @@ start_logger = get_logger("start", "game/start")
 
 quiz_logger = get_logger("quiz", "game/quiz")
 wordle_logger = get_logger("wordle", "game/wordle")
+lottery_logger = get_logger("lottery", "game/lottery")
 
 snap_logger = get_logger("snap", "game/snap")
 coffee_logger = get_logger("coffee", "game/coffee")

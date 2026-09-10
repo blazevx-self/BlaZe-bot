@@ -7,6 +7,7 @@ from app.types.entities.user import UserData
 from app.types.services_result.admin import BanResult
 
 from app.database.repositories.users_repository import UserRepository
+from app.utils.logger import admin_logger
 
 class BanService:
     def __init__(self, user_repo: UserRepository):
@@ -38,13 +39,13 @@ class BanService:
         self,
         query: str | int,
         duration: str | None = None,
-        reason: str | None = None
+        reason: str | None = None,
+        admin_id: int | None = None
     ) -> BanResult:
         user = await self._resolve_user(query)
 
         if user.is_banned:
             raise ValueError("🚫 Пользователь уже забанен.")
-
 
         if user.telegram_id == settings.ADMIN_ID:
             raise ValueError("⚠️ Нельзя забанить владельца бота.")
@@ -58,6 +59,12 @@ class BanService:
             telegram_id=user.telegram_id,
             reason=reason,
             banned_until=banned_until
+        )
+
+        admin_logger.info(
+            f"[BAN] User banned | user_id: {user.telegram_id} | admin_id: {admin_id} "
+            f"name={user.name} "
+            f"| until={banned_until} | reason={reason!r}"
         )
 
         return BanResult(

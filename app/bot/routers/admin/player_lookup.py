@@ -32,7 +32,7 @@ async def admin_profile_cmd(
 
     else:
         if len(args) < 2:
-           await message.reply("<b>Использование:</b> /admin_profile «id или @username»")
+           await message.reply("ℹ️ <b>Использование:</b> /admin_profile «id или @username»")
            return
 
         query = args[1].strip()

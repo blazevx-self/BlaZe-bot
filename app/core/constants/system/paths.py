@@ -8,3 +8,4 @@ ENV_PATH = BASE_DIR / '.env'
 FONT_PATH = APP_DIR / "assets" / "fonts" / "Rubik.ttf"
 WORDLE_WORDS_PATH = APP_DIR / "assets" / "wordle" / "words.txt"
 QUIZ_PATH = APP_DIR / "assets" / "json" / "quiz.json"
+EMOJI_FONT_PATH = APP_DIR / "assets" / "fonts" / "NotoColorEmoji.ttf"
