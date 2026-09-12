@@ -1,6 +1,6 @@
 import random
 
-from app.configs.yaml import cfg
+from app.configs.yaml_loader import cfg
 from app.configs.game import game_cfg
 
 from app.core.enums import ResultStatus
@@ -12,8 +12,8 @@ from app.types.entities.ghoul import GhoulData
 
 from app.services.cooldown_service import CooldownService
 
-from app.database.repositories.ghouls_repository import GhoulRepository
-from app.database.repositories.users_repository import UserRepository
+from app.database.repositories.ghoul_repository import GhoulRepository
+from app.database.repositories.user_repository import UserRepository
 
 from app.utils.format_num import format_num
 from app.utils.time import format_duration

@@ -1,5 +1,5 @@
 from html import escape
-from app.configs.yaml import cfg
+from app.configs.yaml_loader import cfg
 
 def quiz_result_text(
         question: str,

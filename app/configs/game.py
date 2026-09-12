@@ -46,8 +46,8 @@ class KaguneConfig:
     types_chance: dict[str, int] = field(default_factory=lambda: {
         "Укаку": 45,
         "Коукаку": 30,
-        "Ринкаку": 15,
-        "Бикаку": 20,
+        "Ринкаку": 10,
+        "Бикаку": 15,
     })
 
     def random_type(self) -> str:
@@ -60,7 +60,7 @@ class KaguneConfig:
 @dataclass(slots=True, frozen=True)
 class StatsPriceConfig:
     base_price: int = 250
-    price_multiplier: float = 1.04
+    price_multiplier: float = 1.05
 
 @dataclass(slots=True, frozen=True)
 class CoffeeConfig:
@@ -148,7 +148,7 @@ class LotteryConfig:
         )[0]
 
 @dataclass(slots=True, frozen=True)
-class EconomyConfig:
+class GameConfig:
     start: StartConfig = field(default_factory=StartConfig)
     profile_statuses: ProfileStatusConfig = field(default_factory=ProfileStatusConfig)
     kagune: KaguneConfig = field(default_factory=KaguneConfig)
@@ -160,4 +160,4 @@ class EconomyConfig:
     wordle: WordleConfig = field(default_factory=WordleConfig)
     lottery: LotteryConfig = field(default_factory=LotteryConfig)
 
-game_cfg = EconomyConfig()
+game_cfg = GameConfig()

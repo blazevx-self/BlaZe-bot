@@ -3,8 +3,8 @@ from app.core.exceptions.user import UserNotFoundError
 
 from app.types.services_result.admin import FieldEditResult
 
-from app.database.repositories.users_repository import UserRepository
-from app.database.repositories.ghouls_repository import GhoulRepository
+from app.database.repositories.user_repository import UserRepository
+from app.database.repositories.ghoul_repository import GhoulRepository
 
 from app.utils.logger import admin_logger
 
@@ -24,7 +24,7 @@ class FieldEditService:
         return False, False
 
     async def _resolve_user(self, query: str | int):
-        user = await self.user_repo.get(query)
+        user = await self.user_repo.resolve(query)
 
         if not user:
             raise UserNotFoundError(f"⚠️ Пользователь не найден: {query}")

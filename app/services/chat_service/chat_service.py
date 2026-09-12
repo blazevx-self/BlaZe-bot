@@ -5,7 +5,7 @@ from app.core.exceptions.chat import (
 )
 
 from app.database.models.chat import ChatOrm
-from app.database.repositories.chats_repository import ChatRepository
+from app.database.repositories.chat_repository import ChatRepository
 
 class ChatService:
     def __init__(self, chat_repo: ChatRepository):

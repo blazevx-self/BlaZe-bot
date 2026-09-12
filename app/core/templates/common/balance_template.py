@@ -1,4 +1,4 @@
-from app.configs.yaml import cfg
+from app.configs.yaml_loader import cfg
 from app.types.entities.user import UserData
 
 from app.utils.format_num import format_num

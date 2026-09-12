@@ -1,6 +1,6 @@
 from aiogram.utils.markdown import html_decoration as hd
 
-from app.configs.yaml import cfg
+from app.configs.yaml_loader import cfg
 from app.types.services_result.tops import TopResult
 
 from app.utils.truncate_name import truncate_text

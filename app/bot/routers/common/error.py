@@ -1,0 +1,26 @@
+from aiogram import Router
+from aiogram.types import Message, CallbackQuery, ErrorEvent
+
+from app.utils.logger import error_logger
+
+router = Router()
+
+@router.error()
+async def error(event: ErrorEvent) -> None:
+    error_logger.exception(f"[ERROR HANDLER] {event.exception}")
+
+    update = event.update
+    if isinstance(update.message, Message):
+        await update.message.answer(
+            "<b>☕️ Кажется, мой тупой криворукий разраб опять что-то сломал.</b>\n\n"
+            "ℹ️ <i>Ошибка уже отправлена ему автоматически.</i> "
+            "<i>Попробуйте повторить действие немного позже.</i>"
+        )
+
+    elif isinstance(update.callback_query, CallbackQuery):
+        await update.callback_query.answer(
+            "☕️ Что-то пошло не так.\n\n"
+            "ℹ️ Ошибка уже отправлена разработчику. "
+            "Попробуйте повторить действие немного позже",
+            show_alert=True
+        )

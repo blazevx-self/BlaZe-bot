@@ -1,7 +1,7 @@
 from app.core.enums.rp_commands import TypeRpCommand
 from app.types.services_result.rp_commands import RpCommandResult
 
-from app.database.repositories.rp_commands import RpCommandRepository
+from app.database.repositories.rp_commands_repository import RpCommandRepository
 
 from app.utils.logger import rp_command_logger
 
@@ -58,8 +58,14 @@ class RpCommandService:
         action: str,
         type_command: TypeRpCommand,
         file_id: str | None = None
-    ) -> RpCommandResult:
+    ) -> RpCommandResult | None:
         command = self._normalize_command(command)
+
+        if chat_id not in self._cache:
+            await self._load_cache(chat_id)
+
+        if len(self._cache[chat_id]) >= 20 and command not in self._cache[chat_id]:
+            return None
 
         rp_command = await self.rp_repo.upsert(
             chat_id=chat_id,

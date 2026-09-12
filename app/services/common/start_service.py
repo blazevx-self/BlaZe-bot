@@ -3,7 +3,7 @@ import aiogram.exceptions
 from aiogram import Bot
 from aiogram.enums import ChatMemberStatus
 
-from app.configs.yaml import cfg
+from app.configs.yaml_loader import cfg
 from app.configs.game import game_cfg
 
 from app.core.enums import ResultStatus
@@ -12,7 +12,7 @@ from app.core.exceptions.user import UserNotFoundError
 from app.types.services_result.common import StartResult
 from app.types.entities.user import UserData
 
-from app.database.repositories.users_repository import UserRepository
+from app.database.repositories.user_repository import UserRepository
 from app.utils.logger import start_logger
 
 class StartService:

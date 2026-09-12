@@ -15,7 +15,7 @@ class UserOrm(Base):
     name: Mapped[str] = mapped_column(nullable=False)
     username: Mapped[str | None] = mapped_column(nullable=True)
 
-    money: Mapped[int] = mapped_column(default=0)
+    money: Mapped[int] = mapped_column(BigInteger, default=0)
     
     is_subscribed: Mapped[bool] = mapped_column(default=False, nullable=False)
     

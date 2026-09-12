@@ -111,7 +111,7 @@ class AuditService:
             process_time=process_time,
         )
 
-        admin_id = settings.ADMIN_ID
+        admin_id = settings.ADMIN_IDS
 
         if not bot or not admin_id:
             return

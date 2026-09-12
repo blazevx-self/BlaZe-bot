@@ -1,5 +1,5 @@
 from app.bot.routers.ghoul import kagune, snap, coffee, stats, race_profile
-from app.bot.routers.common import start, help, bot, unknown_commands, profile, balance, rp_commands
+from app.bot.routers.common import start, help, bot, unknown_commands, profile, balance, rp_commands, error
 
 from app.bot.routers.game import quiz, wordle, lottery
 from app.bot.routers.tops import top_bal, top_click, top_kagune, top_coffee
@@ -46,6 +46,8 @@ all_routers = (
     welcome_message.router,
 
     rp_commands.router,
+
+    error.router,
 
     unknown_commands.router,
 )

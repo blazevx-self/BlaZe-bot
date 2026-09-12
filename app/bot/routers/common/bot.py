@@ -3,7 +3,7 @@ import random
 from aiogram import Router, F
 from aiogram.types import Message
 
-from app.configs.yaml import cfg
+from app.configs.yaml_loader import cfg
 from app.utils.logger import bot_logger
 
 router = Router()

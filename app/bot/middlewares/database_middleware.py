@@ -8,6 +8,8 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from app.containers import session_context
 
 class DatabaseMiddleware(BaseMiddleware):
+    """Управляет жизненными циклом сессии БД."""
+
     def __init__(self, session_factory: async_sessionmaker[AsyncSession]) -> None:
         self.session_factory = session_factory
 

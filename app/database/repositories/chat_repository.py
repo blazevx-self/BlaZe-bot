@@ -10,7 +10,7 @@ class ChatRepository(Base):
     async def upsert(
         self, 
         telegram_id: int, 
-        title: str, 
+        title: str | None,
         username: str | None = None
     ) -> ChatOrm:
         stmt = (

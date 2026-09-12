@@ -15,16 +15,18 @@ from app.database.database import (
     reset_session
 )
 
-from app.bot.middlewares.logging_middleware import LoggingMiddleware
-from app.bot.middlewares.antispam_middleware import AntiSpamGhoulMiddleware
-from app.bot.middlewares.antiflood_middleware import AntifloodMiddleware
-from app.bot.middlewares.sync_entities_middleware import SyncEntitiesMiddleware
-from app.bot.middlewares.ban_middleware import BanMiddleware
-from app.bot.middlewares.database_middleware import DatabaseMiddleware
+from app.bot.middlewares import (
+    BanMiddleware,
+    AntiSpamGhoulMiddleware,
+    LoggingMiddleware,
+    AntifloodMiddleware,
+    DatabaseMiddleware,
+    SyncEntitiesMiddleware,
+)
 
 from app.bot.routers.routes import all_routers
 
-from app.qestions_loader import seed_quiz_questions
+from app.questions_loader import seed_quiz_questions
 from app.utils.logger import system_logger
 
 async def on_startup():

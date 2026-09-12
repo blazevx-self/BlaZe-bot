@@ -4,7 +4,7 @@ from app.core.exceptions.user import UserNotFoundError
 from app.types.services_result.admin import ModifyBalanceResult
 from app.types.entities.user import UserData
 
-from app.database.repositories.users_repository import UserRepository
+from app.database.repositories.user_repository import UserRepository
 
 from app.utils.logger import admin_logger
 from app.utils.format_num import format_num

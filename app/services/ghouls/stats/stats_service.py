@@ -1,6 +1,6 @@
 from typing import Literal
 
-from app.configs.yaml import cfg
+from app.configs.yaml_loader import cfg
 
 from app.core.templates.ghoul.stats_template import stats_text
 from app.core.constants.game.stats import STAT_NAMES
@@ -10,8 +10,8 @@ from app.types.services_result.ghoul import StatsResult
 from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 
-from app.database.repositories.ghouls_repository import GhoulRepository
-from app.database.repositories.users_repository import UserRepository
+from app.database.repositories.ghoul_repository import GhoulRepository
+from app.database.repositories.user_repository import UserRepository
 
 from app.services.ghouls.stats.calculate_stats_service import calculate_upgrade
 from app.bot.keyboards.ghoul.stats_keyboard import builds_stats_keyboard

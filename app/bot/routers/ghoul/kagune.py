@@ -4,7 +4,7 @@ from aiogram.types import Message, CallbackQuery, InputMediaAnimation
 from dependency_injector.wiring import inject, Provide
 
 from app.containers import Container
-from app.configs.yaml import cfg
+from app.configs.yaml_loader import cfg
 
 from app.core.enums import ResultStatus
 from app.types.entities.user import UserData

@@ -5,8 +5,8 @@ from aiogram.types import TelegramObject
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database.repositories.users_repository import UserRepository
-from app.database.repositories.ghouls_repository import GhoulRepository
+from app.database.repositories.user_repository import UserRepository
+from app.database.repositories.ghoul_repository import GhoulRepository
 
 from app.database.mappers.user_mapper import orm_to_user
 from app.database.mappers.ghoul_mapper import orm_to_ghoul

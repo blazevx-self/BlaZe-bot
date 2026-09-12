@@ -18,7 +18,7 @@ from .ghouls.snap_service import SnapService
 from .ghouls.stats.stats_service import StatsService
 from .tops.tops_service import TopsService
 from .game.lottery.lottery_video_generator import LotteryVideoGenerator
-from .common.rp_commands import RpCommandService
+from .common.rp_commands_service import RpCommandService
 
 __all__ = [
     "BanService",

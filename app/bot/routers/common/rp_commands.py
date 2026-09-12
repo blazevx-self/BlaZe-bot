@@ -8,13 +8,16 @@ from app.configs.settings import settings
 from app.containers import Container
 
 from app.core.enums.rp_commands import TypeRpCommand
-
 from app.types.services_result.rp_commands import RpCommandResult
 
-from app.services.common.rp_commands import RpCommandService
+from app.services.common.rp_commands_service import RpCommandService
+
+from app.bot.middlewares.rp_command_middleware import RpPrivateMiddleware
 from app.bot.filters.rp_commands import NewRpCommandOnMedia, RpCommandFilter
 
 router = Router()
+
+router.message.middleware(RpPrivateMiddleware())
 
 @router.message(NewRpCommandOnMedia(TypeRpCommand.PHOTO))
 @router.message(NewRpCommandOnMedia(TypeRpCommand.ANIMATION))
@@ -33,7 +36,7 @@ async def set_rp_media(
     else:
         return
 
-    await message.forward(settings.ADMIN_ID)
+    await message.forward(settings.ADMIN_IDS)
 
     rp_command = await rp_command_service.upsert(
         chat_id=message.chat.id,
@@ -75,6 +78,12 @@ async def set_rp_cmd(
         type_command=TypeRpCommand.TEXT
     )
 
+    if rp_command is None:
+        await message.reply(
+            "⚠️ <b>Достигнут лимит Role-Play команд.</b>\n\nМаксимум — <b>20 команд</b> на один чат."
+        )
+        return
+
     await message.reply(
         f"✅ <b>Установлена Role-Play команда.</b>\n\n"
         f"📍 Команда <b>{rp_command.command}</b> с действием <b>{rp_command.action}</b>"
@@ -90,7 +99,7 @@ async def get_all_rp(
 
     if not commands:
         await message.reply(
-            "📭 <b>В этом чате пока нет RP-Play команд.</b>\n\n"
+            "📭 <b>В этом чате пока нет Role-Play команд.</b>\n\n"
             "ℹ️ <b>Добавьте первую:\n</b> /set_rp «команда» «действие»"
         )
         return

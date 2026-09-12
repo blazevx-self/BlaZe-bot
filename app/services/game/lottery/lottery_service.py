@@ -1,7 +1,7 @@
 import asyncio
 
 from app.configs.game import game_cfg
-from app.configs.yaml import cfg
+from app.configs.yaml_loader import cfg
 
 from app.core.enums.lottery import LotteryColor
 
@@ -9,7 +9,7 @@ from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 from app.types.services_result.game import LotteryResult
 
-from app.database.repositories.users_repository import UserRepository
+from app.database.repositories.user_repository import UserRepository
 from app.database.repositories.lottery_repository import LotteryRepository
 
 from app.services.game.lottery.lottery_video_generator import LotteryVideoGenerator
@@ -43,6 +43,8 @@ class LotteryService:
 
     @staticmethod
     def parse_color(color_str: str) -> LotteryColor:
+        """Преобразует строку в цвет лотереи"""
+
         color_str = color_str.lower().strip().replace("ё", "е")
 
         for color in LotteryColor:
@@ -61,6 +63,8 @@ class LotteryService:
         chosen_color: LotteryColor,
         bet_amount: int
     ) -> LotteryResult:
+        """Выполняет ставку и определяет результат"""
+
         user_id = user.telegram_id
 
         self._validate_bet(bet_amount)
@@ -104,7 +108,6 @@ class LotteryService:
             raise
 
         user.money = new_balance
-
 
         lottery_logger.info(
             f"[LOTTERY] Dep result | user_id={user_id} | "

@@ -11,6 +11,8 @@ from app.core.enums.rp_commands import TypeRpCommand
 from app.services import RpCommandService
 
 class RpCommandFilter(BaseFilter):
+    """Ищет RP-команду по сообщению."""
+
     async def __call__(
         self,
         message: Message,
@@ -32,10 +34,15 @@ class RpCommandFilter(BaseFilter):
         return {"rp_command": rp_command}
 
 class NewRpCommandOnMedia(BaseFilter):
+    """Обрабатывает создание RP-команды через медиа."""
+
     def __init__(self, type_command: TypeRpCommand) -> None:
         self.type_command = type_command
 
     async def __call__(self, message: Message) -> bool | dict[str, Any]:
+        if message.forward_origin:
+            return False
+
         if self.type_command == TypeRpCommand.PHOTO:
             if not message.photo:
                 return False

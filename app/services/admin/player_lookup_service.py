@@ -3,8 +3,8 @@ from app.core.exceptions.user import UserNotFoundError
 
 from app.types.services_result.admin import AdminUserProfileResult
 
-from app.database.repositories.users_repository import UserRepository
-from app.database.repositories.ghouls_repository import GhoulRepository
+from app.database.repositories.user_repository import UserRepository
+from app.database.repositories.ghoul_repository import GhoulRepository
 
 from app.utils.format_num import format_num
 

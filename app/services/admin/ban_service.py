@@ -6,7 +6,7 @@ from app.core.exceptions.user import UserNotFoundError
 from app.types.entities.user import UserData
 from app.types.services_result.admin import BanResult
 
-from app.database.repositories.users_repository import UserRepository
+from app.database.repositories.user_repository import UserRepository
 from app.utils.logger import admin_logger
 
 class BanService:
@@ -47,8 +47,8 @@ class BanService:
         if user.is_banned:
             raise ValueError("🚫 Пользователь уже забанен.")
 
-        if user.telegram_id == settings.ADMIN_ID:
-            raise ValueError("⚠️ Нельзя забанить владельца бота.")
+        if user.telegram_id in settings.ADMIN_IDS:
+            raise ValueError("⚠️ Нельзя забанить главного администратора бота.")
 
         banned_until = self._parse_duration(duration)
 

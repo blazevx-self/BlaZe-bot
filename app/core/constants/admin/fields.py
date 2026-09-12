@@ -1,6 +1,5 @@
 ALLOWED_USER_FIELDS = {
     'money',
-    'is_subscribed',
 
     'is_banned',
     'ban_reason',

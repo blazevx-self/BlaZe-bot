@@ -1,5 +1,5 @@
 from app.configs.game import game_cfg
-from app.configs.yaml import cfg
+from app.configs.yaml_loader import cfg
 
 from app.core.constants.game.stats import POWER_FIELDS
 from app.core.constants.game.kagune import KAGUNE_MULTIPLIER
@@ -7,7 +7,7 @@ from app.core.constants.game.ranks import DANGER_RANKS
 
 from app.types.entities.ghoul import GhoulData
 
-from app.database.repositories.ghouls_repository import GhoulRepository
+from app.database.repositories.ghoul_repository import GhoulRepository
 
 class GhoulService:
     """Общий сервис игровых механик гулей."""
@@ -35,7 +35,7 @@ class GhoulService:
         return bool(ghoul and ghoul.kagune_was_obtained)
 
     @staticmethod
-    def get_price(level: int) -> int:
+    def get_price_kagune(level: int) -> int:
         """Расчёт стоимости улучшения кагуне."""
 
         base = game_cfg.kagune.start_price

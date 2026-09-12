@@ -12,7 +12,7 @@ from aiogram.exceptions import TelegramAPIError
 from dependency_injector.wiring import inject, Provide
 
 from app.containers import Container
-from app.database.repositories.chats_repository import ChatRepository
+from app.database.repositories.chat_repository import ChatRepository
 
 from app.services.chat_service.chat_service import ChatService
 from app.utils.logger import bot_logger, error_logger

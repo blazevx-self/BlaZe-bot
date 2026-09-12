@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     DATABASE_URL: str = Field(default=...)
     BOT_TOKEN: SecretStr = Field(default=...)
-    ADMIN_ID: int = Field(default=...)
+    ADMIN_IDS: list[int] = Field(default=...)
 
     TELEGRAPH_ACCESS_TOKEN: SecretStr = Field(default=...)
     TELEGRAPH_PAGE_PATH: str = Field(default=...)

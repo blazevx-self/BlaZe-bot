@@ -10,7 +10,7 @@ from app.types.services_result.game import (
 )
 
 from app.database.repositories.quiz_repository import QuizRepository
-from app.database.repositories.users_repository import UserRepository
+from app.database.repositories.user_repository import UserRepository
 
 from app.utils.logger import quiz_logger
 

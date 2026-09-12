@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery, LinkPreviewOptions
 
-from app.configs.yaml import cfg
+from app.configs.yaml_loader import cfg
 from app.core.templates.common.help_template import build_help_text
 
 from app.bot.keyboards.common.start_keyboard import start_keyboard
@@ -11,7 +11,7 @@ from app.bot.keyboards.common.help_keyboard import get_help_menu, get_help_menu_
 router = Router()
 
 @router.message(Command('help'))
-async def help_me(message: Message) -> None:    
+async def help_me(message: Message) -> None:
     await message.reply(
         text=build_help_text(),
         reply_markup=get_help_menu(),

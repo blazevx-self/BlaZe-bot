@@ -3,7 +3,7 @@ from aiogram.types import Message, CallbackQuery
 
 from dependency_injector.wiring import Provide
 
-from app.configs.yaml import cfg
+from app.configs.yaml_loader import cfg
 from app.containers import Container
 
 from app.services.ghouls.ghoul_service import GhoulService

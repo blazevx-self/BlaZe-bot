@@ -1,5 +1,5 @@
 from app.configs.game import game_cfg
-from app.configs.yaml import cfg
+from app.configs.yaml_loader import cfg
 
 from app.core.enums import ResultStatus
 from app.core.enums.cooldown_action import CooldownAction
@@ -9,8 +9,8 @@ from app.types.services_result.ghoul import KaguneResult
 from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 
-from app.database.repositories.ghouls_repository import GhoulRepository
-from app.database.repositories.users_repository import UserRepository
+from app.database.repositories.ghoul_repository import GhoulRepository
+from app.database.repositories.user_repository import UserRepository
 
 from app.services.ghouls.ghoul_service import GhoulService
 from app.services.cooldown_service import CooldownService
@@ -81,7 +81,7 @@ class KaguneService:
             )
 
         level = ghoul.kagune_strength
-        price = self.ghoul_service.get_price(level)
+        price = self.ghoul_service.get_price_kagune(level)
 
         # проверка баланса перед апом
         if user.money < price:

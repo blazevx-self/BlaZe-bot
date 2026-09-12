@@ -15,7 +15,7 @@ from app.types.services_result.game import GuessResult, WordleResult
 from app.types.services_result.game import WordleSession
 
 from app.services.game.wordle.renderer import render_board
-from app.database.repositories.users_repository import UserRepository
+from app.database.repositories.user_repository import UserRepository
 
 from app.utils.logger import wordle_logger
 
