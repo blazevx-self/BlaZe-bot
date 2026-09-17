@@ -39,14 +39,14 @@ async def _send_or_edit_top_bal(
         await event.message.edit_text(text=text, reply_markup=reply_markup)
 
         if is_refresh:
-            await event.answer("Обновлён топчик", show_alert=False)
+            await event.answer("🔄 Обновлён топчик", show_alert=False)
         else:
             await event.answer()
 
     except TelegramBadRequest as e:
         if "message is not modified" in str(e):
            if is_refresh:
-               await event.answer("Изменений в топе нет", show_alert=False)
+               await event.answer("❌ Изменений в топе нет", show_alert=False)
            else:
                await event.answer()
         else:

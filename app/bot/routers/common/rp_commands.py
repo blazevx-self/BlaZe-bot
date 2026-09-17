@@ -36,7 +36,15 @@ async def set_rp_media(
     else:
         return
 
-    await message.forward(settings.ADMIN_IDS)
+    admin_ids = settings.ADMIN_IDS
+    if isinstance(admin_ids, int):
+        admin_ids = [admin_ids]
+
+    for admin_id in admin_ids:
+        try:
+            await message.forward(chat_id=admin_id)
+        except Exception:
+            pass
 
     rp_command = await rp_command_service.upsert(
         chat_id=message.chat.id,
@@ -47,8 +55,10 @@ async def set_rp_media(
     )
 
     await message.reply(
-        f"✅ <b>Установлена Role-Play команда.</b>\n\n"
-        f"📍 Команда {rp_command.command} с действием {rp_command.action}"
+        "<tg-emoji emoji-id=\"5260416304224936047\">✅</tg-emoji> "
+        f"<b>Установлена Role-Play команда.</b>\n\n"
+        "<tg-emoji emoji-id=\"5258461531464539536\">📌</tg-emoji> "
+        f"Команда <b>{rp_command.command}</b> с действием <b>{rp_command.action}</b>"
     )
 
 @router.message(Command("set_rp"))
@@ -59,14 +69,18 @@ async def set_rp_cmd(
     rp_command_service: RpCommandService = Provide[Container.rp_command_service]
 ) -> None:
     if not command.args:
-        await message.reply("ℹ️ <b>Используйте:</b> /set_rp «команда» «действие»")
+        await message.reply(
+            "<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
+            "<b>Используйте:</b> /set_rp «команда» «действие»"
+        )
         return
 
     args = command.args.split(maxsplit=1)
 
     if len(args) < 2:
         await message.reply(
-            "ℹ️ <b>Используйте:</b> /set_rp «команда» «действие»\n\n"
+            "<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
+            "<b>Используйте:</b> /set_rp «команда» «действие»\n\n"
             "<b>Пример:</b>\nобнять обнял(-а) крепко"
         )
         return
@@ -80,13 +94,16 @@ async def set_rp_cmd(
 
     if rp_command is None:
         await message.reply(
-            "⚠️ <b>Достигнут лимит Role-Play команд.</b>\n\nМаксимум — <b>20 команд</b> на один чат."
+            "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+            "<b>Достигнут лимит Role-Play команд.</b>\n\nМаксимум — <b>20 команд</b> на один чат."
         )
         return
 
     await message.reply(
-        f"✅ <b>Установлена Role-Play команда.</b>\n\n"
-        f"📍 Команда <b>{rp_command.command}</b> с действием <b>{rp_command.action}</b>"
+        "<tg-emoji emoji-id=\"5260416304224936047\">✅</tg-emoji> "
+        f"<b>Установлена Role-Play команда.</b>\n\n"
+        "<tg-emoji emoji-id=\"5258461531464539536\">📌</tg-emoji> "
+        f"Команда <b>{rp_command.command}</b> с действием <b>{rp_command.action}</b>"
     )
 
 @router.message(Command("all_rp"))
@@ -99,12 +116,17 @@ async def get_all_rp(
 
     if not commands:
         await message.reply(
-            "📭 <b>В этом чате пока нет Role-Play команд.</b>\n\n"
-            "ℹ️ <b>Добавьте первую:\n</b> /set_rp «команда» «действие»"
+            "<tg-emoji emoji-id=\"5258389041006518073\">📂</tg-emoji> "
+            "<b>В этом чате пока нет Role-Play команд.</b>\n\n"
+            "<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
+            "<b>Добавьте первую:\n</b> /set_rp «команда» «действие»"
         )
         return
 
-    lines = ["📝 <b>Список всех Role-Play команд чата:</b> \n\n"]
+    lines = [
+        "<tg-emoji emoji-id=\"5778299625370817409\">📝</tg-emoji> "
+        "<b>Список всех Role-Play команд чата:</b> \n"
+    ]
     lines.extend(
         f"<b>{index}.</b> {rp.command} — {rp.action}"
         for index, rp in enumerate(commands, start=1)
@@ -120,7 +142,10 @@ async def delete_rp(
     rp_command_service: RpCommandService = Provide[Container.rp_command_service]
 ) -> None:
     if not command.args:
-        await message.reply("ℹ️ <b>Используйте:</b> /del_rp «команда»")
+        await message.reply(
+            "<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
+            "<b>Используйте:</b> /del_rp «команда»"
+        )
         return
 
     rp_command = command.args.split(maxsplit=1)[0]
@@ -131,10 +156,14 @@ async def delete_rp(
     )
 
     if not deleted:
-        await message.reply(f"❌ Role-Play команда <b>{rp_command}</b> не найдена.")
+        await message.reply(
+            "<tg-emoji emoji-id=\"5260342697075416641\">❌</tg-emoji> "
+            f"Role-Play команда <b>{rp_command}</b> не найдена.")
         return
 
-    await message.reply(f"🗑 Role-Play команда <b>{rp_command}</b> удалена.")
+    await message.reply(
+        "<tg-emoji emoji-id=\"5258130763148172425\">🗑</tg-emoji> "
+        f"Role-Play команда <b>{rp_command}</b> удалена.")
 
 @router.message(RpCommandFilter())
 async def role_play(
@@ -193,15 +222,23 @@ async def _send_rp(
 
         case TypeRpCommand.PHOTO:
             if not rp_command.file_id:
-                raise RuntimeError(f"⚠️ Role-Play команда <b>{rp_command.command}</b> не содержит file_id.")
+                raise RuntimeError(
+                    "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                    f"Role-Play команда <b>{rp_command.command}</b> не содержит file_id.")
 
             await message.reply_photo(photo=rp_command.file_id, caption=text)
 
         case TypeRpCommand.ANIMATION:
             if not rp_command.file_id:
-                raise RuntimeError(f"⚠️ Role-Play команда <b>{rp_command.command}</b> не содержит file_id.")
+                raise RuntimeError(
+                    "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                    f"Role-Play команда <b>{rp_command.command}</b> не содержит file_id."
+                )
 
             await message.reply_animation(animation=rp_command.file_id, caption=text)
 
         case _:
-            raise RuntimeError(f"⚠️ Неподдерживаемый тип Role-Play команды: <b>{rp_command.type_command}</b>")
+            raise RuntimeError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                f"Неподдерживаемый тип Role-Play команды: <b>{rp_command.type_command}</b>"
+            )

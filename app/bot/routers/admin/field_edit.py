@@ -25,12 +25,16 @@ async def set_field(
 
     if message.reply_to_message and message.reply_to_message.from_user:
         if message.reply_to_message.from_user.is_bot:
-            await message.reply("⚠️ Нельзя изменять поля боту.")
+            await message.reply(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Нельзя изменять поля боту."
+            )
             return
 
         if len(args) < 3:
             await message.reply(
-                "ℹ️ <b>Использование при ответе:</b>\n/set_field «поле» «значение»\n\n"
+                "<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
+                "<b>Использование при ответе:</b>\n/set_field «поле» «значение»\n\n"
                 f"{field_edit_service.fmt_fields_help()}"
             )
             return
@@ -42,7 +46,8 @@ async def set_field(
     else:
         if len(args) < 4:
             await message.reply(
-                "ℹ️ <b>Использование:</b>\n/set_field «id или @username» «поле» «значение»\n\n"
+                "<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
+                "<b>Использование:</b>\n/set_field «id или @username» «поле» «значение»\n\n"
                 f"{field_edit_service.fmt_fields_help()}"
             )
             return
@@ -54,7 +59,10 @@ async def set_field(
     try:
         value = int(value)
     except ValueError:
-        await message.reply("⚠️ Значение должно быть целым числом.")
+        await message.reply(
+            "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+            "Значение должно быть целым числом."
+        )
         return
 
     try:
@@ -65,7 +73,7 @@ async def set_field(
             admin_id=message.from_user.id
         )
     except (UserNotFoundError, ValueError) as e:
-        await message.reply(str(e))
+        await message.reply(text=str(e))
         return
 
     await message.answer(field_edit_service.fmt_operation_result(result))

@@ -5,12 +5,19 @@ from app.configs.game import game_cfg
 
 def get_open_kagune_kb(user_id: int) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text='Пробудить кагуне', callback_data=f"kagune_new_{user_id}")]
+        [InlineKeyboardButton(
+            text='Пробудить кагуне',
+            callback_data=f"kagune_new_{user_id}",
+            icon_custom_emoji_id="5442804822048780010"
+        )]
     ])
 
 def get_grow_kagune_kb(user_id: int) -> InlineKeyboardMarkup:
     price = game_cfg.kagune.start_price
 
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=f"Растить кагуне ({format_num(price)} 💸)", callback_data=f"kagune_ras_{user_id}")]
+        [InlineKeyboardButton(
+            text=f"Растить кагуне ({format_num(price)} 💸)",
+            callback_data=f"kagune_ras_{user_id}",
+        )]
     ])

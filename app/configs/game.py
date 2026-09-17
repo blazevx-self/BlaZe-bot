@@ -126,11 +126,11 @@ class LotteryConfig:
 
     colors: dict[LotteryColor, tuple[float, int]] = field(
         default_factory=lambda: {
-            LotteryColor.RED: (1.8, 28),
-            LotteryColor.BLUE: (2.5, 22),
-            LotteryColor.GREEN: (3.0, 20),
-            LotteryColor.YELLOW: (5.0, 13),
-            LotteryColor.WHITE: (10.0, 10),
+            LotteryColor.RED: (1.8, 45),
+            LotteryColor.BLUE: (2.5, 30),
+            LotteryColor.GREEN: (3.0, 15),
+            LotteryColor.YELLOW: (5.0, 7),
+            LotteryColor.WHITE: (10.0, 3),
         }
     )
 
@@ -148,6 +148,14 @@ class LotteryConfig:
         )[0]
 
 @dataclass(slots=True, frozen=True)
+class TransferConfig:
+    min_amount: int = 100
+    max_amount: int = 1000000
+
+    min_sender_account_age_days: int = 3
+    max_received_per_day: int = 15
+
+@dataclass(slots=True, frozen=True)
 class GameConfig:
     start: StartConfig = field(default_factory=StartConfig)
     profile_statuses: ProfileStatusConfig = field(default_factory=ProfileStatusConfig)
@@ -159,5 +167,6 @@ class GameConfig:
     tops: TopsConfig = field(default_factory=TopsConfig)
     wordle: WordleConfig = field(default_factory=WordleConfig)
     lottery: LotteryConfig = field(default_factory=LotteryConfig)
+    transfer: TransferConfig = field(default_factory=TransferConfig)
 
 game_cfg = GameConfig()

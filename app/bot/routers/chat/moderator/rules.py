@@ -19,7 +19,8 @@ async def check_chat_rules(
 
     if not rules:
         await message.reply(
-            "📭 <i>В этом чате нет правил. Чтобы указать новые правила, используйте команду</i> -> <b>новые правила</b>"
+            "<tg-emoji emoji-id=\"5258389041006518073\">📂</tg-emoji> "
+            "<b>В этом чате нет правил.</b>\n\n<i>Чтобы указать новые правила, используйте команду</i> -> <b>новые правила</b>"
         )
         return
 
@@ -34,8 +35,10 @@ async def set_rules(
 
     if not rules:
         await message.reply(
-            "❌ <b>Правила не указаны.</b>\n\n"
-            "ℹ️ <i>После команды необходимо написать текст правил.</i>\n\n<b>Пример:</b>\n"
+            "<tg-emoji emoji-id=\"5260342697075416641\">❌</tg-emoji> "
+            "<b>Правила не указаны.</b>\n\n"
+            "<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
+            "<i>После команды необходимо написать текст правил.</i>\n\n<b>Пример:</b>\n"
             "<code>новые правила</code>\n\n"
             "1. Не спамить.\n"
             "2. Не оскорблять участников.\n"
@@ -44,7 +47,10 @@ async def set_rules(
         return
 
     await chat_service.set_rules(telegram_id=message.chat.id, rules=rules)
-    await message.reply("✅ <b>Правила чата сохранены.</b>")
+    await message.reply(
+        "<tg-emoji emoji-id=\"5260416304224936047\">✅</tg-emoji> "
+        "Правила чата сохранены."
+    )
 
 @router.message(F.text.lower().startswith("удалить правила"), GroupOnlyFilter(), GroupModeratorFilter())
 @inject
@@ -52,4 +58,7 @@ async def delete_rules(
     message: Message, chat_service: ChatService = Provide[Container.chat_service]
 ) -> None:
     await chat_service.delete_rules(telegram_id=message.chat.id)
-    await message.reply("🗑 <b>Все правила чата были удалены.</b>")
+    await message.reply(
+        "<tg-emoji emoji-id=\"5258130763148172425\">🗑</tg-emoji> "
+        "Все правила чата были удалены."
+    )

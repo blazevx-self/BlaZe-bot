@@ -32,7 +32,10 @@ async def dep_cmd(
     match = re.fullmatch(DEP_PATTERN, message.text.lower().strip())
 
     if not match:
-        await message.reply("❌ <b>Использование:</b> депнуть «цвет» «ставка»")
+        await message.reply(
+            "<tg-emoji emoji-id=\"5260342697075416641\">❌</tg-emoji> "
+            "<b>Использование:</b> депнуть «цвет» «ставка»"
+        )
         return
 
     color_str = match.group(1)
@@ -56,8 +59,8 @@ async def dep_cmd(
         lottery_logger.exception(f"[LOTTERY] Error processing bet | user_id={message.from_user.id}")
 
         await message.reply(
-            "❌ <b>Не удалось обработать ставку.</b>\n"
-            "Попробуйте ещё раз."
+            "<tg-emoji emoji-id=\"5260342697075416641\">❌</tg-emoji>"
+            "<b>Не удалось обработать ставку.</b> Попробуйте ещё раз."
         )
         return
 

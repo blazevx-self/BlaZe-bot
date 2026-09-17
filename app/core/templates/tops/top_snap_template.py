@@ -11,7 +11,7 @@ def build_top_snap_text(result: TopResult) -> str:
     ghoul = result.ghoul
     user_rank = result.rank
 
-    text = "<b>Топ 20 сломанных пальцев</b>\n"
+    text = "<tg-emoji emoji-id=\"5834596128246469018\">🫰</tg-emoji> <b>Топ 20 сломанных пальцев</b>\n\n"
     text += "<b>╭─────────────────╮</b>\n"
 
     prefixes = cfg['message']['tops']['prefixes']
@@ -29,7 +29,8 @@ def build_top_snap_text(result: TopResult) -> str:
 
     if user_rank == 0:
         text += (
-            f"\n<b>Ты не входишь в топ сломанных пальцев. Воспользуйся командой «щелк»</b>"
+            "\n<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
+            f"<b>Ты не входишь в топ сломанных пальцев. Воспользуйся командой «щелк»</b>"
         )
 
     if user_rank > len(top_users) and ghoul:

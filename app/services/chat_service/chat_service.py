@@ -15,7 +15,10 @@ class ChatService:
         chat = await self.chat_repo.get_chat_by_telegram_id(telegram_id=telegram_id)
 
         if not chat:
-            raise ChatNotFoundError("Чат не найден.")
+            raise ChatNotFoundError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Чат не найден."
+            )
 
         return chat
 
@@ -29,10 +32,16 @@ class ChatService:
 
     async def set_rules(self, telegram_id: int, rules: str) -> ChatOrm:
         if not rules.strip():
-            raise ChatValidationError("Правила не могут быть пустыми.")
+            raise ChatValidationError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Правила не могут быть пустыми."
+            )
 
         if len(rules) < 1 or len(rules) > 4000:
-            raise ChatValidationError("Количество символов не может быть меньше 1 или больше 4000 символов.")
+            raise ChatValidationError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Количество символов не может быть меньше 1 или больше 4000 символов."
+            )
 
         chat = await self._get_chat(telegram_id=telegram_id)
 
@@ -50,7 +59,10 @@ class ChatService:
         chat = await self._get_chat(telegram_id=telegram_id)
 
         if not chat.rules:
-            raise ChatStateError("В этом чате нет никаких правил.")
+            raise ChatStateError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "В этом чате нет никаких правил."
+            )
 
         return await self.chat_repo.update_rules(
             telegram_id=telegram_id,
@@ -59,10 +71,16 @@ class ChatService:
 
     async def set_welcome_message(self, telegram_id: int, welcome_message: str) -> ChatOrm:
         if not welcome_message.strip():
-            raise ChatValidationError("Приветственное сообщение не может быть пустым")
+            raise ChatValidationError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Приветственное сообщение не может быть пустым"
+            )
 
         if len(welcome_message) < 1 or len(welcome_message) > 4000:
-            raise ChatValidationError("Количество символов не может быть меньше 1 или больше 4000 символов.")
+            raise ChatValidationError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Количество символов не может быть меньше 1 или больше 4000 символов."
+            )
 
         await self._get_chat(telegram_id=telegram_id)
 
@@ -73,10 +91,16 @@ class ChatService:
 
     async def set_goodbye_message(self, telegram_id: int, goodbye_message: str) -> ChatOrm:
         if not goodbye_message.strip():
-            raise ChatValidationError("Прощальное сообщение не может быть пустым")
+            raise ChatValidationError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Прощальное сообщение не может быть пустым"
+            )
 
         if len(goodbye_message) < 1 or len(goodbye_message) > 4000:
-            raise ChatValidationError("Количество символов не может быть меньше 1 или больше 4000 символов.")
+            raise ChatValidationError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Количество символов не может быть меньше 1 или больше 4000 символов."
+            )
 
         await self._get_chat(telegram_id=telegram_id)
 

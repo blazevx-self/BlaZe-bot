@@ -17,7 +17,10 @@ class ResetService:
         user = await self.user_repo.resolve(query)
 
         if not user:
-            raise UserNotFoundError(f"⚠️ Пользователь не найден: {query}")
+            raise UserNotFoundError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                f"Пользователь не найден: {query}."
+            )
 
         return user
 

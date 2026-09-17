@@ -31,7 +31,10 @@ class BanService:
         user = await self.user_repo.resolve(query)
 
         if not user:
-            raise UserNotFoundError(f"⚠️ Пользователь не найден: {query}")
+            raise UserNotFoundError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                f"Пользователь не найден: {query}."
+            )
 
         return user
 
@@ -45,10 +48,16 @@ class BanService:
         user = await self._resolve_user(query)
 
         if user.is_banned:
-            raise ValueError("🚫 Пользователь уже забанен.")
+            raise ValueError(
+                "<tg-emoji emoji-id=\"5258318620722733379\">🚫</tg-emoji> "
+                "Пользователь уже забанен."
+            )
 
         if user.telegram_id in settings.ADMIN_IDS:
-            raise ValueError("⚠️ Нельзя забанить главного администратора бота.")
+            raise ValueError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Нельзя забанить главного администратора бота."
+            )
 
         banned_until = self._parse_duration(duration)
 
@@ -77,7 +86,10 @@ class BanService:
         user = await self._resolve_user(query)
 
         if not user.is_banned:
-            raise ValueError("☕️ Пользователь не забанен.")
+            raise ValueError(
+                "<tg-emoji emoji-id=\"5386470514871003633\">☕️</tg-emoji>"
+                "Пользователь не забанен."
+            )
 
         await self.user_repo.unban(telegram_id=user.telegram_id)
 
@@ -92,14 +104,17 @@ class BanService:
         )
 
         return (
-            f"🚫 Пользователь <code>{result.user.telegram_id}</code> "
+            "<tg-emoji emoji-id=\"5258318620722733379\">🚫</tg-emoji> "
+            f"Пользователь <code>{result.user.telegram_id}</code> "
             f"({result.user.name}) <b>заблокирован {until}.</b>\n\n"
+            "<tg-emoji emoji-id=\"5778299625370817409\">📝</tg-emoji> "
             f"<b>Причина:</b> <i>{result.reason or 'Не указана'}</i>"
         )
 
     @staticmethod
     def fmt_unban_result(user: UserData) -> str:
         return (
-        f"✅ Пользователь <code>{user.telegram_id}</code> "
-        f"({user.name}) <b>разблокирован.</b>\n\n"
-    )
+            "<tg-emoji emoji-id=\"5260416304224936047\">✅</tg-emoji> "
+            f"Пользователь <code>{user.telegram_id}</code> "
+            f"({user.name}) <b>разблокирован.</b>\n\n"
+        )

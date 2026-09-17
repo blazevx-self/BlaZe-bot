@@ -17,12 +17,12 @@ def quiz_result_text(
 
     result_text = (
         f"<b>╭──────────────────╮</b>\n"
-        f"<b>Вопрос</b>: {escape(question)}\n\n"
-        f"<b>Правильный ответ</b>: {escape(correct_answer)}\n\n"
-        f"<b>Твой выбор</b>: {escape(user_choice)}\n\n"
-        f"<b>Статус</b>: {status_text}\n"
+        f"<tg-emoji emoji-id=\"6030848053177486888\">❓</tg-emoji> <b>Вопрос</b>: {escape(question)}\n\n"
+        f"<tg-emoji emoji-id=\"5260726538302660868\">✅</tg-emoji> <b>Правильный ответ</b>: {escape(correct_answer)}\n\n"
+        f"<tg-emoji emoji-id=\"5276107052412859621\">👉</tg-emoji> <b>Твой выбор</b>: {escape(user_choice)}\n\n"
+        f"<tg-emoji emoji-id=\"5936143551854285132\">📊</tg-emoji> <b>Статус</b>: {status_text}\n"
         f"<b>╰──────────────────╯</b>\n\n"
-        f"<tg-emoji emoji-id=\"5864068125112144897\">💸</tg-emoji> <b>Получено деняк</b>: {earned} BlazeCoin"
+        f"<tg-emoji emoji-id=\"5864068125112144897\">💸</tg-emoji> <b>Получено денег</b>: {earned} BlazeCoin"
     )
 
     return result_text

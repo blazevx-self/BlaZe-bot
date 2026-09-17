@@ -1,3 +1,5 @@
+import html
+
 from aiogram import Router, Bot, F
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Command
@@ -11,11 +13,14 @@ from app.core.constants.game.wordle import MAX_ATTEMPTS, WORD_LENGTH
 from app.types.entities.user import UserData
 
 from app.services.game.wordle.wordle_service import WordleService
+from app.services.wikipedia_service import WikipediaService
 from app.database.repositories import UserRepository
 
 from app.bot.filters.wordle_filter import WordleGameFilter
 
 router = Router()
+
+MAX_LEN = 850
 
 def _attempts_word(number: int) -> str:
     """Склонение слово 'попытка'"""
@@ -31,22 +36,21 @@ def _attempts_word(number: int) -> str:
         case _:
             return "попыток"
 
-
 def _build_caption(result, word: str) -> str | None:
     if result.is_win:
         return (
-            f"🎉 <b>ПОБЕДА!</b>\n\n"
-            f"Слово <b>{result.target_word}</b> угадано "
-            f"за <b>{result.attempts_used}</b> {_attempts_word(result.attempts_used)}!\n"
-            f"💸 <code>+{result.earned}</code> на балик\n\n"
-            "Сыграть ещё <b> -> </b> /wordle"
+            f"<tg-emoji emoji-id=\"6041731551845159060\">🎉</tg-emoji> <b>ПОБЕДА!</b>\n\n"
+            f"<tg-emoji emoji-id=\"5386795016830083674\">🎯</tg-emoji> Слово <b>{result.target_word}</b> угадано "
+            f"за <b>{result.attempts_used}</b> {_attempts_word(result.attempts_used)}!\n\n"
+            f"<tg-emoji emoji-id=\"5864068125112144897\">💸</tg-emoji> <code>+{result.earned}</code> на балик\n\n"
+            "<tg-emoji emoji-id=\"5260687119092817530\">🔄</tg-emoji> Сыграть ещё <b> -> </b> /wordle"
         )
 
     if result.is_game_over:
         return (
-            f"😔 <b>Не повезло...</b>\n\n"
-            f"Загаданное слово: <b>{result.target_word}</b>\n"
-            "Попробовать снова <b> -> </b> /wordle"
+            f"<tg-emoji emoji-id=\"5458779239941681169\">😔</tg-emoji> <b>Не повезло...</b>\n\n"
+            f"<tg-emoji emoji-id=\"5386795016830083674\">🎯</tg-emoji> Загаданное слово: <b>{result.target_word}</b>\n\n"
+            "<tg-emoji emoji-id=\"5260687119092817530\">🔄</tg-emoji> Попробовать снова <b> -> </b> /wordle"
         )
 
     return (
@@ -56,6 +60,29 @@ def _build_caption(result, word: str) -> str | None:
         f"осталось <code>{result.attempts_left}</code>"
     )
 
+async def _word_info_block(wikipedia_service: WikipediaService, word: str) -> str:
+    result = await wikipedia_service.get_description(word)
+    if not result or not getattr(result, "text", ""):
+        return ""
+
+    text = result.text.strip()
+
+    if len(text) > MAX_LEN:
+        cut = text[:MAX_LEN]
+
+        for sep in (". ", "! ", "? ", "\n"):
+            if sep in cut:
+                cut = cut.rsplit(sep, 1)[0] + "."
+                break
+        cleaned = cut.rstrip() + ("..." if not cut.endswith((".", "!", "?")) else "")
+    else:
+        cleaned = text
+
+    return (
+        f"\n\n<tg-emoji emoji-id=\"5258328383183396223\">📖</tg-emoji> "
+        f"<b>{html.escape(word.upper())}:</b>\n\n"
+        f"<i>{html.escape(cleaned)}</i>"
+    )
 
 async def _delete_board(bot: Bot, chat_id: int, message_id: int) -> bool:
     try:
@@ -64,7 +91,6 @@ async def _delete_board(bot: Bot, chat_id: int, message_id: int) -> bool:
 
     except TelegramBadRequest:
         return False
-
 
 @router.message(Command("wordle"))
 @router.message(F.text.lower() == "вротли")
@@ -88,7 +114,10 @@ async def wordle_start(
 
         sent = await message.reply_photo(
             photo=BufferedInputFile(file=photo, filename="wordle.png"),
-            caption="⏳ У вас есть незавершённая игра.\n\nВведите слово из 5 букв чтобы продолжить."
+            caption=(
+                "<tg-emoji emoji-id=\"5891211339170326418\">⏳</tg-emoji> "
+                "<b>У вас есть незавершённая игра.</b>\n\n<i>Введите слово из 5 букв чтобы продолжить.</i>"
+            )
         )
         wordle_service.set_board_message_id(user_id, sent.message_id)
         return
@@ -98,8 +127,9 @@ async def wordle_start(
     sent = await message.reply_photo(
         photo=BufferedInputFile(file=photo, filename="wordle.png"),
         caption=(
-            "🟩 <b>Новая игра Wordle!</b>\n\n"
-            f"Угадайте слово из {WORD_LENGTH} букв за {MAX_ATTEMPTS} попыток.\n\n"
+            "<tg-emoji emoji-id=\"5884089033558070257\">⬜️</tg-emoji> "
+            "<b>Новая игра Wordle!</b>\n\n"
+            f"<i>Угадайте слово из {WORD_LENGTH} букв за {MAX_ATTEMPTS} попыток.</i>\n\n"
             "🟩 — буква на своём месте\n"
             "🟨 — буква есть, но не там\n"
             "⬛ — буквы нет в слове"
@@ -115,7 +145,8 @@ async def wordle_guess(
     bot: Bot,
     user: UserData,
     user_repo: UserRepository = Provide[Container.user_repo],
-    wordle_service: WordleService = Provide[Container.wordle_service]
+    wordle_service: WordleService = Provide[Container.wordle_service],
+    wikipedia_service: WikipediaService = Provide[Container.wikipedia_service]
 ):
     if not message.from_user or not message.text:
         return
@@ -152,3 +183,11 @@ async def wordle_guess(
 
     sent = await message.answer_photo(photo=photo, caption=caption)
     wordle_service.set_board_message_id(user_id, sent.message_id)
+
+    if result.is_win or result.is_game_over:
+        word_info = await _word_info_block(wikipedia_service, result.target_word)
+        if word_info:
+            await sent.reply(
+                text=word_info,
+                disable_web_page_preview=True
+            )

@@ -6,6 +6,7 @@ from .user_cooldown_repository import UserCooldownRepository
 from .user_repository import UserRepository
 from .lottery_repository import LotteryRepository
 from .rp_commands_repository import RpCommandRepository
+from .transfer_repository import TransferRepository
 
 __all__ = [
     "UserRepository",
@@ -16,4 +17,5 @@ __all__ = [
     "ChatRepository",
     "LotteryRepository",
     "RpCommandRepository",
+    "TransferRepository",
 ]

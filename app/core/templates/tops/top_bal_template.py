@@ -11,7 +11,7 @@ def build_top_bal_text(result: TopResult) -> str:
     user = result.user
     rank = result.rank
 
-    text = "<b>Топ 15 богатых гулей</b>\n"
+    text = " <tg-emoji emoji-id=\"5258204546391351475\">💵</tg-emoji> <b>Топ 15 богатых гулей</b>\n\n"
     text += "<b>╭─────────────────╮</b>\n"
 
     prefixes = cfg['message']['tops']['prefixes']

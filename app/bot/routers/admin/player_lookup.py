@@ -25,14 +25,20 @@ async def admin_profile_cmd(
 
     if message.reply_to_message and message.reply_to_message.from_user:
         if message.reply_to_message.from_user.is_bot:
-            await message.reply("⚠️ У ботов нет игрового профиля.")
+            await message.reply(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                " У ботов нет игрового профиля."
+            )
             return
 
         query = str(message.reply_to_message.from_user.id)
 
     else:
         if len(args) < 2:
-           await message.reply("ℹ️ <b>Использование:</b> /admin_profile «id или @username»")
+           await message.reply(
+               "<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
+               "<b>Использование:</b> /admin_profile «id или @username»"
+           )
            return
 
         query = args[1].strip()
@@ -40,7 +46,7 @@ async def admin_profile_cmd(
     try:
         profile = await player_lookup_service.get_profile(query)
     except (UserNotFoundError, ValueError) as e:
-        await message.reply(str(e))
+        await message.reply(text=str(e))
         return
 
     await message.reply(player_lookup_service.fmt_profile_user(profile))

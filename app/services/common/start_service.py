@@ -31,10 +31,7 @@ class StartService:
         if user.is_subscribed:
             return StartResult(
                 status=ResultStatus.SUCCESS,
-                text=(
-                    f"<tg-emoji emoji-id='5289581576001167896'>🤨</tg-emoji> "
-                    f"{cfg['message']['start']}"
-                ),
+                text=f"<tg-emoji emoji-id=\"5290027337771919383\">😒</tg-emoji> {cfg['message']['start']}"
             )
 
         #Проверка подписки на канал через Telegram API
@@ -69,7 +66,7 @@ class StartService:
                     text=cfg['message']['text_is_subscription'].format(bonus_money=bonus)
                 )
 
-        text = f"<tg-emoji emoji-id='5289581576001167896'>🤨</tg-emoji> {cfg['message']['start']}"
+        text = f"<tg-emoji emoji-id=\"5290027337771919383\">😒</tg-emoji> {cfg['message']['start']}"
 
         return StartResult(
             status=ResultStatus.SUCCESS,

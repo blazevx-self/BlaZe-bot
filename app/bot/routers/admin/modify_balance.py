@@ -25,11 +25,17 @@ async def modify_balance_cmd(
 
     if message.reply_to_message and message.reply_to_message.from_user:
         if message.reply_to_message.from_user.is_bot:
-            await message.reply("⚠️ Нельзя изменить баланс боту.")
+            await message.reply(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Нельзя изменить баланс боту."
+            )
             return
 
         if len(args) < 2:
-            await message.reply("ℹ️ <b>Использование при ответе:</b>\n/modify_balance [+ или - число]")
+            await message.reply(
+                "<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
+                "<b>Использование при ответе:</b>\n/modify_balance [+ или - число]"
+            )
             return
 
         query = str(message.reply_to_message.from_user.id)
@@ -37,20 +43,29 @@ async def modify_balance_cmd(
     
     else:
         if len(args) < 3:
-            await message.reply("ℹ️ <b>Использование:</b>\n/modify_balance «id или @username» [+ или - число]")
+            await message.reply(
+                "<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
+                "<b>Использование:</b>\n/modify_balance «id или @username» [+ или - число]"
+            )
             return
 
         query = args[1]
         raw_amount = args[2]
     
     if not raw_amount.startswith(("+", "-")):
-        await message.reply("⚠️ Укажите знак перед числом (например: <code>+5000</code> или <code>-1500</code>).")
+        await message.reply(
+            "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+            "Укажите знак перед числом (например: <code>+5000</code> или <code>-1500</code>)."
+        )
         return
 
     try:
         amount = int(raw_amount)
     except (UserNotFoundError, ValueError):
-        await message.reply("⚠️ Сумма должна быть целым числом.")
+        await message.reply(
+            "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+            "Сумма должна быть целым числом."
+        )
         return
 
     try:
@@ -60,7 +75,7 @@ async def modify_balance_cmd(
             admin_id=message.from_user.id
         )
     except (UserNotFoundError, ValueError) as e:
-        await message.reply(str(e))
+        await message.reply(text=str(e))
         return
     
     await message.answer(modify_balance_service.fmt_operation_result(result))

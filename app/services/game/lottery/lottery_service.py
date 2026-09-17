@@ -36,9 +36,10 @@ class LotteryService:
             <= game_cfg.lottery.max_bet
         ):
             raise ValueError(
-                f"⚠️ Сумма ставки должна быть от "
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                f"Сумма ставки должна быть от "
                 f"<b>{game_cfg.lottery.min_bet}</b> до "
-                f"<b>{game_cfg.lottery.max_bet}</b>"
+                f"<b>{game_cfg.lottery.max_bet}</b>."
             )
 
     @staticmethod
@@ -52,8 +53,10 @@ class LotteryService:
                 return color
 
         raise ValueError(
-            f"⚠️ Неизвестный цвет <b>«{color_str}».</b> \n\n"
-            f"ℹ️ <b>Используйте:</b> \n{', '.join(c.value for c in LotteryColor)}"
+            "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+            f"Неизвестный цвет <b>«{color_str}».</b> \n\n"
+            "<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
+            f"<b>Используйте:</b> \n{', '.join(c.value for c in LotteryColor)}"
         )
 
     async def execute(
@@ -70,7 +73,10 @@ class LotteryService:
         self._validate_bet(bet_amount)
 
         if user.money < bet_amount:
-            raise ValueError("⚠️ Недостаточно денег для такой ставки.")
+            raise ValueError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Недостаточно денег для такой ставки."
+            )
 
         winning_color = game_cfg.lottery.get_random_color()
         is_won = chosen_color == winning_color

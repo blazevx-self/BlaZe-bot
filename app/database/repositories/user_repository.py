@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import select, update
+from sqlalchemy import select, update, case
 from sqlalchemy.dialects.postgresql import insert
 
 from app.core.exceptions.user import UserNotFoundError
@@ -17,6 +17,7 @@ class UserRepository(Base):
         telegram_id: int,
         name: str,
         username: str | None = None,
+        has_private_chat: bool = False,
     ) -> UserOrm:
         database_logger.debug(f"[DB] Upserting user: telegram_id={telegram_id} | name={name} | username={username}")
         
@@ -25,13 +26,18 @@ class UserRepository(Base):
             .values(
                 telegram_id=telegram_id,
                 name=name,
-                username=username
+                username=username,
+                has_private_chat=has_private_chat
             )
             .on_conflict_do_update(
                 index_elements=[UserOrm.telegram_id],
                 set_={
                     "name": name,
-                    "username": username
+                    "username": username,
+                    "has_private_chat": case(
+                        (UserOrm.has_private_chat.is_(True), True),
+                        else_=has_private_chat,
+                    )
                 }
             )
             .returning(UserOrm)
@@ -165,3 +171,9 @@ class UserRepository(Base):
         await self.session.delete(user)
 
         return True
+
+    async def get_all_with_private_chat(self) -> list[UserOrm]:
+        stmt = select(UserOrm).where(UserOrm.has_private_chat == True)
+        result = await self.session.scalars(stmt)
+
+        return list(result)

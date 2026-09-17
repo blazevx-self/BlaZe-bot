@@ -19,6 +19,9 @@ from .ghouls.stats.stats_service import StatsService
 from .tops.tops_service import TopsService
 from .game.lottery.lottery_video_generator import LotteryVideoGenerator
 from .common.rp_commands_service import RpCommandService
+from .common.transfer_service import TransferService
+from .admin.broadcast_service import BroadcastService
+from .wikipedia_service import WikipediaService
 
 __all__ = [
     "BanService",
@@ -42,4 +45,7 @@ __all__ = [
     "CooldownService",
     "LotteryVideoGenerator",
     "RpCommandService",
+    "TransferService",
+    "BroadcastService",
+    "WikipediaService",
 ]

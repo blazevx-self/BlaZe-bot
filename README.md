@@ -41,7 +41,7 @@ docker compose down          # остановить
 
 - `.env` — секреты и параметры окружения
 - `app/configs/config.yaml` — тексты бота
-- `app/configs/game_cfg.py` — игровые настройки 
+- `app/configs/game.py` — игровые настройки 
 
 ```env
 POSTGRES_USER=your_postgres_user

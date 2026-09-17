@@ -20,3 +20,5 @@ class UserData:
     is_banned: bool = False
     ban_reason: str | None = None
     banned_until: datetime | None = None
+
+    has_private_chat: bool = False

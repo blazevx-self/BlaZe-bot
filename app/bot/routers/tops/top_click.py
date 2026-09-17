@@ -43,10 +43,10 @@ async def refresh_snap_top(
 
     try:
         await callback.message.edit_text(text=text, reply_markup=get_update_top_snap_kb())
-        await callback.answer("Обновлён топчик", show_alert=False)
+        await callback.answer("🔄 Обновлён топчик", show_alert=False)
 
     except TelegramBadRequest as e:
         if "message is not modified" in str(e):
-            await callback.answer("Изменений в топе нет", show_alert=False)
+            await callback.answer("❌ Изменений в топе нет", show_alert=False)
         else:
             raise

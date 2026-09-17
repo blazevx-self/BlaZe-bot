@@ -29,6 +29,6 @@ async def help_cb(callback: CallbackQuery) -> None:
 
 @router.callback_query(F.data == 'back')
 async def back_me(callback: CallbackQuery):
-    text = '<tg-emoji emoji-id="5289581576001167896">🤨</tg-emoji> ' + cfg['message']['help']['back_help']
+    text = '<tg-emoji emoji-id="5290027337771919383">😒</tg-emoji> ' + cfg['message']['help']['back_help']
     await callback.message.edit_text(text=text, reply_markup=start_keyboard())
     await callback.answer()

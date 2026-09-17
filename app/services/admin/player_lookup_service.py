@@ -17,7 +17,10 @@ class PlayerLookupService:
         user = await self.user_repo.resolve(query)
 
         if not user:
-            raise UserNotFoundError(f"⚠️ Пользователь не найден: {query}")
+            raise UserNotFoundError(
+                "<tg-emoji emoji-id=\"5447644880824181073\">⚠️</tg-emoji> "
+                f"Пользователь не найден: {query}."
+            )
 
         ghoul = await self.ghoul_repo.get(telegram_id=user.telegram_id)
 
@@ -31,20 +34,25 @@ class PlayerLookupService:
         user = profile.user
 
         text = (
-            f"👤 <b>Профиль пользователя</b>\n\n"
+            "<tg-emoji emoji-id=\"5260399854500191689\">👤</tg-emoji> "
+            f"<b>Профиль пользователя</b>\n\n"
             
-            f"ℹ️ <b>Информация о пользователе</b>\n"
+            "<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
+            f"<b>Информация о пользователе</b>\n"
             f"└ <b>ID:</b> <code>{user.telegram_id}</code>\n"
             f"└ <b>Имя</b>: <code>{user.name}</code>\n"
             f"└ <b>Username:</b> <code>@{user.username or '—'}</code>\n\n"
             
-            f"💸 <b>Баланс:</b> <code>{format_num(user.money)} BlazeCoin</code>\n\n"
+            "<tg-emoji emoji-id=\"5864068125112144897\">💸</tg-emoji> "
+            f"<b>Баланс:</b> <code>{format_num(user.money)} BlazeCoin</code>\n\n"
             
-            f"🛡 <b>Состояние:</b>\n"
-            f"└ <b>Статус:</b> <code>{'🚫 Заблокирован' if user.is_banned else '✅ Активен'}</code>\n"
-            f"└ <b>Бонус за подписку:</b> <code>{'✅ Получен' if user.is_subscribed else '❌ Не получен'}</code>\n\n"
+            "<tg-emoji emoji-id=\"6030445631921721471\">🛡</tg-emoji>"
+            f"<b>Состояние:</b>\n"
+            f"└ <b>Статус:</b> <code>{"🚫 Заблокирован" if user.is_banned else "✅ Активен"}</code>\n"
+            f"└ <b>Бонус за подписку:</b> <code>{"✅ Получен" if user.is_subscribed else "❌ Не получен"}</code>\n\n"
             
-            f"📅 <b>Регистрация:</b> <code>{user.created_at.strftime('%d.%m.%Y %H:%M')}</code>"
+            "<tg-emoji emoji-id=\"5890937706803894250\">📅</tg-emoji> "
+            f"<b>Регистрация:</b> <code>{user.created_at.strftime('%d.%m.%Y %H:%M')}</code>"
         )
 
         if user.is_banned:
@@ -55,7 +63,8 @@ class PlayerLookupService:
             )
 
             text += (
-                f"\n\n🚫 <b>Блокировка</b>\n"
+                "\n\n<tg-emoji emoji-id=\"5240241223632954241\">🚫</tg-emoji> "
+                f"<b>Блокировка</b>\n"
                 f"└ <b>Причина:</b> <code>{user.ban_reason or 'не указана'}</code>\n"
                 f"└ <b>Срок бана:</b> <code>{until}</code>"
             )
@@ -64,7 +73,8 @@ class PlayerLookupService:
             ghoul = profile.ghoul
 
             text += (
-                f"\n\n🧬 <b>Гуль</b>\n"
+                "\n\n<tg-emoji emoji-id=\"5264782039697080626\">😒</tg-emoji> "
+                f"<b>Гуль</b>\n"
                 f"└ <b>Уровень:</b> <code>{format_num(ghoul.level)}</code>\n"
                 f"└ <b>RC-клетки:</b> <code>{format_num(ghoul.rc_money)}</code>\n"
                 f"└ <b>Сила:</b> <code>{format_num(ghoul.strength)}/{STAT_LIMITS['strength']}</code>\n"
@@ -77,18 +87,22 @@ class PlayerLookupService:
 
             if ghoul.kagune_was_obtained:
                 text += (
-                    f"\n\n👁 <b>Кагуне</b>\n"
+                    "\n\n<tg-emoji emoji-id=\"5442804822048780010\">😫</tg-emoji> "
+                    f"<b>Кагуне</b>\n"
                     f"└ <b>Тип:</b> <code>{ghoul.kagune_type or '—'}</code>\n"
                     f"└ <b>Сила:</b> <code>{format_num(ghoul.kagune_strength)}</code>"
                 )
             else:
                 text += (
-                    f"\n\n👁 <b>Кагуне</b>\n"
-                    f"└ <b>Статус:</b> <code>❌ Не получен</code>"
+                    "\n\n<tg-emoji emoji-id=\"5442804822048780010\">😫</tg-emoji> "
+                    f"<b>Кагуне</b>\n"
+                    f"└ <b>Статус:</b> "
+                    f"<tg-emoji emoji-id=\"5260342697075416641\">❌</tg-emoji> <code>Не получен</code>"
                 )
 
             text += (
-                f"\n\n📊 <b>Статистика гуля</b>\n"
+                "\n\n<tg-emoji emoji-id=\"5936143551854285132\">📊</tg-emoji> "
+                f"<b>Статистика гуля</b>\n"
                 f"└ <b>Сломано пальцев:</b> <code>{format_num(ghoul.snap_count)}</code>\n"
                 f"└ <b>Выпито кофе:</b> <code>{format_num(ghoul.coffee_count)}</code>\n"
                 f"└ <b>Съедено людей:</b> <code>{format_num(ghoul.eat_humans)}</code>\n"

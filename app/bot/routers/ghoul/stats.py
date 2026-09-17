@@ -16,11 +16,11 @@ from app.bot.filters.ghoul_filters import GhoulRequired
 
 router = Router()
 
-@router.message(F.text.lower() == "качаца", F.chat.type != "private")
+@router.message(F.text.lower() == "качаться", F.chat.type != "private")
 async def stats_menu_group_error(message: Message):
     await message.reply("Команда работает только в личных сообщениях с ботом.")
 
-@router.message(F.text.lower() == "качаца", F.chat.type == "private", GhoulRequired())
+@router.message(F.text.lower() == "качаться", F.chat.type == "private", GhoulRequired())
 @inject
 async def stats_menu(
     message: Message,

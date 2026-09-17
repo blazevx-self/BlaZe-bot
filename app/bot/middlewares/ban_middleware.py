@@ -9,7 +9,7 @@ from dependency_injector.wiring import Provide
 from app.containers import Container
 from app.database.repositories.user_repository import UserRepository
 
-from app.utils.time import parse_seconds, format_duration
+from app.utils.time import format_duration
 
 class BanMiddleware(BaseMiddleware):
     async def __call__(
@@ -35,7 +35,9 @@ class BanMiddleware(BaseMiddleware):
 
         if user.banned_until is None:
             text = (
-                f"🚫 <b>Вы заблокированы навсегда.</b>\n\n"
+                "<tg-emoji emoji-id=\"5258318620722733379\">🚫</tg-emoji> "
+                f"<b>Вы заблокированы навсегда.</b>\n\n"
+                "<tg-emoji emoji-id=\"5778299625370817409\">📝</tg-emoji> "
                 f"<b>Причина:</b> "
                 f"<i>{user.ban_reason or 'Не указана'}</i>"
             )
@@ -65,10 +67,13 @@ class BanMiddleware(BaseMiddleware):
         )
 
         text = (
-            f"🚫 <b>Вы заблокированы.</b>\n\n"
+            "<tg-emoji emoji-id=\"5258318620722733379\">🚫</tg-emoji> "
+            f"<b>Вы заблокированы.</b>\n\n"
+            "<tg-emoji emoji-id=\"5778299625370817409\">📝</tg-emoji> "
             f"<b>Причина:</b> "
             f"<i>{user.ban_reason or 'Не указана'}</i>\n\n"
-            f"⏱ До разблокировки: <b>{duration}</b>"
+            "<tg-emoji emoji-id=\"5258258882022612173\">⏲️</tg-emoji> "
+            f"До разблокировки: <b>{duration}</b>"
         )
 
         if isinstance(event, Message):

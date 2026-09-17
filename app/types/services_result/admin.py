@@ -37,3 +37,9 @@ class ResetResult:
     telegram_id: int
     user_deleted: bool
     ghoul_deleted: bool
+
+@dataclass
+class BroadcastResult:
+    total: int
+    success: int
+    failed: int

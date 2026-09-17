@@ -12,8 +12,9 @@ class RpPrivateMiddleware(BaseMiddleware):
     ) -> Any:
         if isinstance(event, Message) and event.chat.type == "private":
             await event.reply(
-                "ℹ️ <b>Role-Play команды работают только в групповых чатах.</b>\n\n"
-                "В личных сообщениях устанавливать и использовать RP-команды нельзя."
+                "<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
+                "<b>Role-Play команды работают только в групповых чатах.</b>\n\n"
+                "<i>В личных сообщениях устанавливать и использовать RP-команды нельзя.</i>"
             )
             return None
 

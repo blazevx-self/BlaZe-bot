@@ -26,7 +26,12 @@ async def _send_question_ui(message_or_call, q, left, user_id):
         user_id=user_id
     )
 
-    text = f"{escape(q.question)}\n\n<i>осталось вопросов: {left}</i>"
+    text = (
+        "<tg-emoji emoji-id=\"6030848053177486888\">❓</tg-emoji> "
+        f"{escape(q.question)}\n\n"
+        "<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
+        f"<i>осталось вопросов: {left}</i>"
+    )
 
     if isinstance(message_or_call, CallbackQuery):
         await message_or_call.message.edit_text(text=text, reply_markup=markup)
@@ -45,7 +50,7 @@ async def quiz(
     result = await quiz_service.quiz_start(user=user)
 
     if result.status == ResultStatus.LIMIT:
-        await message.reply(cfg['message']['quiz']['quiz_limit'])
+        await message.reply(cfg['message']['quiz']['quiz_limit']['message'])
         return
 
     if result.status == ResultStatus.NO_QUESTIONS:
@@ -83,11 +88,7 @@ async def quiz_handler(
     )
 
     if result.status == ResultStatus.LIMIT:
-        text = cfg['message']['quiz']['quiz_naebalovo_user']
-
-        await callback.answer(text=text, show_alert=True)
-        await callback.message.edit_reply_markup(reply_markup=None)
-
+        await callback.answer("💬 Лимит вопросов исчерпан.", show_alert=False)
         return
 
     if result.status == ResultStatus.LIMIT_REACHED:
@@ -109,7 +110,7 @@ async def quiz_again(
     result = await quiz_service.quiz_start(user=user)
 
     if result.status == ResultStatus.LIMIT:
-        await callback.answer(cfg['message']['quiz']['quiz_limit'], show_alert=True)
+        await callback.answer(cfg['message']['quiz']['quiz_limit']['callback'], show_alert=True)
         return
 
     if result.status == ResultStatus.NO_QUESTIONS:

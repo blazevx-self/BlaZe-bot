@@ -11,7 +11,7 @@ def build_top_coffee_text(result: TopResult) -> str:
     ghoul = result.ghoul
     user_rank = result.rank
 
-    text = "<b>Топ 20 гулей по выпитому кофе</b>\n"
+    text = "<tg-emoji emoji-id=\"5386470514871003633\">☕️</tg-emoji> <b>Топ 20 гулей по выпитому кофе</b>\n\n"
     text += "<b>╭─────────────────╮</b>\n"
 
     prefixes = cfg['message']['tops']['prefixes']
@@ -29,13 +29,14 @@ def build_top_coffee_text(result: TopResult) -> str:
 
     if user_rank == 0:
         text += (
-            f"\n<b>Ты не входишь в топ по количеству выпитого кофе. Воспользуйся командой «пить кофе»</b>"
+            "\n<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
+            f"<b>Ты не входишь в топ по количеству выпитого кофе. Воспользуйся командой «пить кофе»</b>"
         )
 
     if user_rank > len(top_users) and ghoul:
         text += (
             f"\n<tg-emoji emoji-id=\'5316727448644103237\'>👤</tg-emoji> "
-            f"Ты на <b>{user_rank}-м</b> месте — выпито кофе: {format_num(ghoul.coffee_count)}"
+            f"Ты на <b>{user_rank}-м</b> месте — <b>выпито кофе:</b> <code>{format_num(ghoul.coffee_count)}</code>"
         )
 
     return text

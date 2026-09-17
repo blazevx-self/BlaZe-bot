@@ -19,8 +19,10 @@ async def set_goodbye_message_chat(
 
     if not goodbye_message:
         await message.reply(
-            "❌ <b>Прощание не указано</b>\n\n"
-            "ℹ️ <i>После команды необходимо написать текст прощания.</i>\n\n<b>Пример:</b>\n"
+            "<tg-emoji emoji-id=\"5260342697075416641\">❌</tg-emoji> "
+            "<b>Прощание не указано</b>\n\n"
+            "<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
+            "<i>После команды необходимо написать текст прощания.</i>\n\n<b>Пример:</b>\n"
             "<code>новое прощание</code>\n\n"
             "До встречи. Спасибо что был в нашем чате"
         )
@@ -32,6 +34,7 @@ async def set_goodbye_message_chat(
     )
 
     await message.reply(
-        f"✅ <b>Прощальное сообщение обновлено.</b>\n\n"
+        "<tg-emoji emoji-id=\"5260416304224936047\">✅</tg-emoji> "
+        f"<b>Прощальное сообщение обновлено.</b>\n\n"
         f"<b>Новое прощание:</b>\n\n<i>{goodbye_message}</i>"
     )

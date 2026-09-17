@@ -8,8 +8,10 @@ router = Router()
 @router.message(F.text.startswith("/"))
 async def unknown_command(message: Message):
     await message.reply(
-        "<b>⁉️ Ты чо, далбаёб?</b>\n\n"
+        "<tg-emoji emoji-id=\"6030848053177486888\">❓</tg-emoji> "
+        "<b>Ты чо, далбаёб?</b>\n\n"
         "<i>Такой команды нет, да даже мой разраб с ай-кью комнатной температуры не додумался бы до такого.</i>\n\n"
-        "<code>Иди лор сначала почитай.</code>",
+        "<tg-emoji emoji-id=\"5258461531464539536\">📌</tg-emoji> "
+        "<b>Иди лор сначала почитай.</b>",
         reply_markup=get_help_menu_unknown_command()
     )

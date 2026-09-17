@@ -27,7 +27,10 @@ class FieldEditService:
         user = await self.user_repo.resolve(query)
 
         if not user:
-            raise UserNotFoundError(f"⚠️ Пользователь не найден: {query}")
+            raise UserNotFoundError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                f"Пользователь не найден: {query}."
+            )
 
         return user
 
@@ -43,7 +46,10 @@ class FieldEditService:
         is_valid, is_ghoul_valid = self._resolve_field(field)
 
         if not is_valid:
-            raise ValueError(f"⚠️ Неизвестное поле: {field}")
+            raise ValueError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                f"Неизвестное поле: {field}."
+            )
 
         if not is_ghoul_valid:
             updated = await self.user_repo.change_data(user.telegram_id, **{field: value})
@@ -58,7 +64,10 @@ class FieldEditService:
         ghoul = await self.ghoul_repo.get(telegram_id=user.telegram_id)
 
         if not ghoul:
-            raise ValueError("⚠️ У пользователя нет профиля гуля")
+            raise ValueError(
+                "<tg-emoji emoji-id=\"5386313314773002654ё\">⚠️</tg-emoji> "
+                "У пользователя нет профиля гуля."
+            )
 
         updated = await self.ghoul_repo.change_data(user.telegram_id,**{field: value})
 
@@ -81,13 +90,16 @@ class FieldEditService:
     def fmt_operation_result(result: FieldEditResult) -> str:
         target = "гуля" if result.is_ghoul_field else "пользователя"
         return (
-            f"✅ Поле <code>{result.field}</code> "
+            "<tg-emoji emoji-id=\"5260416304224936047\">✅</tg-emoji> "
+            f"Поле <code>{result.field}</code> "
             f"{target} установлено в <code>{result.value}</code>."
         )
 
     @staticmethod
     def fmt_fields_help() -> str:
         return (
-            f"👤 <b>Поля пользователя:</b>\n<code>{', '.join(sorted(ALLOWED_USER_FIELDS))}</code>\n\n"
-            f"🧬 <b>Поля гуля:</b>\n<code>{', '.join(sorted(ALLOWED_GHOUL_FIELDS))}</code>"
+            "<tg-emoji emoji-id=\"5260399854500191689\">👤</tg-emoji> "
+            f"<b>Поля пользователя:</b>\n<code>{', '.join(sorted(ALLOWED_USER_FIELDS))}</code>\n\n"
+            "<tg-emoji emoji-id=\"5264782039697080626\">😒</tg-emoji> "
+            f"<b>Поля гуля:</b>\n<code>{', '.join(sorted(ALLOWED_GHOUL_FIELDS))}</code>"
         )

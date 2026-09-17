@@ -2,6 +2,7 @@ from typing import Any, Awaitable, Callable, Dict
 
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
+from aiogram.enums import ChatType
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -25,9 +26,12 @@ class SyncEntitiesMiddleware(BaseMiddleware):
             data: Dict[str, Any],
     ) -> Any:
         tg_user = data.get('event_from_user')
+        tg_chat = data.get('event_chat')
 
         if not tg_user or tg_user.is_bot:
             return None
+
+        is_private = bool(tg_chat and tg_chat.type == ChatType.PRIVATE)
 
         session: AsyncSession = data['session']
 
@@ -38,7 +42,8 @@ class SyncEntitiesMiddleware(BaseMiddleware):
             user_orm = await user_repo.upsert(
                 telegram_id=tg_user.id,
                 name=tg_user.first_name,
-                username=tg_user.username
+                username=tg_user.username,
+                has_private_chat=is_private
             )
 
             ghoul_orm = await ghoul_repo.get(telegram_id=tg_user.id)

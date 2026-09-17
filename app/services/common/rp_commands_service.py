@@ -33,7 +33,7 @@ class RpCommandService:
             for command in rp_commands
         }
 
-        rp_command_logger.debug(
+        rp_command_logger.info(
             f"[RP_COMMAND] Loaded {len(rp_commands)} RP commands | chat_id={chat_id}",
         )
 
@@ -79,7 +79,7 @@ class RpCommandService:
 
         self._cache.setdefault(chat_id, {})[command] = entity
 
-        rp_command_logger.debug(f"[RP_COMMAND] Upserted RP command={command} | chat_id={chat_id}")
+        rp_command_logger.info(f"[RP_COMMAND] Upserted RP command={command} | chat_id={chat_id}")
 
         return entity
 
@@ -94,10 +94,10 @@ class RpCommandService:
         if chat_id in self._cache:
             self._cache[chat_id].pop(command, None)
 
-        rp_command_logger.debug(f"[RP_COMMAND] Deleted RP command={command} | chat_id={chat_id}")
+        rp_command_logger.info(f"[RP_COMMAND] Deleted RP command={command} | chat_id={chat_id}")
 
         return True
 
     def clear_cache(self, chat_id: int) -> None:
         self._cache.pop(chat_id, None)
-        rp_command_logger.debug(f"[RP_COMMAND] Cleared RP command cache | chat_id={chat_id}")
+        rp_command_logger.info(f"[RP_COMMAND] Cleared RP command cache | chat_id={chat_id}")

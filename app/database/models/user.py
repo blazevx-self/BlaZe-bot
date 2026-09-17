@@ -26,5 +26,7 @@ class UserOrm(Base):
     quiz_reset_date: Mapped[date | None] = mapped_column(nullable=True)
     quiz_questions_left: Mapped[int] = mapped_column(default=15, nullable=False)
 
-    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    has_private_chat: Mapped[bool] = mapped_column(default=False, nullable=False)
+
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now())

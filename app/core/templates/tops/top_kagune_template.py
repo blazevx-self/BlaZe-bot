@@ -11,7 +11,7 @@ def build_top_kagune_text(result: TopResult) -> str:
     ghoul = result.ghoul
     user_rank = result.rank
 
-    text = "<b>Топ 10 самых сильных гулей</b>\n"
+    text = "<tg-emoji emoji-id=\"5229097759184800688\">😈</tg-emoji> <b>Топ 10 самых сильных гулей</b>\n\n"
     text += "<b>╭─────────────────╮</b>\n"
 
     prefixes = cfg['message']['tops']['prefixes']
@@ -36,7 +36,7 @@ def build_top_kagune_text(result: TopResult) -> str:
 
     if user_rank and user_rank > len(top_users) and ghoul:
         text += (
-            f"\n<tg-emoji emoji-id=\'5316727448644103237\'>👤</tg-emoji> "
+            f"\n\n<tg-emoji emoji-id=\'5316727448644103237\'>👤</tg-emoji> "
             f"Ты на <b>{user_rank}-м</b> месте — сила твоего кагуне: {format_num(ghoul.kagune_strength)}"
         )
 

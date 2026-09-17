@@ -6,4 +6,5 @@ ADMIN_COMMANDS = {
     "/admin_profile",
     "/reset_user",
     "/reset_ghoul",
+    "/broadcast"
 }

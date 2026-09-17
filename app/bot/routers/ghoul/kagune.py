@@ -39,14 +39,14 @@ async def kagune_menu(
     if result.status == ResultStatus.COOLDOWN:
         remaining = result.remaining
 
-        text = cfg['message']['kagune']['cooldown'].format(time=format_duration(remaining))
+        text = cfg['message']['kagune']['cooldown']['message'].format(time=format_duration(remaining))
 
         await message.reply(text=text)
         return
 
     if result.status == ResultStatus.NOT_ENOUGH_MONEY:
         missing = result.missing
-        text = cfg['message']['kagune']['not_enough_money'].format(missing=format_num(missing))
+        text = cfg['message']['kagune']['not_enough_money']['message'].format(missing=format_num(missing))
 
         await message.reply(text=text)
         return
@@ -62,6 +62,13 @@ async def obtained_kagune(
     kagune_service: KaguneService = Provide[Container.kagune_service]
 ):
     result = await kagune_service.obtaining_kagune(user=user, ghoul=ghoul)
+
+    if result.status == ResultStatus.ALREADY_GHOUL:
+        await callback.answer(
+            text="🧬 Ты уже стал гулем и получил кагуне.",
+            show_alert=False
+        )
+        return
 
     text = cfg['message']['kagune']['kagune_2'].format(
         chosen_type=result.kagune_type,
@@ -90,16 +97,16 @@ async def kagune_grow(
     if result.status == ResultStatus.COOLDOWN:
         remaining = result.remaining
 
-        text = cfg['message']['kagune']['cooldown'].format(time=format_duration(remaining))
+        text = cfg['message']['kagune']['cooldown']['callback'].format(time=format_duration(remaining))
 
         await callback.answer(text=text, show_alert=True)
         return
 
     if result.status == ResultStatus.NOT_ENOUGH_MONEY:
         missing = result.missing
-        text = f"💸 Не хватает на балике: {format_num(missing)} BlaZeCoin"
+        text = cfg['message']['kagune']['not_enough_money']['callback'].format(missing=format_num(missing))
 
-        await callback.answer(text=text, show_alert=False)
+        await callback.answer(text=text, show_alert=True)
         return
 
     if result.status == ResultStatus.SUCCESS:

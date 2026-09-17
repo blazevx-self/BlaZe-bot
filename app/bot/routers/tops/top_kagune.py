@@ -50,6 +50,6 @@ async def refresh_top_kagune(
 
     except TelegramBadRequest as e:
         if "message is not modified" in str(e):
-            await callback.answer("Изменений в топе нет", show_alert=False)
+            await callback.answer("❌ Изменений в топе нет", show_alert=False)
         else:
             raise

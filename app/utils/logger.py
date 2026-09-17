@@ -71,6 +71,8 @@ callback_logger = get_logger("callbacks", "callbacks")
 system_logger = get_logger("system", "system")
 database_logger = get_logger("database", "database")
 
+wikipedia_logger = logging.getLogger("wikipedia")
+
 admin_logger = get_logger("admin", "admin")
 rp_command_logger = get_logger("rp_command", "rp_command")
 
@@ -78,6 +80,7 @@ security_logger = get_logger("security", "security")
 error_logger = get_logger("errors", "errors")
 
 start_logger = get_logger("start", "game/start")
+transfer_logger = get_logger("transfer", "game/transfer")
 
 quiz_logger = get_logger("quiz", "game/quiz")
 wordle_logger = get_logger("wordle", "game/wordle")

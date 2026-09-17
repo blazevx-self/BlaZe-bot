@@ -25,5 +25,9 @@ def get_quiz_keyboard(options_str: str, question_id: int, user_id: int) -> Inlin
 
 def get_quiz_again_kb(user_id: int) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text='Сыграть ещё раз', callback_data=f"quiz_again_{user_id}", icon_custom_emoji_id='5260450573768990626')]
+        [InlineKeyboardButton(
+            text='Сыграть ещё раз',
+            callback_data=f"quiz_again_{user_id}",
+            icon_custom_emoji_id='5260450573768990626'
+        )]
     ])

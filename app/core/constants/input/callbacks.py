@@ -9,5 +9,6 @@ ALLOWED_CALLBACK_PREFIXES = (
     "money_top",
     "help",
     "stat",
-    "locked"
+    "locked",
+    "transfer"
 )

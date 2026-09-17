@@ -14,6 +14,7 @@ from app.database.repositories import (
     UserRepository,
     LotteryRepository,
     RpCommandRepository,
+    TransferRepository,
 )
 
 from app.services import (
@@ -37,7 +38,10 @@ from app.services import (
     WordleService,
     LotteryService,
     LotteryVideoGenerator,
-    RpCommandService
+    RpCommandService,
+    TransferService,
+    BroadcastService,
+    WikipediaService,
 )
 
 session_context: ContextVar[AsyncSession] = ContextVar("session_context")
@@ -57,6 +61,7 @@ class Container(containers.DeclarativeContainer):
     tops_repo = providers.Factory(TopsRepository, session=db_session)
     lottery_repo = providers.Factory(LotteryRepository, session=db_session)
     rp_repo = providers.Factory(RpCommandRepository, session=db_session)
+    transfer_repo = providers.Factory(TransferRepository, session=db_session)
 
     # services
     ban_service = providers.Factory(BanService, user_repo=user_repo)
@@ -64,15 +69,16 @@ class Container(containers.DeclarativeContainer):
     player_lookup_service = providers.Factory(PlayerLookupService, user_repo=user_repo, ghoul_repo=ghoul_repo)
     field_edit_service = providers.Factory(FieldEditService, user_repo=user_repo, ghoul_repo=ghoul_repo)
     reset_service = providers.Factory(ResetService, user_repo=user_repo, ghoul_repo=ghoul_repo)
+    broadcast_service = providers.Factory(BroadcastService, user_repo=user_repo, chat_repo=chat_repo, bot=bot)
 
     chat_service = providers.Factory(ChatService, chat_repo=chat_repo)
 
     start_service = providers.Factory(StartService, user_repo=user_repo)
     profile_service = providers.Factory(ProfileService)
+    rp_command_service = providers.Factory(RpCommandService, rp_repo=rp_repo)
+    transfer_service = providers.Factory(TransferService, transfer_repo=transfer_repo, user_repo=user_repo)
 
     wordle_service = providers.Singleton(WordleService)
-    rp_command_service = providers.Factory(RpCommandService, rp_repo=rp_repo)
-
     quiz_service = providers.Factory(QuizService, user_repo=user_repo, quiz_repo=quiz_repo)
     lottery_video_generator = providers.Singleton(LotteryVideoGenerator)
     lottery_service = providers.Factory(
@@ -108,3 +114,5 @@ class Container(containers.DeclarativeContainer):
     race_profile_service = providers.Factory(RaceProfileService, ghoul_service=ghoul_service)
 
     tops_service = providers.Factory(TopsService, tops_repo=tops_repo)
+
+    wikipedia_service = providers.Factory(WikipediaService)
