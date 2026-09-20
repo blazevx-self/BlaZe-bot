@@ -1,7 +1,12 @@
-from app.core.constants.admin.fields import ALLOWED_USER_FIELDS, ALLOWED_GHOUL_FIELDS
+from app.core.constants.admin.fields import (
+    ALLOWED_USER_FIELDS,
+    ALLOWED_GHOUL_FIELDS,
+    ALLOWED_COOLDOWN_FIELDS
+)
 from app.core.exceptions.user import UserNotFoundError
 
 from app.types.services_result.admin import FieldEditResult
+from app.services.cooldown_service import CooldownService
 
 from app.database.repositories.user_repository import UserRepository
 from app.database.repositories.ghoul_repository import GhoulRepository
@@ -9,19 +14,28 @@ from app.database.repositories.ghoul_repository import GhoulRepository
 from app.utils.logger import admin_logger
 
 class FieldEditService:
-    def __init__(self, user_repo: UserRepository, ghoul_repo: GhoulRepository):
+    def __init__(
+        self,
+        user_repo: UserRepository,
+        ghoul_repo: GhoulRepository,
+        cooldown_service: CooldownService,
+    ):
         self.user_repo = user_repo
         self.ghoul_repo = ghoul_repo
+        self.cooldown_service = cooldown_service
 
     @staticmethod
-    def _resolve_field(field: str) -> tuple[bool, bool]:
+    def _resolve_field(field: str) -> tuple[bool, bool, bool]:
         if field in ALLOWED_USER_FIELDS:
-            return True, False
+            return True, False, False
 
         if field in ALLOWED_GHOUL_FIELDS:
-            return True, True
+            return True, True, False
 
-        return False, False
+        if field in ALLOWED_COOLDOWN_FIELDS:
+            return True, False, True
+
+        return False, False, False
 
     async def _resolve_user(self, query: str | int):
         user = await self.user_repo.resolve(query)
@@ -41,15 +55,37 @@ class FieldEditService:
         value: int,
         admin_id: int
     ) -> FieldEditResult:
-        user = await self._resolve_user(query)
-
-        is_valid, is_ghoul_valid = self._resolve_field(field)
+        is_valid, is_ghoul_valid, is_cooldown = self._resolve_field(field)
 
         if not is_valid:
             raise ValueError(
                 "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
                 f"Неизвестное поле: {field}."
             )
+
+        if is_cooldown:
+            user = await self._resolve_user(query)
+            action = ALLOWED_COOLDOWN_FIELDS[field]
+            await self.cooldown_service.reset(
+                telegram_id=user.telegram_id,
+                action=action
+            )
+
+            admin_logger.info(
+                f"[SET_FIELD] Admin reset cooldown | "
+                f"admin_id={admin_id} | "
+                f"user_id={user.telegram_id} | "
+                f"field={field} | action={action.value}"
+            )
+
+            return FieldEditResult(
+                target=user.telegram_id,
+                field=field,
+                value=0,
+                is_ghoul_field=False
+            )
+
+        user = await self._resolve_user(query)
 
         if not is_ghoul_valid:
             updated = await self.user_repo.change_data(user.telegram_id, **{field: value})
@@ -101,5 +137,8 @@ class FieldEditService:
             "<tg-emoji emoji-id=\"5260399854500191689\">👤</tg-emoji> "
             f"<b>Поля пользователя:</b>\n<code>{', '.join(sorted(ALLOWED_USER_FIELDS))}</code>\n\n"
             "<tg-emoji emoji-id=\"5264782039697080626\">😒</tg-emoji> "
-            f"<b>Поля гуля:</b>\n<code>{', '.join(sorted(ALLOWED_GHOUL_FIELDS))}</code>"
+            f"<b>Поля гуля:</b>\n<code>{', '.join(sorted(ALLOWED_GHOUL_FIELDS))}</code>\n\n"
+            "<tg-emoji emoji-id=\"5260687119092817530\">🔄</tg-emoji> "
+            "<b>Сброс кулдаунов:</b>\n"
+            f"<code>{', '.join(sorted(ALLOWED_COOLDOWN_FIELDS.keys()))}</code>"
         )

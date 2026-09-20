@@ -30,8 +30,8 @@ def make_prices_string(current_stat: int, stat_name: str) -> str:
     if current_stat >= limit:
         return f"\n└ <code>𝗠𝗔𝗫.</code>"
 
-    p1 = calculate_price(current_stat, 1)
-    p3 = calculate_price(current_stat, 3)
-    p5 = calculate_price(current_stat, 5)
+    p1 = calculate_price(stat_name, current_stat, 1)
+    p3 = calculate_price(stat_name, current_stat, 3)
+    p5 = calculate_price(stat_name, current_stat, 5)
 
     return f"\n└ <code>+1: {format_num(p1)}|+3: {format_num(p3)}|+5: {format_num(p5)}</code>"

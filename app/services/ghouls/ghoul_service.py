@@ -1,3 +1,5 @@
+import random
+
 from app.configs.game import game_cfg
 from app.configs.yaml_loader import cfg
 
@@ -41,23 +43,24 @@ class GhoulService:
         base = game_cfg.kagune.start_price
         multiplier = game_cfg.kagune.price_multiplier
 
-        return int(base * (multiplier ** (level - 1)))
+        safe_level = min(level, 1000)
+        return int(base * (multiplier ** (safe_level - 1)))
 
     @staticmethod
-    def get_kagune_gif(level: int) -> str:
-        """За достижение определённых уровней кагуне - игрок получает новую анимацию развития кагуне."""
+    def get_kagune_gif(kagune_type: str) -> str:
+        """У каждого типа кагуне - своя гиф. (поиск без учёта регистра)."""
 
         gifs = cfg['assets']['kagune']['gifs']
 
-        current_gif = gifs[1]
+        lookup = {str(k).strip().lower(): v for k, v in gifs.items()}
+        key = (kagune_type or "").strip().lower()
 
-        for required_level in sorted(map(int, gifs.keys())):
-            if level >= required_level:
-                current_gif = gifs[required_level]
-            else:
-                break
+        type_gifs = lookup.get(key)
 
-        return current_gif
+        if not type_gifs:
+            type_gifs = lookup.get("bikaku") or next(iter(gifs.values()))
+
+        return random.choice(type_gifs)
 
     @staticmethod
     def get_kagune_obtained_gif() -> str:

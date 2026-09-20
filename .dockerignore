@@ -21,3 +21,5 @@ logs/
 
 .git/
 .gitignore
+
+backups/

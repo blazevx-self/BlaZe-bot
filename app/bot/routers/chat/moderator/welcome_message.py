@@ -4,7 +4,7 @@ from aiogram.types import Message
 from dependency_injector.wiring import inject, Provide
 
 from app.containers import Container
-from app.services.chat_service.chat_service import ChatService
+from app.services.chat.chat_service import ChatService
 
 from app.bot.filters.group_only import GroupOnlyFilter, GroupModeratorFilter
 

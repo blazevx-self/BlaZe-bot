@@ -1,3 +1,5 @@
+from app.core.enums.cooldown_action import CooldownAction
+
 ALLOWED_USER_FIELDS = {
     'money',
 
@@ -29,4 +31,11 @@ ALLOWED_GHOUL_FIELDS = {
     'eat_ghouls',
 
     'is_kakuja',
+}
+
+ALLOWED_COOLDOWN_FIELDS: dict[str, CooldownAction] = {
+    "snap_cooldown": CooldownAction.SNAP,
+    "coffee_cooldown": CooldownAction.COFFEE,
+    "coffee_overdose_cooldown": CooldownAction.COFFEE_OVERDOSE,
+    "kagune_cooldown": CooldownAction.KAGUNE_GROW,
 }

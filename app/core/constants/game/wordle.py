@@ -17,3 +17,4 @@ WORDLE_COLORS = {
     "text": (255, 255, 255),
 }
 
+MAX_LEN = 850

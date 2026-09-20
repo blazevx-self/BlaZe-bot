@@ -25,9 +25,11 @@ from app.bot.middlewares import (
 )
 
 from app.bot.routers.routes import all_routers
-
+from app.services.backup_service import daily_backup
 from app.questions_loader import seed_quiz_questions
+
 from app.utils.logger import system_logger
+from app.utils.logger import database_logger
 
 async def on_startup():
     system_logger.info("[SYSTEM] Bot started | version=1.0.0 | py=%s", sys.version.split()[0])
@@ -54,10 +56,10 @@ async def setup_middlewares(dp: Dispatcher) -> None:
 async def init_database(reset: bool = False):
     if reset:
         await reset_session(engine)
-        system_logger.info("[DB] Database reset")
+        database_logger.info("[DB] Database reset")
     else:
         await create_tables(engine)
-        system_logger.info("[DB] Database initialized")
+        database_logger.info("[DB] Database initialized")
 
     await seed_quiz_questions()
 
@@ -90,6 +92,8 @@ async def main():
 
         dp.include_routers(*all_routers)
         system_logger.info("[SYSTEM] Loaded %d routers", len(all_routers))
+
+        asyncio.create_task(daily_backup(bot))
 
         system_logger.info("[SYSTEM] Starting polling...")
         await dp.start_polling(bot, on_startup=on_startup, on_shutdown=on_shutdown)

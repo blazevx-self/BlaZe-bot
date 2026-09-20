@@ -2,7 +2,7 @@ from app.bot.routers.ghoul import kagune, snap, coffee, stats, race_profile
 from app.bot.routers.common import (
     start, help, bot,
     unknown_commands, profile, balance,
-    transfer, rp_commands, error
+    transfer, error
 )
 
 from app.bot.routers.game import quiz, wordle, lottery
@@ -10,6 +10,7 @@ from app.bot.routers.tops import top_bal, top_click, top_kagune, top_coffee
 
 from app.bot.routers.chat.moderator import rules, welcome_message, goodbye_message
 from app.bot.routers.chat.chat_member_update import new_chat_member, left_chat_member
+from app.bot.routers.chat import rp_commands
 
 from app.bot.routers.admin import ban, modify_balance, player_lookup, field_edit, reset, broadcast
 
@@ -39,7 +40,7 @@ all_routers = (
 
     new_chat_member.router,
     left_chat_member.router,
-    
+
     ban.router,
     modify_balance.router,
     player_lookup.router,
@@ -54,6 +55,8 @@ all_routers = (
     rp_commands.router,
 
     error.router,
+
+    gifs.router,
 
     unknown_commands.router,
 )

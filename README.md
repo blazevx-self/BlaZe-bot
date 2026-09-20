@@ -58,6 +58,9 @@ DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres
 
 TELEGRAPH_ACCESS_TOKEN=your_telegraph_access_token
 TELEGRAPH_PAGE_PATH=your_telegraph_page_path
+
+BACKUP_CHANNEL_ID=your_telegram_channel_id
+BACKUP_DIR=your_folder
 ```
 
 ## Возможности

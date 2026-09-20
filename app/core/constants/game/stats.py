@@ -43,3 +43,8 @@ POWER_FIELDS = (
     "hp",
     "regen",
 )
+
+STAT_BASELINES: dict[str, int] = {
+    "hp": 5,
+    "regen": 5,
+}

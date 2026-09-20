@@ -129,6 +129,6 @@ class KaguneService:
             status=ResultStatus.SUCCESS,
             text=text,
             gif=self.ghoul_service.get_kagune_gif(
-                ghoul.kagune_strength
+                ghoul.kagune_type
             )
         )

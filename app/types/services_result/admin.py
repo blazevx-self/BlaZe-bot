@@ -4,8 +4,10 @@ from datetime import datetime
 from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 
-from app.database.models.user import UserOrm
-from app.database.models.ghoul import GhoulOrm
+#from app.database.models.user import UserOrm
+#from app.database.models.ghoul import GhoulOrm
+
+from typing import Any
 
 @dataclass
 class BanResult:
@@ -27,7 +29,7 @@ class AdminUserProfileResult:
 
 @dataclass
 class FieldEditResult:
-    target: UserOrm | GhoulOrm
+    target: Any | None
     field: str
     value: int
     is_ghoul_field: bool

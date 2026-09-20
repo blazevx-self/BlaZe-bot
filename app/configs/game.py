@@ -40,7 +40,7 @@ class ProfileStatusConfig:
 @dataclass(slots=True, frozen=True)
 class KaguneConfig:
     start_price: int = 500
-    price_multiplier: float = 1.06
+    price_multiplier: float = 1.05
     cooldown: int = 15 * 60
 
     types_chance: dict[str, int] = field(default_factory=lambda: {
@@ -126,11 +126,11 @@ class LotteryConfig:
 
     colors: dict[LotteryColor, tuple[float, int]] = field(
         default_factory=lambda: {
-            LotteryColor.RED: (1.8, 45),
-            LotteryColor.BLUE: (2.5, 30),
-            LotteryColor.GREEN: (3.0, 15),
-            LotteryColor.YELLOW: (5.0, 7),
-            LotteryColor.WHITE: (10.0, 3),
+            LotteryColor.RED: (1.8, 28),
+            LotteryColor.BLUE: (2.5, 22),
+            LotteryColor.GREEN: (3.0, 20),
+            LotteryColor.YELLOW: (5.0, 13),
+            LotteryColor.WHITE: (10.0, 10),
         }
     )
 

@@ -1,7 +1,11 @@
 from math import floor
 from typing import Literal
 
-from app.core.constants.game.stats import STAT_LIMITS, UNLOCK_LEVELS
+from app.core.constants.game.stats import (
+    STAT_LIMITS,
+    UNLOCK_LEVELS,
+    STAT_BASELINES
+)
 from app.core.enums import ResultStatus
 
 from app.types.services_result.ghoul import UpgradeCalcResult
@@ -9,19 +13,22 @@ from app.configs.game import game_cfg
 
 UpgradeAmount = Literal[1, 3, 5]
 
-def calculate_price(current_stat: int, amount: int) -> int:
+def calculate_price(stat: str, current_stat: int, amount: int) -> int:
     """Расчёт стоимости улучшений с учётом экспоненциального роста"""
+
+    baseline = STAT_BASELINES.get(stat, 0)
+    paid_level = current_stat - baseline
 
     price_cfg = game_cfg.stats_price
     base_price = price_cfg.base_price
     multiplier = price_cfg.price_multiplier
 
     total_price = 0
-    temp_stat = current_stat
+    temp_paid = paid_level
 
     for _ in range(amount):
-        total_price += floor(base_price * (multiplier ** temp_stat))
-        temp_stat += 1
+        total_price += floor(base_price * (multiplier ** temp_paid))
+        temp_paid += 1
 
     return total_price
 
@@ -57,6 +64,7 @@ def calculate_upgrade(
     upgrade_amount = min(int(amount), remaining_points)
 
     price = calculate_price(
+        stat=stat,
         current_stat=current_stat,
         amount=upgrade_amount
     )

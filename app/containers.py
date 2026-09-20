@@ -64,10 +64,17 @@ class Container(containers.DeclarativeContainer):
     transfer_repo = providers.Factory(TransferRepository, session=db_session)
 
     # services
+    cooldown_service = providers.Factory(CooldownService, user_cooldown_repo=user_cooldown_repo)
+
     ban_service = providers.Factory(BanService, user_repo=user_repo)
     modify_balance_service = providers.Factory(ModifyBalanceService, user_repo=user_repo)
     player_lookup_service = providers.Factory(PlayerLookupService, user_repo=user_repo, ghoul_repo=ghoul_repo)
-    field_edit_service = providers.Factory(FieldEditService, user_repo=user_repo, ghoul_repo=ghoul_repo)
+    field_edit_service = providers.Factory(
+        FieldEditService,
+        user_repo=user_repo,
+        ghoul_repo=ghoul_repo,
+        cooldown_service=cooldown_service
+    )
     reset_service = providers.Factory(ResetService, user_repo=user_repo, ghoul_repo=ghoul_repo)
     broadcast_service = providers.Factory(BroadcastService, user_repo=user_repo, chat_repo=chat_repo, bot=bot)
 
@@ -87,8 +94,6 @@ class Container(containers.DeclarativeContainer):
         lottery_repo=lottery_repo,
         video_generator=lottery_video_generator
     )
-
-    cooldown_service = providers.Factory(CooldownService, user_cooldown_repo=user_cooldown_repo)
 
     ghoul_service = providers.Factory(GhoulService, ghoul_repo=ghoul_repo)
     kagune_service = providers.Factory(

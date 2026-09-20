@@ -56,6 +56,9 @@ class NewRpCommandOnMedia(BaseFilter):
 
         args = message.caption.split(maxsplit=2)
 
+        if args[0].lower() != "/set_rp":
+            return False
+
         if len(args) < 3 or args[0].lower() != "/set_rp":
             await message.reply(
                 "<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "

@@ -8,7 +8,7 @@ from aiogram.types import Message, BufferedInputFile
 from dependency_injector.wiring import inject, Provide
 
 from app.containers import Container
-from app.core.constants.game.wordle import MAX_ATTEMPTS, WORD_LENGTH
+from app.core.constants.game.wordle import MAX_ATTEMPTS, WORD_LENGTH, MAX_LEN
 
 from app.types.entities.user import UserData
 
@@ -19,8 +19,6 @@ from app.database.repositories import UserRepository
 from app.bot.filters.wordle_filter import WordleGameFilter
 
 router = Router()
-
-MAX_LEN = 850
 
 def _attempts_word(number: int) -> str:
     """Склонение слово 'попытка'"""
@@ -62,10 +60,24 @@ def _build_caption(result, word: str) -> str | None:
 
 async def _word_info_block(wikipedia_service: WikipediaService, word: str) -> str:
     result = await wikipedia_service.get_description(word)
+
     if not result or not getattr(result, "text", ""):
         return ""
 
     text = result.text.strip()
+
+    if "может означать:" in text.lower() or "многозначный термин" in text.lower():
+        # Разделяем часть после двоеточия со списком значений
+        _, _, values_part = text.partition(":")
+        # Разбиваем на строки, убираем пустые, берем первые 3 примера
+        variants = [v.strip().strip("—- ").strip() for v in values_part.split("\n") if v.strip()][:3]
+        if variants:
+            variants_text = "\n".join(f"▫️ {html.escape(v)}" for v in variants)
+            return (
+                f"\n\n<tg-emoji emoji-id=\"5258328383183396223\">📖</tg-emoji> "
+                f"<b>{html.escape(word.upper())}</b> — многозначный термин, основные значения:\n\n"
+                f"<i>{variants_text}</i>"
+            )
 
     if len(text) > MAX_LEN:
         cut = text[:MAX_LEN]

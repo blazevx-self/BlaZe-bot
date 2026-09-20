@@ -6,7 +6,6 @@ from app.services.audit.notifier import notifier_service
 from app.services.audit.security import security_service
 
 from app.configs.settings import settings
-from app.core.constants.input.admin_command import ADMIN_COMMANDS
 
 class AuditService:
     """
@@ -35,22 +34,11 @@ class AuditService:
         )
 
     @staticmethod
-    def _is_admin_command(message: Message) -> bool:
-        if not message.text:
-            return False
-
-        command = message.text.split(maxsplit=1)[0].lower()
-        return command in ADMIN_COMMANDS
-
-    @staticmethod
     def handle_message(user_info: str, message: Message, process_time: float) -> None:
         text = message.text or "NOT TEXT"
         chat_type = message.chat.type
 
         if AuditService._is_wordle_guess(message):
-            return
-
-        if AuditService._is_admin_command(message):
             return
 
         logger_service.log_command(

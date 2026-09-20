@@ -3,7 +3,7 @@ from .admin.modify_balance_service import ModifyBalanceService
 from .admin.player_lookup_service import PlayerLookupService
 from .admin.field_edit import FieldEditService
 from .admin.reset_service import ResetService
-from .chat_service.chat_service import ChatService
+from .chat.chat_service import ChatService
 from .common.profile_service import ProfileService
 from .common.start_service import StartService
 from .cooldown_service import CooldownService
@@ -18,7 +18,7 @@ from .ghouls.snap_service import SnapService
 from .ghouls.stats.stats_service import StatsService
 from .tops.tops_service import TopsService
 from .game.lottery.lottery_video_generator import LotteryVideoGenerator
-from .common.rp_commands_service import RpCommandService
+from .chat.rp_commands_service import RpCommandService
 from .common.transfer_service import TransferService
 from .admin.broadcast_service import BroadcastService
 from .wikipedia_service import WikipediaService
