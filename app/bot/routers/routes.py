@@ -56,8 +56,6 @@ all_routers = (
 
     error.router,
 
-    gifs.router,
-
     unknown_commands.router,
 )
 
