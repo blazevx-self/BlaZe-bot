@@ -8,7 +8,7 @@ from app.containers import Container
 from app.core.exceptions.user import UserNotFoundError
 
 from app.services.admin.field_edit import FieldEditService
-from app.bot.filters.admin_filter import AdminFilter
+from app.bot.filters.admin import AdminFilter
 
 router = Router()
 

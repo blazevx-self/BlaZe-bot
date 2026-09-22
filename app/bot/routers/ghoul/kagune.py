@@ -10,10 +10,10 @@ from app.core.enums import ResultStatus
 from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 
-from app.services.ghouls.kagune_service import KaguneService
-from app.bot.filters.owner_filter import OwnerCallbackFilter
+from app.services.ghouls.kagune import KaguneService
+from app.bot.filters.owner import OwnerCallbackFilter
 
-from app.bot.keyboards.ghoul.kagune_keyboard import get_grow_kagune_kb, get_open_kagune_kb
+from app.bot.keyboards.ghoul.kagune import get_grow_kagune_kb, get_open_kagune_kb
 
 from app.utils.format_num import format_num
 from app.utils.time import format_duration

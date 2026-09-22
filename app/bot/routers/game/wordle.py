@@ -12,11 +12,11 @@ from app.core.constants.game.wordle import MAX_ATTEMPTS, WORD_LENGTH, MAX_LEN
 
 from app.types.entities.user import UserData
 
-from app.services.game.wordle.wordle_service import WordleService
-from app.services.wikipedia_service import WikipediaService
+from app.services.game.wordle.wordle import WordleService
+from app.services.wikipedia import WikipediaService
 from app.database.repositories import UserRepository
 
-from app.bot.filters.wordle_filter import WordleGameFilter
+from app.bot.filters.wordle import WordleGameFilter
 
 router = Router()
 

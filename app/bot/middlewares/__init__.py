@@ -1,9 +1,9 @@
-from .ban_middleware import BanMiddleware
-from .logging_middleware import LoggingMiddleware
-from .database_middleware import DatabaseMiddleware
-from .sync_entities_middleware import SyncEntitiesMiddleware
-from .antiflood_middleware import AntifloodMiddleware
-from .antispam_middleware import AntiSpamGhoulMiddleware
+from .ban import BanMiddleware
+from .logging import LoggingMiddleware
+from .database import DatabaseMiddleware
+from .sync_entities import SyncEntitiesMiddleware
+from .antiflood import AntifloodMiddleware
+from .antispam import AntiSpamGhoulMiddleware
 
 __all__ = [
     "BanMiddleware",

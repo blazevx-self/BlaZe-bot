@@ -13,11 +13,11 @@ from app.configs.yaml_loader import cfg
 from app.core.enums import ResultStatus
 from app.types.entities.user import UserData
 
-from app.services.game.quiz_service import QuizService
-from app.bot.filters.owner_filter import OwnerCallbackFilter
+from app.services.game.quiz import QuizService
+from app.bot.filters.owner import OwnerCallbackFilter
 
-from app.bot.keyboards.game.quiz_keyboard import get_quiz_again_kb
-from app.bot.keyboards.game.quiz_keyboard import get_quiz_keyboard
+from app.bot.keyboards.game.quiz import get_quiz_again_kb
+from app.bot.keyboards.game.quiz import get_quiz_keyboard
 
 async def _send_question_ui(message_or_call, q, left, user_id):
     markup = get_quiz_keyboard(

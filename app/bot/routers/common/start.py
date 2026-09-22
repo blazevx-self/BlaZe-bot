@@ -7,8 +7,8 @@ from dependency_injector.wiring import inject, Provide
 from app.containers import Container
 from app.types.entities.user import UserData
 
-from app.services.common.start_service import StartService
-from app.bot.keyboards.common.start_keyboard import start_keyboard
+from app.services.common.start import StartService
+from app.bot.keyboards.common.start import start_keyboard
 
 router = Router()
 

@@ -10,7 +10,7 @@ from app.containers import Container
 from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 
-from app.services.game.lottery.lottery_service import LotteryService
+from app.services.game.lottery.lottery import LotteryService
 
 from app.utils.logger import lottery_logger
 

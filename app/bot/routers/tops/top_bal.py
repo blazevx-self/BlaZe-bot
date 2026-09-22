@@ -5,15 +5,15 @@ from aiogram.exceptions import TelegramBadRequest
 from dependency_injector.wiring import inject, Provide
 
 from app.containers import Container
-from app.core.templates.common.balance_template import process_balance
-from app.core.templates.tops.top_bal_template import build_top_bal_text
+from app.core.templates.common.balance import process_balance
+from app.core.templates.tops.top_bal import build_top_bal_text
 
 from app.types.entities.user import UserData
 
-from app.services.tops.tops_service import TopsService
-from app.bot.filters.owner_filter import OwnerCallbackFilter
+from app.services.tops.tops import TopsService
+from app.bot.filters.owner import OwnerCallbackFilter
 
-from app.bot.keyboards.tops.tops_keyboard import (
+from app.bot.keyboards.tops.tops import (
     get_top_money_kb,
     get_balance_top_money_kb,
     get_back_to_top_kb

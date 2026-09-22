@@ -10,9 +10,9 @@ from app.containers import Container
 from app.core.enums.rp_commands import TypeRpCommand
 from app.types.services_result.rp_commands import RpCommandResult
 
-from app.services.chat.rp_commands_service import RpCommandService
+from app.services.chat.rp_commands import RpCommandService
 
-from app.bot.middlewares.rp_command_middleware import RpPrivateMiddleware
+from app.bot.middlewares.rp_command import RpPrivateMiddleware
 from app.bot.filters.rp_commands import NewRpCommandOnMedia, RpCommandFilter
 
 router = Router()

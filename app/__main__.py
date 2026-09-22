@@ -25,7 +25,7 @@ from app.bot.middlewares import (
 )
 
 from app.bot.routers.routes import all_routers
-from app.services.backup_service import daily_backup
+from app.services.backup import daily_backup
 from app.questions_loader import seed_quiz_questions
 
 from app.utils.logger import system_logger

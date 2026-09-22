@@ -7,8 +7,8 @@ from dependency_injector.wiring import inject, Provide
 from app.containers import Container
 from app.core.exceptions.user import UserNotFoundError
 
-from app.services.admin.modify_balance_service import ModifyBalanceService
-from app.bot.filters.admin_filter import AdminFilter
+from app.services.admin.modify_balance import ModifyBalanceService
+from app.bot.filters.admin import AdminFilter
 
 router = Router()
 

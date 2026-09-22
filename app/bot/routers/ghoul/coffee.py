@@ -9,8 +9,8 @@ from app.core.enums import ResultStatus
 from app.types.entities.ghoul import GhoulData
 from app.types.entities.user import UserData
 
-from app.services.ghouls.coffee_service import CoffeeService
-from app.bot.filters.ghoul_filters import GhoulRequired
+from app.services.ghouls.coffee import CoffeeService
+from app.bot.filters.ghoul import GhoulRequired
 
 router = Router()
 

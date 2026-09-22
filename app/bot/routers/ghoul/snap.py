@@ -10,8 +10,8 @@ from app.core.enums import ResultStatus
 from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 
-from app.services.ghouls.snap_service import SnapService
-from app.bot.filters.ghoul_filters import GhoulRequired
+from app.services.ghouls.snap import SnapService
+from app.bot.filters.ghoul import GhoulRequired
 
 from app.utils.time import format_duration
 

@@ -6,8 +6,8 @@ from dependency_injector.wiring import inject, Provide
 
 from app.containers import Container
 
-from app.services.admin.broadcast_service import BroadcastService
-from app.bot.filters.admin_filter import AdminFilter
+from app.services.admin.broadcast import BroadcastService
+from app.bot.filters.admin import AdminFilter
 
 from app.utils.logger import admin_logger
 

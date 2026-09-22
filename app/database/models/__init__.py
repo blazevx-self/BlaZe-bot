@@ -1,10 +1,10 @@
 from .base import Base
 
-from .user import UserOrm
+from .common.user import UserOrm
 from .ghoul import GhoulOrm
-from .user_cooldown import UserCooldownOrm
-from .chat import ChatOrm
-from .quiz import QuizOrm
+from .common.user_cooldown import UserCooldownOrm
+from .chat.chat import ChatOrm
+from .game.quiz import QuizOrm
 
 __all__ = [
     "Base",

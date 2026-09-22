@@ -8,10 +8,10 @@ from app.core.exceptions.transfer import TransferError
 from app.core.exceptions.user import UserNotFoundError
 
 from app.types.entities.user import UserData
-from app.services.common.transfer_service import TransferService
+from app.services.common.transfer import TransferService
 
-from app.bot.filters.owner_filter import OwnerCallbackFilter
-from app.bot.keyboards.common.transfer_keyboard import get_transfer_confirm_kb
+from app.bot.filters.owner import OwnerCallbackFilter
+from app.bot.keyboards.common.transfer import get_transfer_confirm_kb
 
 from app.utils.format_num import format_num
 

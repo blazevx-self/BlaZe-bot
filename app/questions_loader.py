@@ -6,7 +6,7 @@ from sqlalchemy.dialects.postgresql import insert
 from app.core.constants.system.paths import QUIZ_PATH
 
 from app.database.database import session_factory
-from app.database.models.quiz import QuizOrm
+from app.database.models.game.quiz import QuizOrm
 
 from app.utils.logger import database_logger
 

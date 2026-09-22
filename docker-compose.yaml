@@ -32,7 +32,7 @@ services:
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
 
     ports:
-      - "5050:80"
+      - "127.0.0.1:5050:80"
 
     volumes:
       - pgadmin_data:/var/lib/pgadmin
@@ -41,8 +41,28 @@ services:
     networks:
       - app_network
 
+  migrations:
+    build: .
+    restart: "no"
+
+    env_file:
+      - .env
+
+    environment:
+      POSTGRES_HOSTNAME: postgres
+
+    command: [ "alembic", "upgrade", "head" ]
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    networks:
+      - app_network
+
   bot:
     build: .
+    working_dir: /app
     container_name: ${BOT_CONTAINER_NAME}
     restart: unless-stopped
 
@@ -52,8 +72,28 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
 
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    networks:
+      - app_network
+
+  db_backup:
+    image: prodrigestivill/postgres-backup-local:16
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+      SCHEDULE: "@daily"
+      BACKUP_KEEP_DAYS: 90
+
     volumes:
-      - .:/app
+      - ./backups:/backups
 
     depends_on:
       postgres:
@@ -62,9 +102,22 @@ services:
     networks:
       - app_network
 
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - app_network
+
 volumes:
   postgres_data:
   pgadmin_data:
+  portainer_data:
 
 networks:
   app_network:

@@ -1,12 +1,12 @@
-from .chat_repository import ChatRepository
-from .ghoul_repository import GhoulRepository
-from .quiz_repository import QuizRepository
-from .tops_repository import TopsRepository
-from .user_cooldown_repository import UserCooldownRepository
-from .user_repository import UserRepository
-from .lottery_repository import LotteryRepository
-from .rp_commands_repository import RpCommandRepository
-from .transfer_repository import TransferRepository
+from .chat.chat import ChatRepository
+from .ghoul import GhoulRepository
+from .game.quiz import QuizRepository
+from .tops import TopsRepository
+from .common.user_cooldown import UserCooldownRepository
+from .common.user import UserRepository
+from .game.lottery import LotteryRepository
+from .chat.rp_commands import RpCommandRepository
+from .common.transfer import TransferRepository
 
 __all__ = [
     "UserRepository",

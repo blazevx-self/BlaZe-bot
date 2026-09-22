@@ -6,10 +6,10 @@ from app.core.constants.admin.fields import (
 from app.core.exceptions.user import UserNotFoundError
 
 from app.types.services_result.admin import FieldEditResult
-from app.services.cooldown_service import CooldownService
+from app.services.cooldown import CooldownService
 
-from app.database.repositories.user_repository import UserRepository
-from app.database.repositories.ghoul_repository import GhoulRepository
+from app.database.repositories.common.user import UserRepository
+from app.database.repositories.ghoul import GhoulRepository
 
 from app.utils.logger import admin_logger
 

@@ -3,10 +3,10 @@ from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery, LinkPreviewOptions
 
 from app.configs.yaml_loader import cfg
-from app.core.templates.common.help_template import build_help_text
+from app.core.templates.common.help import build_help_text
 
-from app.bot.keyboards.common.start_keyboard import start_keyboard
-from app.bot.keyboards.common.help_keyboard import get_help_menu, get_help_menu_back
+from app.bot.keyboards.common.start import start_keyboard
+from app.bot.keyboards.common.help import get_help_menu, get_help_menu_back
 
 router = Router()
 

@@ -5,15 +5,15 @@ from aiogram.exceptions import TelegramBadRequest
 from dependency_injector.wiring import inject, Provide
 
 from app.containers import Container
-from app.core.templates.tops.top_kagune_template import build_top_kagune_text
+from app.core.templates.tops.top_kagune import build_top_kagune_text
 
 from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 
-from app.services.tops.tops_service import TopsService
+from app.services.tops.tops import TopsService
 
-from app.bot.filters.ghoul_filters import GhoulRequired
-from app.bot.keyboards.tops.tops_keyboard import get_update_top_kagune_kb
+from app.bot.filters.ghoul import GhoulRequired
+from app.bot.keyboards.tops.tops import get_update_top_kagune_kb
 
 router = Router()
 

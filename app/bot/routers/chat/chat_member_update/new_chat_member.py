@@ -14,10 +14,10 @@ from dependency_injector.wiring import inject, Provide
 from app.containers import Container
 from app.configs.game import game_cfg
 
-from app.database.repositories.chat_repository import ChatRepository
+from app.database.repositories.chat import ChatRepository
 
-from app.services.chat.chat_service import ChatService
-from app.bot.keyboards.common.help_keyboard import get_help_menu
+from app.services.chat.chat import ChatService
+from app.bot.keyboards.common.help import get_help_menu
 
 from app.utils.logger import bot_logger, error_logger
 

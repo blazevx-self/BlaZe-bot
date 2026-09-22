@@ -1,11 +1,11 @@
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 
-from app.core.templates.common.balance_template import process_balance
+from app.core.templates.common.balance import process_balance
 from app.types.entities.user import UserData
 
-from app.bot.filters.owner_filter import OwnerCallbackFilter
-from app.bot.keyboards.tops.tops_keyboard import get_balance_in_top_kb
+from app.bot.filters.owner import OwnerCallbackFilter
+from app.bot.keyboards.tops.tops import get_balance_in_top_kb
 
 router = Router()
 

@@ -8,13 +8,13 @@ from app.containers import Container
 from app.types.entities.ghoul import GhoulData
 from app.types.entities.user import UserData
 
-from app.services.common.profile_service import ProfileService
-from app.services.ghouls.race_profile_service import RaceProfileService
+from app.services.common.profile import ProfileService
+from app.services.ghouls.race_profile import RaceProfileService
 
-from app.bot.filters.ghoul_filters import GhoulRequired
-from app.bot.filters.owner_filter import OwnerCallbackFilter
+from app.bot.filters.ghoul import GhoulRequired
+from app.bot.filters.owner import OwnerCallbackFilter
 
-from app.bot.keyboards.common.profile_keyboard import get_ras_to_profile_kb, get_profile_to_ras_kb
+from app.bot.keyboards.common.profile import get_ras_to_profile_kb, get_profile_to_ras_kb
 
 router = Router()
 

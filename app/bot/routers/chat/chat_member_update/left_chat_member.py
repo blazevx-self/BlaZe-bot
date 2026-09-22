@@ -12,7 +12,7 @@ from aiogram.filters.chat_member_updated import (
 from dependency_injector.wiring import inject, Provide
 
 from app.containers import Container
-from app.services.chat.chat_service import ChatService
+from app.services.chat.chat import ChatService
 
 router = Router()
 

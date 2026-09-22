@@ -8,7 +8,7 @@ from app.core.enums.lottery import LotteryColor
 from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 
-from app.database.models.quiz import QuizOrm
+from app.database.models.game.quiz import QuizOrm
 
 @dataclass
 class QuizStartResult:
