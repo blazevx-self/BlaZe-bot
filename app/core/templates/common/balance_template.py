@@ -9,6 +9,12 @@ TOP_BALANCE_TEXT = cfg['message']['balance']['top_balance_text']
 
 def process_balance(user: UserData, from_top: bool = False) -> str:
     money = format_num(user.money)
+
+    user_link = (
+        f'<a href="tg://user?id={user.telegram_id}">'
+        f'<b>{truncate_text(user.name)}</b></a>'
+    )
+
     text_template = (TOP_BALANCE_TEXT if from_top else BAL_TEXT)
 
-    return text_template.format(name=truncate_text(user.name), money=money)
+    return text_template.format(user_link=user_link, money=money)

@@ -194,13 +194,13 @@ message:
 
   balance:
     balance_text: |
-      <tg-emoji emoji-id="5258204546391351475">💵</tg-emoji> <b>Баланс - <code>{name}</code></b>
+      <tg-emoji emoji-id="5258204546391351475">💵</tg-emoji> <b>Баланс</b> — <b>{user_link}</b>
         
       <tg-emoji emoji-id="5864068125112144897">💸</tg-emoji> <b>Текущий балик:</b> {money} BlazeCoin
         
       <tg-emoji emoji-id="5258336354642697821">⬇️</tg-emoji> Посмотри на настоящих богачей в топе
     top_balance_text: |
-      <tg-emoji emoji-id="5258204546391351475">💵</tg-emoji> <b>Баланс — <code>{name}</code></b>
+      <tg-emoji emoji-id="5258204546391351475">💵</tg-emoji> <b>Баланс</b> — <b>{user_link}</b>
         
       <tg-emoji emoji-id="5864068125112144897">💸</tg-emoji> <b>Текущий балик:</b> {money} BlazeCoin
 
