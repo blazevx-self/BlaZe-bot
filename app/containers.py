@@ -15,6 +15,8 @@ from app.database.repositories import (
     LotteryRepository,
     RpCommandRepository,
     TransferRepository,
+    ChatMemberRepository,
+    ModeratorActionRepository,
 )
 
 from app.services import (
@@ -62,6 +64,8 @@ class Container(containers.DeclarativeContainer):
     lottery_repo = providers.Factory(LotteryRepository, session=db_session)
     rp_repo = providers.Factory(RpCommandRepository, session=db_session)
     transfer_repo = providers.Factory(TransferRepository, session=db_session)
+    chat_member_repo = providers.Factory(ChatMemberRepository, session=db_session)
+    moderator_action_repo = providers.Factory(ModeratorActionRepository, session=db_session)
 
     # services
     cooldown_service = providers.Factory(CooldownService, user_cooldown_repo=user_cooldown_repo)

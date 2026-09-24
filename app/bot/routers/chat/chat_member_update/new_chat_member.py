@@ -1,7 +1,6 @@
 from html import escape
 
 from aiogram import Router
-
 from aiogram.types import ChatMemberUpdated, LinkPreviewOptions
 from aiogram.filters.chat_member_updated import (
     ChatMemberUpdatedFilter,
@@ -14,7 +13,8 @@ from dependency_injector.wiring import inject, Provide
 from app.containers import Container
 from app.configs.game import game_cfg
 
-from app.database.repositories.chat import ChatRepository
+from app.database.repositories import ChatMemberRepository
+from app.database.repositories.chat.chat import ChatRepository
 
 from app.services.chat.chat import ChatService
 from app.bot.keyboards.common.help import get_help_menu
@@ -32,14 +32,16 @@ async def bot_added(
     if event.chat.type not in ("group", "supergroup"):
         return
 
-    if event.new_chat_member.user.id != (await event.bot.get_me()).id:
-        return
+    already_known = (await chat_repo.get_chat_by_telegram_id(event.chat.id)) is not None
 
     await chat_repo.upsert(
         telegram_id=event.chat.id,
         title=event.chat.title,
         username=event.chat.username
     )
+
+    if already_known:
+        return
 
     bot_logger.info(
         f"[BOT] Added | title_chat=\"{event.chat.title}\" | chat_id={event.chat.id} | "

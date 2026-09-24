@@ -18,7 +18,10 @@ router = Router()
 
 @router.message(F.text.lower() == "качаться", F.chat.type != "private")
 async def stats_menu_group_error(message: Message):
-    await message.reply("Команда работает только в личных сообщениях с ботом.")
+    await message.reply(
+        "<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
+        "Команда работает только в личных сообщениях с ботом."
+    )
 
 @router.message(F.text.lower() == "качаться", F.chat.type == "private", GhoulRequired())
 @inject

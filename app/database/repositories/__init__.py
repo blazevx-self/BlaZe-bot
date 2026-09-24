@@ -7,6 +7,8 @@ from .common.user import UserRepository
 from .game.lottery import LotteryRepository
 from .chat.rp_commands import RpCommandRepository
 from .common.transfer import TransferRepository
+from .chat.chat_member import ChatMemberRepository
+from .chat.moderator_action import ModeratorActionRepository
 
 __all__ = [
     "UserRepository",
@@ -18,4 +20,6 @@ __all__ = [
     "LotteryRepository",
     "RpCommandRepository",
     "TransferRepository",
+    "ChatMemberRepository",
+    "ModeratorActionRepository",
 ]

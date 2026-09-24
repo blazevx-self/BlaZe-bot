@@ -15,11 +15,10 @@ class AntifloodMiddleware(BaseMiddleware):
     """
 
     def __init__(
-            self,
-            limit_seconds: int = 5,
-            max_requests: int = 15
+        self,
+        limit_seconds: int = 5,
+        max_requests: int = 15
     ):
-
         # user_id -> [timestamps]
         # TTLCache автоматически очищает пользователей после limit_seconds
         self.user_requests = TTLCache(maxsize=10_000, ttl=limit_seconds)
@@ -63,5 +62,3 @@ class AntifloodMiddleware(BaseMiddleware):
             return None
 
         return await handler(event, data)
-
-

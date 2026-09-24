@@ -8,4 +8,7 @@ class ChatValidationError(ChatError):
     pass
 
 class ChatStateError(ChatError):
-    pass 
+    pass
+
+class ChatMemberNotFoundError(ChatError):
+    pass

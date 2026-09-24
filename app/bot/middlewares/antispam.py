@@ -14,7 +14,7 @@ class AntiSpamGhoulMiddleware(BaseMiddleware):
     в течение короткого промежутка времени.
     """
 
-    def __init__(self, time_limit: float = 0.7) -> None:
+    def __init__(self, time_limit: float = 1.0) -> None:
         self.cache = TTLCache(maxsize=10_000, ttl=time_limit)
 
     async def __call__(

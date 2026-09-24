@@ -6,6 +6,7 @@ from app.types.services_result.admin import AdminUserProfileResult
 from app.database.repositories.common.user import UserRepository
 from app.database.repositories.ghoul import GhoulRepository
 
+from app.utils.truncate_name import truncate_text
 from app.utils.format_num import format_num
 
 class PlayerLookupService:
@@ -18,7 +19,7 @@ class PlayerLookupService:
 
         if not user:
             raise UserNotFoundError(
-                "<tg-emoji emoji-id=\"5447644880824181073\">⚠️</tg-emoji> "
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
                 f"Пользователь не найден: {query}."
             )
 
@@ -33,6 +34,11 @@ class PlayerLookupService:
     def fmt_profile_user(profile: AdminUserProfileResult) -> str:
         user = profile.user
 
+        user_link = (
+            f'<a href="tg://user?id={user.telegram_id}">'
+            f'<b>{truncate_text(user.name)}</b></a>'
+        )
+
         text = (
             "<tg-emoji emoji-id=\"5260399854500191689\">👤</tg-emoji> "
             f"<b>Профиль пользователя</b>\n\n"
@@ -40,7 +46,7 @@ class PlayerLookupService:
             "<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
             f"<b>Информация о пользователе</b>\n"
             f"└ <b>ID:</b> <code>{user.telegram_id}</code>\n"
-            f"└ <b>Имя</b>: <code>{user.name}</code>\n"
+            f"└ <b>Имя</b>: {user_link}\n"
             f"└ <b>Username:</b> <code>@{user.username or '—'}</code>\n\n"
             
             "<tg-emoji emoji-id=\"5864068125112144897\">💸</tg-emoji> "

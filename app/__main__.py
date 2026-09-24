@@ -32,7 +32,7 @@ from app.utils.logger import system_logger
 from app.utils.logger import database_logger
 
 async def on_startup():
-    system_logger.info("[SYSTEM] Bot started | version=1.0.0 | py=%s", sys.version.split()[0])
+    system_logger.info("[SYSTEM] Bot started | version=1.0.5 | py=%s", sys.version.split()[0])
 
 async def on_shutdown():
     system_logger.info("[SYSTEM] Bot stopped")
@@ -48,7 +48,7 @@ async def setup_middlewares(dp: Dispatcher) -> None:
 
     dp.message.middleware(BanMiddleware())
 
-    dp.callback_query.middleware(AntiSpamGhoulMiddleware(time_limit=0.7))
+    dp.callback_query.middleware(AntiSpamGhoulMiddleware(time_limit=1.0))
 
     dp.message.middleware(AntifloodMiddleware(limit_seconds=5, max_requests=15))
     dp.callback_query.middleware(AntifloodMiddleware(limit_seconds=5, max_requests=15))

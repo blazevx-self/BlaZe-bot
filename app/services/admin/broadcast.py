@@ -11,7 +11,7 @@ from aiogram.exceptions import (
 from app.types.services_result.admin import BroadcastResult
 
 from app.database.repositories.common.user import UserRepository
-from app.database.repositories.chat import ChatRepository
+from app.database.repositories.chat.chat import ChatRepository
 
 from app.utils.logger import admin_logger
 

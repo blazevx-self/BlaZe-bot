@@ -38,10 +38,16 @@ class WordleService:
         word = word.upper().strip()
 
         if len(word) != WORD_LENGTH:
-            raise ValueError(f"Слово должно содержать {WORD_LENGTH} букв.")
+            raise ValueError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                f"Слово должно содержать {WORD_LENGTH} букв."
+            )
 
         if not word.isalpha():
-            raise ValueError("Допустимы только буквы.")
+            raise ValueError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Допустимы только буквы."
+            )
 
         return word
 
