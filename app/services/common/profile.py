@@ -50,20 +50,20 @@ class ProfileService:
             role = "Создатель"
         elif member.status == ChatMemberStatus.ADMINISTRATOR:
             role = "Администратор"
-        elif member.status == ChatMemberStatus.RESTRICTED and not member.can_send_messages:
-            role = "В муте"
         else:
             role = "Участник"
 
         db_member = await self.chat_member_repo.get_by_telegram_ids(chat_id, user_id)
 
         warnings = db_member.warnings if db_member else 0
+        messages = format_num(db_member.messages_count) if db_member else 0
         since = db_member.created_at.strftime("%d.%m.%Y") if db_member else "—"
 
         return (
             "\n<tg-emoji emoji-id=\"6030784887093464891\">💬</tg-emoji> <b>В этом чате</b>\n"
             f"└ <b>Роль:</b> <code>{role}</code>\n"
             f"└ <b>Предупреждения:</b> <code>{warnings}/{MAX_WARNINGS}</code>\n"
+            f"└ <b>Сообщений:</b> <code>{messages}</code>\n"
             f"└ <b>В чате с:</b> <code>{since}</code>\n"
         )
 

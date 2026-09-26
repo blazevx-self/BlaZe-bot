@@ -29,6 +29,7 @@ class ChatMemberOrm(Base):
     )
 
     warnings: Mapped[int] = mapped_column(default=0, nullable=False)
+    messages_count: Mapped[int] = mapped_column(default=0, server_default="0", nullable=False)
 
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
 

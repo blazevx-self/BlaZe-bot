@@ -23,6 +23,7 @@ from app.bot.middlewares import (
     DatabaseMiddleware,
     SyncEntitiesMiddleware,
     AntiSpamForChatsMiddleware,
+    MessageCounterMiddleware
 )
 
 from app.bot.routers.routes import all_routers
@@ -55,6 +56,8 @@ async def setup_middlewares(dp: Dispatcher) -> None:
 
     dp.message.middleware(AntifloodMiddleware(limit_seconds=5, max_requests=15))
     dp.callback_query.middleware(AntifloodMiddleware(limit_seconds=5, max_requests=15))
+
+    dp.message.middleware(MessageCounterMiddleware())
 
 async def init_database(reset: bool = False):
     if reset:

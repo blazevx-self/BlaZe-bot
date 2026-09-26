@@ -36,15 +36,14 @@ async def ras_profile(
 @inject
 async def ras_to_profile(
     callback: CallbackQuery,
-    message: Message,
     user: UserData,
     ghoul: GhoulData,
     profile_service: ProfileService = Provide[Container.profile_service]
 ):
     chat_block = ""
 
-    if message.chat.type in ("group", "supergroup"):
-        chat_block = await profile_service.build_chat_block(message.chat.id, user.telegram_id)
+    if callback.message.chat.type in ("group", "supergroup"):
+        chat_block = await profile_service.build_chat_block(callback.message.chat.id, user.telegram_id)
 
     result = await profile_service.build_profile(user=user, ghoul=ghoul, chat_block=chat_block)
 

@@ -76,3 +76,16 @@ class ChatMemberRepository(Base):
         )
 
         return await self.session.scalar(stmt)
+
+    async def increment_messages(self, chat_telegram_id: int, user_telegram_id: int) -> None:
+        chat_id = select(ChatOrm.id).where(ChatOrm.telegram_id == chat_telegram_id).scalar_subquery()
+        user_id = select(UserOrm.id).where(UserOrm.telegram_id == user_telegram_id).scalar_subquery()
+
+        await self.session.execute(
+            update(ChatMemberOrm)
+            .where(
+                ChatMemberOrm.chat_id == chat_id,
+                ChatMemberOrm.user_id == user_id,
+            )
+            .values(messages_count=ChatMemberOrm.messages_count + 1)
+        )

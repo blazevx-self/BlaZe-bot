@@ -2,7 +2,7 @@ from app.bot.routers.ghoul import kagune, snap, coffee, stats, race_profile
 from app.bot.routers.common import (
     start, help, bot,
     unknown_commands, profile, balance,
-    transfer, error, id_user,
+    transfer, error, id_user, catch_all
 )
 
 from app.bot.routers.game import quiz, wordle, lottery
@@ -67,6 +67,8 @@ all_routers = (
     error.router,
 
     unknown_commands.router,
+
+    catch_all.router,
 )
 
 __all__ = ["all_routers"]

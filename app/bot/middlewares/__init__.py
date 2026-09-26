@@ -5,6 +5,7 @@ from .sync_entities import SyncEntitiesMiddleware
 from .antiflood import AntifloodMiddleware
 from .antispam import AntiSpamGhoulMiddleware
 from .antispam_for_chats import AntiSpamForChatsMiddleware
+from .message_counter import MessageCounterMiddleware
 
 __all__ = [
     "BanMiddleware",
@@ -14,4 +15,5 @@ __all__ = [
     "AntifloodMiddleware",
     "AntiSpamGhoulMiddleware",
     "AntiSpamForChatsMiddleware",
+    "MessageCounterMiddleware"
 ]
