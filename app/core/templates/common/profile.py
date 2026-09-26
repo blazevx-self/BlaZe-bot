@@ -6,6 +6,7 @@ def profile_text(
         registered_at: str,
         race: str,
         days_in_project: int,
+        chat_block: str = ""
 ) -> str:
     return f"""
     <tg-emoji emoji-id=\"6032693626394382504\">👤</tg-emoji> <b>Профиль — {user_link}</b>
@@ -19,4 +20,5 @@ def profile_text(
 <tg-emoji emoji-id=\"5936143551854285132\">📊</tg-emoji> <b>Активность</b>
 └ <tg-emoji emoji-id=\"5891211339170326418\">⏳</tg-emoji> <b>В проекте:</b> <code>{days_in_project} дн.</code>
 └ <tg-emoji emoji-id=\"5890937706803894250\">📅</tg-emoji> <b>Регистрация:</b> <code>{registered_at}</code>
+{chat_block}
 """

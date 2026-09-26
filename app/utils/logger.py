@@ -74,6 +74,7 @@ database_logger = get_logger("database", "database")
 wikipedia_logger = logging.getLogger("wikipedia")
 
 admin_logger = get_logger("admin", "admin")
+chat_logger = get_logger("chat", "chat")
 rp_command_logger = get_logger("rp_command", "rp_command")
 
 security_logger = get_logger("security", "security")

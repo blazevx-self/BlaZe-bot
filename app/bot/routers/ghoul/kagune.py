@@ -1,3 +1,5 @@
+from html import escape
+
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery, InputMediaAnimation
 
@@ -17,6 +19,7 @@ from app.bot.keyboards.ghoul.kagune import get_grow_kagune_kb, get_open_kagune_k
 
 from app.utils.format_num import format_num
 from app.utils.time import format_duration
+from app.utils.truncate_text import truncate_text
 
 router = Router()
 
@@ -31,7 +34,9 @@ async def kagune_menu(
     result = await kagune_service.upgrade_kagune(user=user, ghoul=ghoul)
 
     if result.status == ResultStatus.NO_KAGUNE:
-        text = cfg['message']['kagune']['kagune_1'].format(name=message.from_user.first_name)
+        text = cfg['message']['kagune']['kagune_1'].format(
+            name=truncate_text(message.from_user.first_name)
+        )
 
         await message.reply(text=text, reply_markup=get_open_kagune_kb(user.telegram_id))
         return

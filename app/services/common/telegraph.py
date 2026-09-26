@@ -1,7 +1,7 @@
 from telegraph import Telegraph
 
 from app.configs.settings import settings
-from app.core.templates.common.telegraphpy import build_help_telegraph
+from app.core.templates.common.telegraph import build_help_telegraph
 
 class TelegraphService:
     def __init__(self):

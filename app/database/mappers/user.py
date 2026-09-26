@@ -3,7 +3,9 @@ from app.types.entities.user import UserData
 
 def orm_to_user(user: UserOrm) -> UserData:
     return UserData(
+        id=user.id,
         telegram_id=user.telegram_id,
+
         name=user.name,
         username=user.username,
     

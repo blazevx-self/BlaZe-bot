@@ -16,7 +16,7 @@ class OwnerCallbackFilter(BaseFilter):
             return False
 
         if callback.from_user.id != owner_id:
-            await callback.answer(text="Это не твоя кнопка", show_alert=False)
+            await callback.answer(text="❌ Это не твоя кнопка", show_alert=False)
             return False
 
         return True

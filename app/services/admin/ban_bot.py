@@ -1,3 +1,4 @@
+from html import escape
 from datetime import datetime, timedelta, UTC
 
 from app.configs.settings import settings
@@ -7,7 +8,9 @@ from app.types.entities.user import UserData
 from app.types.services_result.admin import BanResult
 
 from app.database.repositories.common.user import UserRepository
+
 from app.utils.logger import admin_logger
+from app.utils.truncate_text import truncate_text
 
 class BanService:
     def __init__(self, user_repo: UserRepository):
@@ -16,10 +19,10 @@ class BanService:
     @staticmethod
     def _parse_duration(value: str) -> datetime | None:
         """'7d', '24h', '30m' -> datetime. Всё остальное -> None (перманентно)."""
-        
+
         if not value:
             return None
-        
+
         units = {"m": "minutes", "h": "hours", "d": "days"}
 
         if len(value) >= 2 and value[-1] in units and value[:-1].isdigit():
@@ -106,9 +109,9 @@ class BanService:
         return (
             "<tg-emoji emoji-id=\"5258318620722733379\">🚫</tg-emoji> "
             f"Пользователь <code>{result.user.telegram_id}</code> "
-            f"({result.user.name}) <b>заблокирован {until}.</b>\n\n"
+            f"({escape(truncate_text(result.user.name))}) <b>заблокирован {until}.</b>\n\n"
             "<tg-emoji emoji-id=\"5778299625370817409\">📝</tg-emoji> "
-            f"<b>Причина:</b> <i>{result.reason or 'Не указана'}</i>"
+            f"<b>Причина:</b> <i>{escape(result.reason) or 'Не указана'}</i>"
         )
 
     @staticmethod
@@ -116,5 +119,5 @@ class BanService:
         return (
             "<tg-emoji emoji-id=\"5260416304224936047\">✅</tg-emoji> "
             f"Пользователь <code>{user.telegram_id}</code> "
-            f"({user.name}) <b>разблокирован.</b>\n\n"
+            f"({escape(truncate_text(user.name))}) <b>разблокирован.</b>"
         )

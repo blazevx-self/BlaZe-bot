@@ -1,3 +1,5 @@
+from html import escape
+
 from typing import Any, Callable, Dict, Awaitable
 from datetime import datetime, UTC
 
@@ -39,7 +41,7 @@ class BanMiddleware(BaseMiddleware):
                 f"<b>Вы заблокированы навсегда.</b>\n\n"
                 "<tg-emoji emoji-id=\"5778299625370817409\">📝</tg-emoji> "
                 f"<b>Причина:</b> "
-                f"<i>{user.ban_reason or 'Не указана'}</i>"
+                f"<i>{escape(user.ban_reason) or 'Не указана'}</i>"
             )
 
             if isinstance(event, Message):
@@ -71,7 +73,7 @@ class BanMiddleware(BaseMiddleware):
             f"<b>Вы заблокированы.</b>\n\n"
             "<tg-emoji emoji-id=\"5778299625370817409\">📝</tg-emoji> "
             f"<b>Причина:</b> "
-            f"<i>{user.ban_reason or 'Не указана'}</i>\n\n"
+            f"<i>{escape(user.ban_reason) or 'Не указана'}</i>\n\n"
             "<tg-emoji emoji-id=\"5258258882022612173\">⏲️</tg-emoji> "
             f"До разблокировки: <b>{duration}</b>"
         )

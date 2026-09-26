@@ -1,4 +1,4 @@
-from .admin.ban import BanService
+from .admin.ban_bot import BanService
 from .admin.modify_balance import ModifyBalanceService
 from .admin.player_lookup import PlayerLookupService
 from .admin.field_edit import FieldEditService
@@ -18,10 +18,17 @@ from .ghouls.snap import SnapService
 from .ghouls.stats.stats import StatsService
 from .tops.tops import TopsService
 from .game.lottery.lottery_video_generator import LotteryVideoGenerator
-from .chat.rp_commands import RpCommandService
+from .chat.common.rp_commands import RpCommandService
 from .common.transfer import TransferService
 from .admin.broadcast import BroadcastService
 from .wikipedia import WikipediaService
+from .chat.moderator.ban_chat import ChatBanService
+from .chat.moderator.kick import ChatKickService
+from .chat.moderator.mute import ChatMuteService
+from .chat.moderator.warn import ChatWarnService
+from .chat.moderator.history_moderator import ChatHistoryService
+from .chat.common.report import ReportService
+from .chat.common.list_admins import ListAdminsService
 
 __all__ = [
     "BanService",
@@ -48,4 +55,11 @@ __all__ = [
     "TransferService",
     "BroadcastService",
     "WikipediaService",
+    "ChatBanService",
+    "ChatKickService",
+    "ChatMuteService",
+    "ChatWarnService",
+    "ChatHistoryService",
+    "ReportService",
+    "ListAdminsService",
 ]

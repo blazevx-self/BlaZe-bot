@@ -8,6 +8,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.repositories.common.user import UserRepository
 from app.database.repositories.ghoul import GhoulRepository
+from app.database.repositories.chat.chat import ChatRepository
+from app.database.repositories.chat.chat_member import ChatMemberRepository
 
 from app.database.mappers.user import orm_to_user
 from app.database.mappers.ghoul import orm_to_ghoul
@@ -38,6 +40,9 @@ class SyncEntitiesMiddleware(BaseMiddleware):
         try:
             user_repo = UserRepository(session)
             ghoul_repo = GhoulRepository(session)
+
+            chat_repo = ChatRepository(session)
+            chat_member_repo = ChatMemberRepository(session)
                
             user_orm = await user_repo.upsert(
                 telegram_id=tg_user.id,
@@ -45,6 +50,18 @@ class SyncEntitiesMiddleware(BaseMiddleware):
                 username=tg_user.username,
                 has_private_chat=is_private
             )
+
+            if tg_chat and tg_chat.type in (ChatType.GROUP, ChatType.SUPERGROUP):
+                chat_orm = await chat_repo.upsert(
+                    telegram_id=tg_chat.id,
+                    title=tg_chat.title,
+                    username=tg_chat.username,
+                )
+
+                await chat_member_repo.upsert(
+                    chat_id=chat_orm.id,
+                    user_id=user_orm.id,
+                )
 
             ghoul_orm = await ghoul_repo.get(telegram_id=tg_user.id)
             

@@ -1,3 +1,5 @@
+from html import escape
+
 from app.core.constants.game.stats import STAT_LIMITS
 from app.core.exceptions.user import UserNotFoundError
 
@@ -6,7 +8,7 @@ from app.types.services_result.admin import AdminUserProfileResult
 from app.database.repositories.common.user import UserRepository
 from app.database.repositories.ghoul import GhoulRepository
 
-from app.utils.truncate_name import truncate_text
+from app.utils.truncate_text import truncate_text
 from app.utils.format_num import format_num
 
 class PlayerLookupService:
@@ -36,7 +38,7 @@ class PlayerLookupService:
 
         user_link = (
             f'<a href="tg://user?id={user.telegram_id}">'
-            f'<b>{truncate_text(user.name)}</b></a>'
+            f'<b>{escape(truncate_text(user.name))}</b></a>'
         )
 
         text = (
@@ -52,7 +54,7 @@ class PlayerLookupService:
             "<tg-emoji emoji-id=\"5864068125112144897\">💸</tg-emoji> "
             f"<b>Баланс:</b> <code>{format_num(user.money)} BlazeCoin</code>\n\n"
             
-            "<tg-emoji emoji-id=\"6030445631921721471\">🛡</tg-emoji>"
+            "<tg-emoji emoji-id=\"6030445631921721471\">🛡</tg-emoji> "
             f"<b>Состояние:</b>\n"
             f"└ <b>Статус:</b> <code>{"🚫 Заблокирован" if user.is_banned else "✅ Активен"}</code>\n"
             f"└ <b>Бонус за подписку:</b> <code>{"✅ Получен" if user.is_subscribed else "❌ Не получен"}</code>\n\n"

@@ -1,3 +1,5 @@
+from html import escape
+
 from app.core.enums import ResultStatus
 from app.core.templates.ghoul.race_profile import race_profile_text
 
@@ -6,7 +8,7 @@ from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 
 from app.services.ghouls.ghoul import GhoulService
-from app.utils.truncate_name import truncate_text
+from app.utils.truncate_text import truncate_text
 
 class RaceProfileService:
     def __init__(self, ghoul_service: GhoulService):
@@ -18,7 +20,7 @@ class RaceProfileService:
 
         link = (
             f'<a href="tg://user?id={user.telegram_id}">'
-            f'<b>{truncate_text(user.name)}</b></a>'
+            f'<b>{escape(truncate_text(user.name))}</b></a>'
         )
 
         text = race_profile_text(

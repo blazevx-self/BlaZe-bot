@@ -1,3 +1,5 @@
+from html import escape
+
 from app.core.constants.admin.modify_balance import MAX_AMOUNT
 from app.core.exceptions.user import UserNotFoundError
 
@@ -8,6 +10,7 @@ from app.database.repositories.common.user import UserRepository
 
 from app.utils.logger import admin_logger
 from app.utils.format_num import format_num
+from app.utils.truncate_text import truncate_text
 
 class ModifyBalanceService:
     def __init__(self, user_repo: UserRepository):
@@ -65,6 +68,6 @@ class ModifyBalanceService:
         return (
             "<tg-emoji emoji-id=\"5260416304224936047\">✅</tg-emoji>"
             f"Пользователю <code>{result.user.telegram_id}</code> "
-            f"({result.user.name}) {action} "
+            f"({escape(truncate_text(result.user.name))}) {action} "
             f"<b>{format_num(abs(result.amount))} BlaZeCoin.</b>"
         )

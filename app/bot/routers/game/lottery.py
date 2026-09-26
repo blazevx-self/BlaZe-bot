@@ -3,9 +3,12 @@ import asyncio
 
 from aiogram import Router, F
 from aiogram.types import Message, BufferedInputFile
+from aiogram.exceptions import TelegramAPIError
 
 from dependency_injector.wiring import Provide, inject
+
 from app.containers import Container
+from app.core.constants.game.lottery import DEP_PATTERN
 
 from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
@@ -16,7 +19,15 @@ from app.utils.logger import lottery_logger
 
 router = Router()
 
-DEP_PATTERN = r"^депнуть\s+(\S+)\s+(\d+)$"
+_background_tasks: set[asyncio.Task] = set()
+
+async def _send_result_later(message: Message, text: str, delay: float) -> None:
+    await asyncio.sleep(delay)
+
+    try:
+        await message.reply(text)
+    except TelegramAPIError:
+        lottery_logger.warning(f"[LOTTERY] Failed to send result | user_id={message.from_user.id}")
 
 @router.message(F.text.lower().startswith("депнуть"))
 @inject
@@ -71,9 +82,6 @@ async def dep_cmd(
         )
     )
 
-    await asyncio.sleep(6)
-
-    await message.answer(
-        result.text,
-        reply_to_message_id=message.message_id
-    )
+    task = asyncio.create_task(_send_result_later(message, result.text, delay=6))
+    _background_tasks.add(task)
+    task.add_done_callback(_background_tasks.discard)

@@ -1,10 +1,10 @@
-from sqlalchemy import select, update
+from sqlalchemy import select, update, func
 from sqlalchemy.dialects.postgresql import insert
 
 from app.database.repositories.base import Base
 from app.database.models.chat.chat_member import ChatMemberOrm
-
-from app.core.exceptions.chat import ChatMemberNotFoundError
+from app.database.models.chat.chat import ChatOrm
+from app.database.models.common.user import UserOrm
 
 class ChatMemberRepository(Base):
     async def upsert(self, chat_id: int, user_id: int) -> ChatMemberOrm:
@@ -47,20 +47,32 @@ class ChatMemberRepository(Base):
         )
         return await self.session.scalar(stmt)
 
-    async def update_warnings(self, chat_id: int, user_id: int, warnings: int) -> ChatMemberOrm:
+    async def change_warnings(self, chat_id: int, user_id: int, delta: int) -> int:
         stmt = (
             update(ChatMemberOrm)
             .where(
                 ChatMemberOrm.chat_id == chat_id,
-                ChatMemberOrm.user_id == user_id
+                ChatMemberOrm.user_id == user_id,
             )
-            .values(warnings=warnings)
-            .returning(ChatMemberOrm)
+            .values(warnings=func.greatest(ChatMemberOrm.warnings + delta, 0))
+            .returning(ChatMemberOrm.warnings)
         )
 
-        member = await self.session.scalar(stmt)
+        return await self.session.scalar(stmt) or 0
 
-        if member is None:
-            raise ChatMemberNotFoundError(f"Chat member ({chat_id}, {user_id}) not found")
+    async def get_by_telegram_ids(
+        self,
+        chat_telegram_id: int,
+        user_telegram_id: int
+    ) -> ChatMemberOrm | None:
+        stmt = (
+            select(ChatMemberOrm)
+            .join(ChatOrm, ChatOrm.id == ChatMemberOrm.chat_id)
+            .join(UserOrm, UserOrm.id == ChatMemberOrm.user_id)
+            .where(
+                ChatOrm.telegram_id == chat_telegram_id,
+                UserOrm.telegram_id == user_telegram_id
+            )
+        )
 
-        return member
+        return await self.session.scalar(stmt)

@@ -1,3 +1,5 @@
+from html import escape
+
 from aiogram import Router
 from aiogram.types import Message
 from aiogram.filters import Command, CommandObject
@@ -8,9 +10,9 @@ from app.configs.settings import settings
 from app.containers import Container
 
 from app.core.enums.rp_commands import TypeRpCommand
-from app.types.services_result.rp_commands import RpCommandResult
+from app.types.services_result.chat import RpCommandResult
 
-from app.services.chat.rp_commands import RpCommandService
+from app.services.chat.common.rp_commands import RpCommandService
 
 from app.bot.middlewares.rp_command import RpPrivateMiddleware
 from app.bot.filters.rp_commands import NewRpCommandOnMedia, RpCommandFilter
@@ -179,9 +181,9 @@ async def role_play(
         return
 
     text = (
-        f"<b>{message.from_user.first_name}</b> "
-        f"{rp_command.action} "
-        f"<b>{target_name}</b>"
+        f"<b>{escape(message.from_user.first_name)}</b> "
+        f"{escape(rp_command.action)} "
+        f"<b>{escape(target_name)}</b>"
     )
 
     await _send_rp(

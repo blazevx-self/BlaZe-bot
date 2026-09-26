@@ -44,6 +44,13 @@ from app.services import (
     TransferService,
     BroadcastService,
     WikipediaService,
+    ChatBanService,
+    ChatKickService,
+    ChatMuteService,
+    ChatWarnService,
+    ChatHistoryService,
+    ReportService,
+    ListAdminsService,
 )
 
 session_context: ContextVar[AsyncSession] = ContextVar("session_context")
@@ -83,9 +90,47 @@ class Container(containers.DeclarativeContainer):
     broadcast_service = providers.Factory(BroadcastService, user_repo=user_repo, chat_repo=chat_repo, bot=bot)
 
     chat_service = providers.Factory(ChatService, chat_repo=chat_repo)
+    chat_ban_service = providers.Factory(
+        ChatBanService,
+        bot=bot,
+        user_repo=user_repo,
+        chat_repo=chat_repo,
+        moderator_action_repo=moderator_action_repo,
+    )
+    chat_kick_service = providers.Factory(
+        ChatKickService,
+        bot,
+        user_repo=user_repo,
+        chat_repo=chat_repo,
+        moderator_action_repo=moderator_action_repo
+    )
+    chat_mute_service = providers.Factory(
+        ChatMuteService,
+        bot=bot,
+        user_repo=user_repo,
+        chat_repo=chat_repo,
+        moderator_action_repo=moderator_action_repo
+    )
+    chat_warn_service = providers.Factory(
+        ChatWarnService,
+        bot=bot,
+        user_repo=user_repo,
+        chat_repo=chat_repo,
+        moderator_action_repo=moderator_action_repo,
+        chat_member_repo=chat_member_repo,
+    )
+    chat_history_service = providers.Factory(
+        ChatHistoryService,
+        bot=bot,
+        user_repo=user_repo,
+        chat_repo=chat_repo,
+        moderator_action_repo=moderator_action_repo,
+    )
+    report_service = providers.Factory(ReportService, bot=bot)
+    list_admins_service = providers.Factory(ListAdminsService, bot=bot)
 
     start_service = providers.Factory(StartService, user_repo=user_repo)
-    profile_service = providers.Factory(ProfileService)
+    profile_service = providers.Factory(ProfileService, bot=bot, chat_member_repo=chat_member_repo)
     rp_command_service = providers.Factory(RpCommandService, rp_repo=rp_repo)
     transfer_service = providers.Factory(TransferService, transfer_repo=transfer_repo, user_repo=user_repo)
 

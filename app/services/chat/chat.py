@@ -110,13 +110,13 @@ class ChatService:
         )
 
     async def get_rules(self, telegram_id: int) -> str | None:
-        chat = await self._get_chat(telegram_id=telegram_id)
-        return chat.rules
+        chat = await self.chat_repo.get_chat_by_telegram_id(telegram_id)
+        return chat.rules if chat else None
 
     async def get_welcome_message(self, telegram_id: int) -> str | None:
-        chat = await self._get_chat(telegram_id=telegram_id)
-        return chat.welcome_message
+        chat = await self.chat_repo.get_chat_by_telegram_id(telegram_id)
+        return chat.welcome_message if chat else None
 
     async def get_goodbye_message(self, telegram_id: int) -> str | None:
-        chat = await self._get_chat(telegram_id=telegram_id)
-        return chat.goodbye_message
+        chat = await self.chat_repo.get_chat_by_telegram_id(telegram_id)
+        return chat.goodbye_message if chat else None

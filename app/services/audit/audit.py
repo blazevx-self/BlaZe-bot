@@ -99,27 +99,26 @@ class AuditService:
             process_time=process_time,
         )
 
-        admin_id = settings.ADMIN_IDS
+        admin_ids = settings.ADMIN_IDS
 
-        if not bot or not admin_id:
+        if not bot or not admin_ids:
             return
 
         try:
             await notifier_service.notify_admin(
                 bot=bot,
-                admin_id=admin_id,
+                admin_ids=admin_ids,
                 user_info=user_info,
                 event_name=event_name,
                 process_time=process_time,
                 error=str(error),
                 traceback_text=traceback_text
             )
-        except Exception as notify_error:
+        except Exception:
             logger_service.log_error(
                 user_info="SYSTEM",
                 event_name="ADMIN NOTIFY FAILED",
                 process_time=0,
-                error=notify_error
             )
 
 audit_service = AuditService()

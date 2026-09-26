@@ -7,7 +7,7 @@ from dependency_injector.wiring import inject, Provide
 from app.containers import Container
 from app.core.exceptions.user import UserNotFoundError
 
-from app.services.admin.ban import BanService
+from app.services.admin.ban_bot import BanService
 from app.bot.filters.admin import AdminFilter
 
 router = Router()

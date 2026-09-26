@@ -44,7 +44,7 @@ class LotteryVideoGenerator:
     def _ease_out_cubic(t: float) -> float:
         return 1 - (1 - t) ** 3
 
-    def _compute_scroll(self, frame: int, total_scroll: float,) -> float:
+    def _compute_scroll(self, frame: int, total_scroll: float) -> float:
         norm = min(frame / self.spin_frames, 1.0)
 
         scroll_phase1 = total_scroll * 0.43
@@ -56,10 +56,6 @@ class LotteryVideoGenerator:
         local = (norm - self.deceleration_start) / (1 - self.deceleration_start)
 
         return scroll_phase1 + scroll_phase2 * self._ease_out_cubic(local)
-
-    @staticmethod
-    def _random_color() -> LotteryColor:
-        return random.choice(list(LOTTERY_COLORS))
 
     @staticmethod
     def _get_color(color: LotteryColor) -> tuple[int, int, int]:
@@ -169,8 +165,8 @@ class LotteryVideoGenerator:
         center_x = self.video_w // 2
         padding = self.circle_radius + 30
 
-        slot_left = (int((scroll - center_x - padding) / self.circle_spacing) - 1)
-        slot_right = (int((scroll + center_x + padding) / self.circle_spacing) + 1)
+        slot_left = int((scroll - center_x - padding) / self.circle_spacing) - 1
+        slot_right = int((scroll + center_x + padding) / self.circle_spacing) + 1
 
         for position in range(slot_left, slot_right + 1):
             cx = int(center_x + position * self.circle_spacing - scroll)
@@ -187,7 +183,7 @@ class LotteryVideoGenerator:
             color_rgb = self._get_color(color)
 
             distance = abs(cx - center_x)
-            max_distance = (self.video_w // 2 + self.circle_radius)
+            max_distance = self.video_w // 2 + self.circle_radius
 
             alpha = max(0.3, 1.0 - distance / max_distance * 0.7)
 
@@ -228,17 +224,17 @@ class LotteryVideoGenerator:
                 f"Неизвестный цвет лотереи: {winner_color!r}"
             )
 
-        seed = random.randint(0, 2 ** 31,)
-        start_scroll = (random.randint(50, 200) * self.circle_spacing)
+        seed = random.randint(0, 2 ** 31)
+        start_scroll = random.randint(50, 200) * self.circle_spacing
         extra_slots = random.randint(15, 30)
 
-        winner_position = (round(start_scroll / self.circle_spacing) + extra_slots)
+        winner_position = round(start_scroll / self.circle_spacing) + extra_slots
 
-        final_scroll = (winner_position * self.circle_spacing)
-        total_scroll = (final_scroll - start_scroll)
+        final_scroll = winner_position * self.circle_spacing
+        total_scroll = final_scroll - start_scroll
 
         lottery_logger.debug(
-            "Lottery animation started | winner=%s | "
+            "[LOTTERY] Animation started | winner=%s | "
             "winner_position=%d | total_scroll=%.1f",
             winner_color.value, winner_position, total_scroll
         )
@@ -246,7 +242,7 @@ class LotteryVideoGenerator:
         frames: list[np.ndarray] = []
 
         for frame in range(self.spin_frames):
-            scroll = (start_scroll + self._compute_scroll(frame, total_scroll))
+            scroll = start_scroll + self._compute_scroll(frame, total_scroll)
 
             frame_data = self._make_frame(
                 scroll=scroll,
@@ -277,15 +273,29 @@ class LotteryVideoGenerator:
             ffmpeg_params=["-pix_fmt", "yuv420p", "-crf", "23"],
         )
 
-        for frame_data in frames:
-            writer.append_data(frame_data)
+        try:
+            for frame in range(self.spin_frames):
+                scroll = start_scroll + self._compute_scroll(frame, total_scroll)
+                writer.append_data(self._make_frame(
+                    scroll, winner_color,
+                    winner_position, seed
+                )
+            )
 
-        writer.close()
+            final_frame = self._make_frame(
+                final_scroll, winner_color,
+                winner_position, seed
+            )
+
+            for _ in range(self.pause_frames):
+                writer.append_data(final_frame)
+        finally:
+            writer.close()
 
         data = buffer.getvalue()
 
         lottery_logger.info(
-            "Lottery animation generated | winner=%s | "
+            "[LOTTERY] Animation generated | winner=%s | "
             "frames=%d | size=%.1f KB",
             winner_color.value, len(frames), len(data) / 1024,
         )

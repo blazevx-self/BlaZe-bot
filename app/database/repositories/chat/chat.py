@@ -89,3 +89,13 @@ class ChatRepository(Base):
     async def get_all(self) -> list[ChatOrm]:
         result = await self.session.scalars(select(ChatOrm))
         return list(result)
+
+    async def migrate(self, old_telegram_id: int, new_telegram_id: int) -> None:
+        if await self.get_chat_by_telegram_id(new_telegram_id):
+            return
+
+        await self.session.execute(
+            update(ChatOrm)
+            .where(ChatOrm.telegram_id == old_telegram_id)
+            .values(telegram_id=new_telegram_id)
+        )

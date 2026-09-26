@@ -7,3 +7,5 @@ LOTTERY_COLORS = {
     LotteryColor.WHITE: (230, 230, 230),
     LotteryColor.YELLOW: (230, 200, 30),
 }
+
+DEP_PATTERN = r"^депнуть\s+(\S+)\s+(\d+)$"

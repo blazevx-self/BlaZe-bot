@@ -1,7 +1,7 @@
 from html import escape
 
-from aiogram import Router
-from aiogram.types import ChatMemberUpdated, LinkPreviewOptions
+from aiogram import Router, F
+from aiogram.types import ChatMemberUpdated, LinkPreviewOptions, Message
 from aiogram.filters.chat_member_updated import (
     ChatMemberUpdatedFilter,
     IS_MEMBER, IS_NOT_MEMBER,
@@ -13,7 +13,6 @@ from dependency_injector.wiring import inject, Provide
 from app.containers import Container
 from app.configs.game import game_cfg
 
-from app.database.repositories import ChatMemberRepository
 from app.database.repositories.chat.chat import ChatRepository
 
 from app.services.chat.chat import ChatService
@@ -70,6 +69,21 @@ async def bot_added(
             f"[BOT] Welcome message failed | chat_id={event.chat.id} | "
             f"chat_username={event.chat.username} | error={e}"
         )
+
+@router.message(F.migrate_to_chat_id)
+@inject
+async def chat_migrated(
+    message: Message,
+    chat_repo: ChatRepository = Provide[Container.chat_repo]
+) -> None:
+    await chat_repo.migrate(
+        old_telegram_id=message.chat.id,
+        new_telegram_id=message.migrate_to_chat_id
+    )
+
+    bot_logger.info(
+        f"[BOT] Chat migrated | old_id={message.chat.id} | new_id={message.migrate_to_chat_id}"
+    )
 
 @router.my_chat_member(ChatMemberUpdatedFilter(IS_MEMBER >> IS_NOT_MEMBER))
 async def bot_removed(event: ChatMemberUpdated) -> None:

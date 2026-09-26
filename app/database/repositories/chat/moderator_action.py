@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta
-from sqlalchemy import select
+
+from sqlalchemy import select, func
 
 from app.database.repositories.base import Base
 from app.database.models.chat.moderator_action import ModeratorActionOrm
+from app.database.models.common.user import UserOrm
 
 from app.core.enums.moderator_action import ModerationActionType
 
@@ -18,7 +20,7 @@ class ModeratorActionRepository(Base):
     ) -> ModeratorActionOrm:
         new_action = ModeratorActionOrm(
             chat_id=chat_id,
-            target_user_at=target_user_id,
+            target_user_id=target_user_id,
             action=action,
             reason=reason,
             moderator_id=moderator_id,
@@ -34,29 +36,26 @@ class ModeratorActionRepository(Base):
         self,
         chat_id: int,
         user_id: int,
-        within_hours: int = 24
+        within_minutes: int = 10
     ) -> int:
-        cutoff_time = datetime.now() - timedelta(hours=within_hours)
-
-        stmt = select(ModeratorActionOrm).where(
+        stmt = select(func.count()).where(
             ModeratorActionOrm.chat_id == chat_id,
             ModeratorActionOrm.target_user_id == user_id,
             ModeratorActionOrm.action == ModerationActionType.WARN,
-            ModeratorActionOrm.created_at >= cutoff_time,
+            ModeratorActionOrm.created_at >= func.now() - timedelta(minutes=within_minutes),
         )
 
-        result = await self.session.scalars(stmt)
-
-        return len(result.all())
+        return await self.session.scalar(stmt) or 0
 
     async def get_user_history(
         self,
         chat_id: int,
         user_id: int,
-        limit: int = 20
-    ) -> list[ModeratorActionOrm]:
+        limit: int = 10
+    ) -> list[tuple[ModeratorActionOrm, str | None]]:
         stmt = (
-            select(ModeratorActionOrm)
+            select(ModeratorActionOrm, UserOrm.name)
+            .outerjoin(UserOrm, UserOrm.id == ModeratorActionOrm.moderator_id)
             .where(
                 ModeratorActionOrm.chat_id == chat_id,
                 ModeratorActionOrm.target_user_id == user_id
@@ -65,9 +64,9 @@ class ModeratorActionRepository(Base):
             .limit(limit)
         )
 
-        result = await self.session.scalars(stmt)
+        result = await self.session.execute(stmt)
 
-        return list(result)
+        return [(action, name) for action, name in result.all()]
 
     async def get_active_restriction(
         self,

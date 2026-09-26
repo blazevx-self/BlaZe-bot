@@ -1,5 +1,5 @@
 from app.core.enums.rp_commands import TypeRpCommand
-from app.types.services_result.rp_commands import RpCommandResult
+from app.types.services_result.chat import RpCommandResult
 
 from app.database.repositories.chat.rp_commands import RpCommandRepository
 

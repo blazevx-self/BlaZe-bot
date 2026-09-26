@@ -3,7 +3,9 @@ from datetime import datetime, date
 
 @dataclass(slots=True)
 class UserData:
+    id: int
     telegram_id: int
+
     name: str
 
     created_at: datetime

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from app.types.time_components import TimeComponents
 
@@ -63,3 +63,16 @@ def format_duration(total_seconds: int, show_seconds: bool = True) -> str:
 def days_since_registration(created_at: datetime) -> int:
     """Возвращает количество дней, прошедших с момента регистрации пользователя."""
     return (datetime.now().date() - created_at.date()).days
+
+def parse_duration(value: str | None) -> timedelta | None:
+    """'7d', '24h', '30m' -> timedelta. Всё остальное -> None (перманентно)."""
+
+    if not value:
+        return None
+
+    units = {"m": "minutes", "h": "hours", "d": "days"}
+
+    if len(value) >= 2 and value[-1] in units and value[:-1].isdigit():
+        return timedelta(**{units[value[-1]]: int(value[:-1])})
+
+    return None

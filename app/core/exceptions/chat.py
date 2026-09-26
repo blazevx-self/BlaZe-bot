@@ -12,3 +12,9 @@ class ChatStateError(ChatError):
 
 class ChatMemberNotFoundError(ChatError):
     pass
+
+class ModerationError(ChatError):
+    pass
+
+class ReportError(ChatError):
+    pass
