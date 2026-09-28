@@ -2,7 +2,9 @@ import time
 import traceback
 
 from typing import Any, Callable, Awaitable, Dict
+
 from aiogram.types import TelegramObject, CallbackQuery, Message
+from aiogram.dispatcher.flags import get_flag
 from aiogram import BaseMiddleware
 
 from app.services.audit.audit import audit_service
@@ -39,7 +41,9 @@ class LoggingMiddleware(BaseMiddleware):
                 audit_service.handle_message(
                     user_info=user_info,
                     message=event,
-                    process_time=process_time
+                    process_time=process_time,
+                    passive=bool(get_flag(data, "passive")),
+                    ai=bool(get_flag(data, "ai"))
                 )
 
             elif isinstance(event, CallbackQuery):

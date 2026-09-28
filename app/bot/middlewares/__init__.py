@@ -6,6 +6,7 @@ from .antiflood import AntifloodMiddleware
 from .antispam import AntiSpamGhoulMiddleware
 from .antispam_for_chats import AntiSpamForChatsMiddleware
 from .message_counter import MessageCounterMiddleware
+from .link_filter import LinkFilterMiddleware
 
 __all__ = [
     "BanMiddleware",
@@ -15,5 +16,6 @@ __all__ = [
     "AntifloodMiddleware",
     "AntiSpamGhoulMiddleware",
     "AntiSpamForChatsMiddleware",
-    "MessageCounterMiddleware"
+    "MessageCounterMiddleware",
+    "LinkFilterMiddleware",
 ]

@@ -4,10 +4,12 @@ from aiogram.types import Message
 router = Router()
 router.message.filter(F.chat.type.in_({"group", "supergroup"}))
 
-@router.message()
+@router.message(flags={"passive": True})
 async def catch_all(message: Message) -> None:
     """Ничего не делает.
 
     Нужен, чтобы inner-middleware (синхронизация, счётчик сообщений)
     срабатывали и на обычные сообщения в группах, а не только на команды.
+
+    Флаг passive: логирование и антифлуд такие сообщения пропускают.
     """

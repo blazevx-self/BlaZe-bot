@@ -29,6 +29,8 @@ from .chat.moderator.warn import ChatWarnService
 from .chat.moderator.history_moderator import ChatHistoryService
 from .chat.common.report import ReportService
 from .chat.common.list_admins import ListAdminsService
+from .chat.common.ai import AIChatService
+from .chat.common.fun_commands import FunService
 
 __all__ = [
     "BanService",
@@ -62,4 +64,6 @@ __all__ = [
     "ChatHistoryService",
     "ReportService",
     "ListAdminsService",
+    "AIChatService",
+    "FunService"
 ]

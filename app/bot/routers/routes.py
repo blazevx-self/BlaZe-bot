@@ -13,7 +13,7 @@ from app.bot.routers.chat.moderator import (
     ban_chat, kick, mute, warn, history_moderator
 )
 from app.bot.routers.chat.chat_member_update import new_chat_member, left_chat_member
-from app.bot.routers.chat.common import rp_commands, report, list_admins
+from app.bot.routers.chat.common import rp_commands, report, list_admins, ai, fun_commands
 
 from app.bot.routers.admin import ban_bot, modify_balance, player_lookup, field_edit, reset, broadcast
 
@@ -63,6 +63,8 @@ all_routers = (
     rp_commands.router,
     report.router,
     list_admins.router,
+    fun_commands.router,
+    ai.router,
 
     error.router,
 

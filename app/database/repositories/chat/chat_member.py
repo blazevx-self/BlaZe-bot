@@ -2,9 +2,12 @@ from sqlalchemy import select, update, func
 from sqlalchemy.dialects.postgresql import insert
 
 from app.database.repositories.base import Base
+
 from app.database.models.chat.chat_member import ChatMemberOrm
 from app.database.models.chat.chat import ChatOrm
 from app.database.models.common.user import UserOrm
+
+from app.types.entities.user import UserData
 
 class ChatMemberRepository(Base):
     async def upsert(self, chat_id: int, user_id: int) -> ChatMemberOrm:
@@ -89,3 +92,15 @@ class ChatMemberRepository(Base):
             )
             .values(messages_count=ChatMemberOrm.messages_count + 1)
         )
+
+    async def get_random_member(self, chat_telegram_id: int) -> UserOrm | None:
+        stmt = (
+            select(UserOrm)
+            .join(ChatMemberOrm, ChatMemberOrm.user_id == UserOrm.id)
+            .join(ChatOrm, ChatOrm.id == ChatMemberOrm.chat_id)
+            .where(ChatOrm.telegram_id == chat_telegram_id)
+            .order_by(func.random())
+            .limit(1)
+        )
+
+        return await self.session.scalar(stmt)

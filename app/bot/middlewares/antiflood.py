@@ -5,6 +5,7 @@ from cachetools import TTLCache
 
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
+from aiogram.dispatcher.flags import get_flag
 
 from app.utils.logger import security_logger
 
@@ -32,6 +33,10 @@ class AntifloodMiddleware(BaseMiddleware):
             data: Dict[str, Any]
     ) -> Any:
         """Контролирует частоту входящих событий пользователя."""
+
+        # обычные сообщения в группе не считаем - там работает AntiSpamForChats
+        if get_flag(data, "passive"):
+            return await handler(event, data)
 
         from_user = getattr(event, 'from_user', None)
 

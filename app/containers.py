@@ -5,6 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from dependency_injector import providers, containers
 
+from app.configs.settings import settings
+
 from app.database.repositories import (
     ChatRepository,
     GhoulRepository,
@@ -51,6 +53,8 @@ from app.services import (
     ChatHistoryService,
     ReportService,
     ListAdminsService,
+    AIChatService,
+    FunService,
 )
 
 session_context: ContextVar[AsyncSession] = ContextVar("session_context")
@@ -128,6 +132,12 @@ class Container(containers.DeclarativeContainer):
     )
     report_service = providers.Factory(ReportService, bot=bot)
     list_admins_service = providers.Factory(ListAdminsService, bot=bot)
+    ai_chat_service = providers.Singleton(
+        AIChatService,
+        api_key = settings.API_KEY,
+        model = settings.AI_MODEL
+    )
+    fun_command_service = providers.Factory(FunService, chat_member_repo=chat_member_repo)
 
     start_service = providers.Factory(StartService, user_repo=user_repo)
     profile_service = providers.Factory(ProfileService, bot=bot, chat_member_repo=chat_member_repo)

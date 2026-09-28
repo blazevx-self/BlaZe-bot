@@ -34,19 +34,28 @@ class AuditService:
         )
 
     @staticmethod
-    def handle_message(user_info: str, message: Message, process_time: float) -> None:
-        text = message.text or "NOT TEXT"
-        chat_type = message.chat.type
-
-        if AuditService._is_wordle_guess(message):
+    def handle_message(
+        user_info: str,
+        message: Message,
+        process_time: float,
+        passive: bool = False,
+        ai: bool = False
+    ) -> None:
+        if passive or AuditService._is_wordle_guess(message):
             return
+
+        text = "[AI REPLY]" if ai else (message.text or "NOT TEXT")
 
         logger_service.log_command(
             user_info=user_info,
-            chat_type=chat_type,
+            chat_type=message.chat.type,
             command=text,
             process_time=process_time
         )
+
+        # ответ нейросети всегда идёт 1-3 секунды, это не «медленный запрос»
+        if ai:
+            return
 
         security_service.log_slow_request(
             user_info=user_info,

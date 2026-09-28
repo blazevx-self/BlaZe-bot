@@ -12,6 +12,10 @@ class Settings(BaseSettings):
     BACKUP_DIR: str = Field(default=...)
     BACKUP_CHANNEL_ID: int = Field(default=...)
 
+    API_KEY: SecretStr | None = Field(default=None)
+    AI_BASE_URL: str = Field(default="https://api.deepseek.com")
+    AI_MODEL: str = Field(default="deepseek-chat")
+
     model_config = SettingsConfigDict(
         env_file='.env',
         env_file_encoding='utf-8',

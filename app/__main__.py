@@ -23,7 +23,8 @@ from app.bot.middlewares import (
     DatabaseMiddleware,
     SyncEntitiesMiddleware,
     AntiSpamForChatsMiddleware,
-    MessageCounterMiddleware
+    MessageCounterMiddleware,
+    LinkFilterMiddleware,
 )
 
 from app.bot.routers.routes import all_routers
@@ -34,7 +35,7 @@ from app.utils.logger import system_logger
 from app.utils.logger import database_logger
 
 async def on_startup():
-    system_logger.info("[SYSTEM] Bot started | version=1.1.1 | py=%s", sys.version.split()[0])
+    system_logger.info("[SYSTEM] Bot started | version=1.3.8 | py=%s", sys.version.split()[0])
 
 async def on_shutdown():
     system_logger.info("[SYSTEM] Bot stopped")
@@ -43,6 +44,7 @@ async def setup_middlewares(dp: Dispatcher) -> None:
     dp.update.middleware(DatabaseMiddleware(session_factory=session_factory))
 
     dp.message.outer_middleware(AntiSpamForChatsMiddleware())
+    dp.message.outer_middleware(LinkFilterMiddleware())
 
     dp.message.middleware(SyncEntitiesMiddleware())
     dp.callback_query.middleware(SyncEntitiesMiddleware())
@@ -110,6 +112,7 @@ async def main():
 
     finally:
         await bot.session.close()
+        await container.ai_chat_service().close()
 
 if __name__ == '__main__':
     try:
