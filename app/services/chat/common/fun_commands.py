@@ -3,6 +3,7 @@ import random
 
 from datetime import date, timedelta
 
+from app.configs.yaml_loader import cfg
 from app.core.constants.chat.fun_command import (
     OPTIONS_SEPARATOR,
     MAX_OPTIONS,
@@ -44,6 +45,17 @@ class FunService:
                 break
 
         return list(members.values())
+
+    @staticmethod
+    def phrase(key: str, fallback: str, **kwargs) -> str:
+        """Случайная фраза из fun.<key> в yaml. Нет ключа — fallback."""
+
+        phrases = cfg.get('message', {}).get('fun', {}).get(key) or [fallback]
+
+        if not phrases or not isinstance(phrases, list):
+            phrases = [fallback]
+
+        return random.choice(phrases).format(**kwargs)
 
     @staticmethod
     def pick_option(options_text: str) -> str | None:

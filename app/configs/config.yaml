@@ -396,3 +396,60 @@ message:
     top_kagune:
       top_1_status:
         "\n<tg-emoji emoji-id='5442804822048780010'>😫</tg-emoji> <i>Гуль по имени {name} является самым сильным среди всех.</i>"
+
+  fun:
+    only_group:
+      - "Эта команда работает только в группе."
+      - "Тут только ты и я. Иди в группу, там выбирать есть из кого."
+      - "В личке выбирать не из кого, гений."
+    nobody:
+      - "Пока некого выбирать — в чате ещё никто не писал."
+      - "Выбирать не из кого. Одиночество, блять."
+    pick_member:
+      - "Я выбираю {name}"
+      - "Барабан крутится… {name}!"
+      - "Сегодня крайний — {name}"
+      - "Жребий пал на {name}"
+    pick:
+      - "Я выбираю: {choice}"
+      - "Очевидно же — {choice}"
+      - "Тут без вариантов: {choice}"
+      - "Бросил кости, выпало: {choice}"
+    pick_too_few:
+      - "Дай хотя бы два варианта: <i>бот выбери пицца или суши</i>"
+      - "Из одного варианта выбирать? Гений. Пример: <i>бот выбери пицца или суши</i>"
+    who:
+      - "{question} — {name}"
+      - "Инфа сотка: {question} — {name}"
+      - "Все знают, что {question} — {name}"
+      - "Тут и думать нечего: {question} — {name}"
+    couple:
+      - "Пара: {first} + {second}"
+      - "Совет да любовь: {first} + {second}"
+      - "Судьба свела: {first} и {second}"
+    couple_too_few:
+      - "Для пары нужно хотя бы два участника."
+    top:
+      - "Топ {title}:\n{list}"
+      - "Официальный рейтинг {title}:\n{list}"
+    chance:
+      - "Вероятность, что {question} — {percent}"
+      - "Шанс, что {question} — {percent}"
+      - "Посчитал: {question} — {percent}"
+    how_much:
+      - "{name} {quality} на {percent}"
+      - "По моим данным, {name} {quality} на {percent}"
+    rate:
+      - "Оцениваю «{subject}» на {score}"
+      - "«{subject}»? Твёрдые {score}"
+      - "Моя оценка «{subject}» — {score}"
+    count:
+      - "Сколько {question} — {value}"
+      - "Посчитал: {question} — {value}"
+    when:
+      - "Когда {question} — {date}"
+      - "{question}? Жди {date}"
+      - "Звёзды говорят: {question} — {date}"
+    coin:
+      - "{side}"
+      - "Подкинул… {side}"

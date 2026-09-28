@@ -48,7 +48,7 @@ async def _only_group(message: Message) -> bool:
 
     await message.reply(
         "<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
-        "Эта команда работает только в группе."
+        + FunService.phrase("only_group", "Эта команда работает только в группе.")
     )
     return False
 
@@ -68,7 +68,7 @@ async def pick_member(
     if member:
         await message.reply(
             "<tg-emoji emoji-id=\"5834766346390344283\">👉</tg-emoji> "
-            f"Я выбираю {_name(member)}"
+            + fun_command_service.phrase("pick_member", "Я выбираю {name}", name=_name(member))
         )
 
 @router.message(F.text.regexp(PICK_PATTERN).as_("match"))
@@ -83,13 +83,16 @@ async def pick_option(
     if not choice:
         await message.reply(
             "<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
-            "Дай хотя бы два варианта: <i>бот выбери пицца или суши</i>"
+            + fun_command_service.phrase("pick_too_few", "Дай хотя бы два варианта: <i>бот выбери пицца или суши</i>")
         )
         return
 
     await message.reply(
         "<tg-emoji emoji-id=\"5834766346390344283\">👉</tg-emoji> "
-        f"Я выбираю: <b>{escape(truncate_text(choice, MAX_TEXT_LENGTH))}</b>"
+        + fun_command_service.phrase(
+            "pick", "Я выбираю: {choice}",
+            choice=f"<b>{escape(truncate_text(choice, MAX_TEXT_LENGTH))}</b>",
+        )
     )
 
 @router.message(F.text.regexp(WHO_PATTERN).as_("match"))
@@ -105,10 +108,14 @@ async def who(
     member = await fun_command_service.random_member(message.chat.id)
 
     if member:
-        question = _text(match, "question")
+        text = fun_command_service.phrase(
+            "who", "{question} — {name}",
+            question=_text(match, "question"), name=_name(member),
+        )
+
         await message.reply(
             "<tg-emoji emoji-id=\"5834766346390344283\">👉</tg-emoji> "
-            f"{question[:1].upper()}{question[1:]} — {_name(member)}"
+            f"{text[:1].upper()}{text[1:]}"
         )
 
 @router.message(F.text.regexp(COUPLE_PATTERN))
@@ -123,12 +130,18 @@ async def couple(
     pair = await fun_command_service.random_members(message.chat.id, 2)
 
     if len(pair) < 2:
-        await message.reply("Для пары нужно хотя бы два участника.")
+        await message.reply(
+            fun_command_service.phrase(
+                "couple_too_few", "Для пары нужно хотя бы два участника.")
+        )
         return
 
     await message.reply(
         "<tg-emoji emoji-id=\"5834956020736069888\">💞</tg-emoji> "
-        f"Пара: {_name(pair[0])} + {_name(pair[1])}"
+        + fun_command_service.phrase(
+            "couple", "Пара: {first} + {second}",
+            first=_name(pair[0]), second=_name(pair[1]),
+        )
     )
 
 @router.message(F.text.regexp(TOP_PATTERN).as_("match"))
@@ -136,20 +149,21 @@ async def couple(
 async def top(
     message: Message,
     match: re.Match[str],
-    fun_service: FunService = Provide[Container.fun_command_service]
+    fun_command_service: FunService = Provide[Container.fun_command_service]
 ):
     if not await _only_group(message):
         return
 
-    members = await fun_service.random_members(message.chat.id, TOP_SIZE)
+    members = await fun_command_service.random_members(message.chat.id, TOP_SIZE)
 
     if not members:
         return
 
     lines = "\n".join(f"{i}. {_name(member)}" for i, member in enumerate(members, start=1))
+
     await message.reply(
         "<tg-emoji emoji-id=\"5386372946098939555\">🏆</tg-emoji> "
-        f"Топ {_text(match, 'title')}:\n{lines}"
+        + fun_command_service.phrase("top", "Топ {title}:\n{list}", title=_text(match, "title"), list=lines)
     )
 
 @router.message(F.text.regexp(CHANCE_PATTERN).as_("match"))
@@ -163,7 +177,10 @@ async def chance(
 
     await message.reply(
         "<tg-emoji emoji-id=\"5936143551854285132\">📊</tg-emoji> "
-        f"Вероятность, что {_text(match, 'question')} — <b>{percent}%</b>"
+        + fun_command_service.phrase(
+            "chance", "Вероятность, что {question} — {percent}",
+            question=_text(match, "question"), percent=f"<b>{percent}%</b>",
+        )
     )
 
 @router.message(F.text.regexp(HOW_MUCH_PATTERN).as_("match"))
@@ -181,7 +198,10 @@ async def how_much(
 
     await message.reply(
         "<tg-emoji emoji-id=\"5875012827063783367\">📈</tg-emoji> "
-        f"<b>{name}</b> {_text(match, 'quality')} на <b>{percent}%</b>"
+        + fun_command_service.phrase(
+            "how_much", "{name} {quality} на {percent}",
+            name=f"<b>{name}</b>", quality=_text(match, "quality"), percent=f"<b>{percent}%</b>",
+        )
     )
 
 @router.message(F.text.regexp(RATE_PATTERN).as_("match"))
@@ -192,9 +212,13 @@ async def rate(
     fun_command_service: FunService = Provide[Container.fun_command_service]
 ):
     score = fun_command_service.rate(message.chat.id, match.group("subject"))
+
     await message.reply(
         "<tg-emoji emoji-id=\"5874969477958864343\">⭐️</tg-emoji> "
-        f"Оцениваю «{_text(match, 'subject')}» на <b>{score}/10</b>"
+        + fun_command_service.phrase(
+            "rate", "Оцениваю «{subject}» на {score}",
+            subject=_text(match, "subject"), score=f"<b>{score}/10</b>",
+        )
     )
 
 @router.message(F.text.regexp(COUNT_PATTERN).as_("match"))
@@ -205,9 +229,13 @@ async def count(
     fun_command_service: FunService = Provide[Container.fun_command_service]
 ):
     value = fun_command_service.count(message.chat.id, match.group("question"))
+
     await message.reply(
         "<tg-emoji emoji-id=\"5877341966353567513\">🔢</tg-emoji> "
-        f"Сколько {_text(match, 'question')} — <b>{value}</b>"
+        + fun_command_service.phrase(
+            "count", "Сколько {question} — {value}",
+            question=_text(match, "question"), value=f"<b>{value}</b>",
+        )
     )
 
 @router.message(F.text.regexp(WHEN_PATTERN).as_("match"))
@@ -218,9 +246,15 @@ async def when(
     fun_command_service: FunService = Provide[Container.fun_command_service]
 ):
     day = fun_command_service.when(message.chat.id, match.group("question"))
+
+    text = fun_command_service.phrase(
+        "when", "Когда {question} — {date}",
+        question=_text(match, "question"), date=f"<b>{day:%d.%m.%Y}</b>",
+    )
+
     await message.reply(
         "<tg-emoji emoji-id=\"5891100675042974129\">📅</tg-emoji> "
-        f"Когда {_text(match, 'question')} — <b>{day:%d.%m.%Y}</b>"
+        f"{text[:1].upper()}{text[1:]}"
     )
 
 @router.message(F.text.regexp(NUMBER_PATTERN).as_("match"))
@@ -230,9 +264,11 @@ async def number(message: Message, match: re.Match[str]):
 
 @router.message(F.text.regexp(COIN_PATTERN))
 async def coin(message: Message):
+    side = f"<b>{random.choice(('Орёл', 'Решка'))}</b>"
+
     await message.reply(
         "<tg-emoji emoji-id=\"5778613750688911681\">🪙</tg-emoji> "
-        f"<b>{random.choice(('Орёл', 'Решка'))}</b>"
+        + FunService.phrase("coin", "{side}", side=side)
     )
 
 @router.message(F.text.regexp(DICE_PATTERN))
