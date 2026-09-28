@@ -6,9 +6,10 @@ PICK_MEMBER_PATTERN = re.compile(rf"{BOT_PREFIX}(?:выбери|выбирай)\
 PICK_PATTERN = re.compile(rf"{BOT_PREFIX}(?:выбери|выбирай)\s+(?P<options>.+)$", re.IGNORECASE | re.DOTALL)
 WHO_PATTERN = re.compile(rf"{BOT_PREFIX}кто\s+(?P<question>.+?)\??$", re.IGNORECASE | re.DOTALL)
 CHANCE_PATTERN = re.compile(
-    rf"{BOT_PREFIX}(?:вероятность|шанс)\s+(?:что\s+)?(?P<question>.+?)\??$",
+    rf"{BOT_PREFIX}(?:вероятность|шанс)\s+(?:того\s+)?(?:что\s+)?(?P<question>.+?)\??$",
     re.IGNORECASE | re.DOTALL,
 )
+
 RATE_PATTERN = re.compile(rf"{BOT_PREFIX}оцени\s+(?P<subject>.+?)\??$", re.IGNORECASE | re.DOTALL)
 WHEN_PATTERN = re.compile(rf"{BOT_PREFIX}когда\s+(?P<question>.+?)\??$", re.IGNORECASE | re.DOTALL)
 NUMBER_PATTERN = re.compile(rf"{BOT_PREFIX}число\s+(?P<low>-?\d+)\s+(?P<high>-?\d+)\s*$", re.IGNORECASE)

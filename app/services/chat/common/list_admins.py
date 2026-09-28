@@ -34,7 +34,6 @@ class ListAdminsService:
 
         return name
 
-
     def fmt_admins(
         self,
         owner: ChatMemberOwner | None,
