@@ -111,7 +111,7 @@ class BanService:
             f"Пользователь <code>{result.user.telegram_id}</code> "
             f"({escape(truncate_text(result.user.name))}) <b>заблокирован {until}.</b>\n\n"
             "<tg-emoji emoji-id=\"5778299625370817409\">📝</tg-emoji> "
-            f"<b>Причина:</b> <i>{escape(result.reason) or 'Не указана'}</i>"
+            f"<b>Причина:</b> <i>{escape(result.reason or 'Не указана')}</i>"
         )
 
     @staticmethod
