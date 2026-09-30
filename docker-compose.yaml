@@ -72,6 +72,15 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
 
+    volumes:
+      - ./logs:/app/logs
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
+
     depends_on:
       postgres:
         condition: service_healthy
