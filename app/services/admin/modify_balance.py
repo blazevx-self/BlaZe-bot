@@ -39,13 +39,15 @@ class ModifyBalanceService:
                 f"Превышен лимит суммы операции ({format_num(MAX_AMOUNT)} BC)."
             )
 
-        if amount < 0:
+        user = await self._resolve_user(query)
+
+        if user.money + amount < 0:
             raise ValueError(
                 "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
-                "Сумма операции не может быть меньше 0."
+                f"Нельзя списать больше, чем есть на балансе "
+                f"({format_num(user.money)} BC)."
             )
 
-        user = await self._resolve_user(query)
         balance = await self.user_repo.change_money(telegram_id=user.telegram_id, amount=amount)
 
         admin_logger.info(
@@ -66,7 +68,7 @@ class ModifyBalanceService:
     def fmt_operation_result(result: ModifyBalanceResult) -> str:
         action = "начислено" if result.amount > 0 else "списано"
         return (
-            "<tg-emoji emoji-id=\"5260416304224936047\">✅</tg-emoji>"
+            "<tg-emoji emoji-id=\"5260416304224936047\">✅</tg-emoji> "
             f"Пользователю <code>{result.user.telegram_id}</code> "
             f"({escape(truncate_text(result.user.name))}) {action} "
             f"<b>{format_num(abs(result.amount))} BlaZeCoin.</b>"
