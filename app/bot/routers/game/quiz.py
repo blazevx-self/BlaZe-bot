@@ -4,6 +4,7 @@ from html import escape
 from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery
+from aiogram.exceptions import TelegramBadRequest
 
 from dependency_injector.wiring import inject, Provide
 
@@ -18,6 +19,13 @@ from app.bot.filters.owner import OwnerCallbackFilter
 
 from app.bot.keyboards.game.quiz import get_quiz_again_kb
 from app.bot.keyboards.game.quiz import get_quiz_keyboard
+
+async def _safe_edit(message: Message, **kwargs) -> None:
+    try:
+        await message.edit_text(**kwargs)
+    except TelegramBadRequest as e:
+        if "message is not modified" not in str(e):
+            raise
 
 async def _send_question_ui(message_or_call, q, left, user_id):
     markup = get_quiz_keyboard(
@@ -34,7 +42,7 @@ async def _send_question_ui(message_or_call, q, left, user_id):
     )
 
     if isinstance(message_or_call, CallbackQuery):
-        await message_or_call.message.edit_text(text=text, reply_markup=markup)
+        await _safe_edit(message_or_call.message, text=text, reply_markup=markup)
     else:
         await message_or_call.reply(text=text, reply_markup=markup)
 
@@ -79,6 +87,11 @@ async def quiz_handler(
     question = await quiz_service.quiz_repo.get_question_by_id(question_id)
 
     options = json.loads(question.options)
+
+    if not 0 <= option_index < len(options):
+        await callback.answer("🔄 Вопрос изменился, начни заново.", show_alert=False)
+        return
+
     user_choice = options[option_index]
 
     result = await quiz_service.quiz_answer(
@@ -97,7 +110,7 @@ async def quiz_handler(
 
         return
 
-    await callback.message.edit_text(text=result.text, reply_markup=get_quiz_again_kb(user.telegram_id))
+    await _safe_edit(callback.message, text=result.text, reply_markup=get_quiz_again_kb(user.telegram_id))
     await callback.answer()
 
 @router.callback_query(F.data.startswith("quiz_again_"), OwnerCallbackFilter())
