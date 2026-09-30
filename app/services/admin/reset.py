@@ -13,7 +13,7 @@ class ResetService:
         self.user_repo = user_repo
         self.ghoul_repo = ghoul_repo
 
-    async def _resolve_user(self, query: str | int) -> UserData:
+    async def resolve_user(self, query: str | int) -> UserData:
         user = await self.user_repo.resolve(query)
 
         if not user:
@@ -25,7 +25,7 @@ class ResetService:
         return user
 
     async def reset_ghoul(self, query: str | int, admin_id: int) -> ResetResult:
-        user = await self._resolve_user(query)
+        user = await self.resolve_user(query)
 
         ghoul_deleted = await self.ghoul_repo.delete(user.telegram_id)
 
@@ -43,7 +43,7 @@ class ResetService:
         )
 
     async def reset_user(self, query: str | int, admin_id: int) -> ResetResult:
-        user = await self._resolve_user(query)
+        user = await self.resolve_user(query)
 
         ghoul_deleted = await self.ghoul_repo.delete(user.telegram_id)
         user_deleted = await self.user_repo.delete(user.telegram_id)
