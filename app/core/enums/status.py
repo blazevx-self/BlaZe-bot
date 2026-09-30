@@ -23,3 +23,5 @@ class ResultStatus(StrEnum):
     INVALID_STAT="invalid_stat"
     INVALID_AMOUNT="invalid_amount"
     MAXED="maxed"
+
+    ALREADY_ANSWERED = "already_answered"

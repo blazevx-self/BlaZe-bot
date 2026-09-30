@@ -93,3 +93,11 @@ class QuizRepository(Base):
             UserQuizHistoryOrm.quiz_date < date.today()
         )
         await self.session.execute(stmt)
+
+    async def is_answered_today(self, telegram_id: int, question_id: int) -> bool:
+        stmt = select(UserQuizHistoryOrm.id).where(
+            UserQuizHistoryOrm.telegram_id == telegram_id,
+            UserQuizHistoryOrm.question_id == question_id,
+            UserQuizHistoryOrm.quiz_date == date.today()
+        )
+        return await self.session.scalar(stmt) is not None

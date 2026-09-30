@@ -119,6 +119,14 @@ async def quiz_handler(
         await callback.answer("💬 Лимит вопросов исчерпан.", show_alert=False)
         return
 
+    if result.status == ResultStatus.ALREADY_ANSWERED:
+        await callback.answer("✅ Ты уже ответил на этот вопрос.", show_alert=False)
+        return
+
+    if result.status == ResultStatus.ERROR:
+        await callback.answer("❌ Этот вопрос больше недоступен.", show_alert=False)
+        return
+
     if await _safe_edit(
             callback,
             text=result.text,

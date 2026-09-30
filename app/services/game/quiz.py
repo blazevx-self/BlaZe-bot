@@ -86,6 +86,9 @@ class QuizService:
             quiz_logger.error(f"[QUIZ] Question not found | id={question_id}")
             return QuizAnswerResult(status=ResultStatus.ERROR)
 
+        if await self.quiz_repo.is_answered_today(user_id, question_id):
+            return QuizAnswerResult(status=ResultStatus.ALREADY_ANSWERED)
+
         is_correct = (
             question.correct.strip().lower() == user_choice.strip().lower()
         )
