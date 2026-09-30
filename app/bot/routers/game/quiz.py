@@ -4,7 +4,7 @@ from html import escape
 from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery
-from aiogram.exceptions import TelegramBadRequest
+from aiogram.exceptions import TelegramBadRequest, TelegramRetryAfter
 
 from dependency_injector.wiring import inject, Provide
 
@@ -20,14 +20,28 @@ from app.bot.filters.owner import OwnerCallbackFilter
 from app.bot.keyboards.game.quiz import get_quiz_again_kb
 from app.bot.keyboards.game.quiz import get_quiz_keyboard
 
-async def _safe_edit(message: Message, **kwargs) -> None:
+router = Router()
+
+async def _safe_edit(callback: CallbackQuery, **kwargs) -> bool:
+    """Редактирует сообщение. False - Telegram попросил подождать (ответ на кнопку уже отправлен)."""
+
     try:
-        await message.edit_text(**kwargs)
+        await callback.message.edit_text(**kwargs)
+    except TelegramRetryAfter as e:
+        await callback.answer(f"⏳ Слишком быстро! Подожди {e.retry_after} сек.", show_alert=False)
+        return False
     except TelegramBadRequest as e:
         if "message is not modified" not in str(e):
             raise
 
-async def _send_question_ui(message_or_call, q, left, user_id):
+    return True
+
+async def _send_question_ui(
+    message_or_call: Message | CallbackQuery,
+    q,
+    left: int,
+    user_id: int
+) -> bool:
     markup = get_quiz_keyboard(
         options_str=q.options,
         question_id=q.id,
@@ -42,11 +56,10 @@ async def _send_question_ui(message_or_call, q, left, user_id):
     )
 
     if isinstance(message_or_call, CallbackQuery):
-        await _safe_edit(message_or_call.message, text=text, reply_markup=markup)
-    else:
-        await message_or_call.reply(text=text, reply_markup=markup)
+        return await _safe_edit(message_or_call, text=text, reply_markup=markup)
 
-router = Router()
+    await message_or_call.reply(text=text, reply_markup=markup)
+    return True
 
 @router.message(Command("quiz"))
 @inject
@@ -86,32 +99,32 @@ async def quiz_handler(
 
     question = await quiz_service.quiz_repo.get_question_by_id(question_id)
 
+    if not question:
+        await callback.answer("❌ Этот вопрос больше недоступен.", show_alert=False)
+        return
+
     options = json.loads(question.options)
 
     if not 0 <= option_index < len(options):
         await callback.answer("🔄 Вопрос изменился, начни заново.", show_alert=False)
         return
 
-    user_choice = options[option_index]
-
     result = await quiz_service.quiz_answer(
         user=user,
         question_id=question_id,
-        user_choice=user_choice
+        user_choice=options[option_index]
     )
 
     if result.status == ResultStatus.LIMIT:
         await callback.answer("💬 Лимит вопросов исчерпан.", show_alert=False)
         return
 
-    if result.status == ResultStatus.LIMIT_REACHED:
-        await callback.message.edit_text(text=result.text, reply_markup=get_quiz_again_kb(user.telegram_id))
+    if await _safe_edit(
+            callback,
+            text=result.text,
+            reply_markup=get_quiz_again_kb(user.telegram_id)
+    ):
         await callback.answer()
-
-        return
-
-    await _safe_edit(callback.message, text=result.text, reply_markup=get_quiz_again_kb(user.telegram_id))
-    await callback.answer()
 
 @router.callback_query(F.data.startswith("quiz_again_"), OwnerCallbackFilter())
 @inject
@@ -130,10 +143,10 @@ async def quiz_again(
         await callback.answer(cfg['message']['quiz']['no_questions_callback'], show_alert=False)
         return
 
-    await _send_question_ui(
+    if await _send_question_ui(
         message_or_call=callback,
         q=result.question,
         left=result.left,
         user_id=user.telegram_id
-    )
-    await callback.answer()
+    ):
+        await callback.answer()
