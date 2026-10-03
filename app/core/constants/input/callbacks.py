@@ -10,5 +10,6 @@ ALLOWED_CALLBACK_PREFIXES = (
     "help",
     "stat",
     "locked",
-    "transfer"
+    "transfer",
+    "reset"
 )

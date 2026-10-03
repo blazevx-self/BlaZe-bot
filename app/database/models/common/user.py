@@ -1,8 +1,9 @@
 from datetime import datetime, date
 
-from sqlalchemy import func, DateTime
+from sqlalchemy import func, DateTime, text
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import BigInteger
+from sqlalchemy.dialects.postgresql import JSONB
 
 from app.database.models.base import Base
 
@@ -27,6 +28,12 @@ class UserOrm(Base):
     quiz_questions_left: Mapped[int] = mapped_column(default=15, nullable=False)
 
     has_private_chat: Mapped[bool] = mapped_column(default=False, nullable=False)
+    effects: Mapped[dict] = mapped_column(
+        JSONB,
+        default=dict,
+        server_default=text("'{}'::jsonb"),
+        nullable=False
+    )
 
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now())
