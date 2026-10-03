@@ -38,4 +38,5 @@ ALLOWED_COOLDOWN_FIELDS: dict[str, CooldownAction] = {
     "coffee_cooldown": CooldownAction.COFFEE,
     "coffee_overdose_cooldown": CooldownAction.COFFEE_OVERDOSE,
     "kagune_cooldown": CooldownAction.KAGUNE_GROW,
+    "daily_bonus_cooldown": CooldownAction.DAILY_BONUS,
 }
