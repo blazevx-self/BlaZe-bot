@@ -20,6 +20,13 @@ class CooldownService:
             duration=duration
         )
 
+    async def claim(self, telegram_id: int, action: CooldownAction, duration: int) -> bool:
+        return await self.user_cooldown_repo.claim(
+            telegram_id=telegram_id,
+            action=action,
+            duration=duration
+        )
+
     async def reset(self, telegram_id: int, action: CooldownAction) -> None:
         await self.user_cooldown_repo.delete(
             telegram_id=telegram_id,

@@ -2,7 +2,8 @@ from app.bot.routers.ghoul import kagune, snap, coffee, stats, race_profile
 from app.bot.routers.common import (
     start, help, bot,
     unknown_commands, profile, balance,
-    transfer, error, id_user, catch_all
+    transfer, error, id_user, catch_all,
+    daily_bonus,
 )
 
 from app.bot.routers.game import quiz, wordle, lottery
@@ -23,7 +24,7 @@ all_routers = (
     bot.router,
     balance.router,
     transfer.router,
-    id_user.router,
+    daily_bonus.router,
 
     coffee.router,
     kagune.router,
@@ -65,6 +66,7 @@ all_routers = (
     list_admins.router,
     fun_commands.router,
     ai.router,
+    id_user.router,
 
     error.router,
 

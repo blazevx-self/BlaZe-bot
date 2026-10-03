@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, date
 
 @dataclass(slots=True)
@@ -24,3 +24,5 @@ class UserData:
     banned_until: datetime | None = None
 
     has_private_chat: bool = False
+
+    effects: dict = field(default_factory=dict)

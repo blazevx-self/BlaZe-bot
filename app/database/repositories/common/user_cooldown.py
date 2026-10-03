@@ -56,6 +56,31 @@ class UserCooldownRepository(Base):
         
         return await self.session.scalar(stmt)
 
+    async def claim(self, telegram_id: int, action: CooldownAction, duration: int) -> bool:
+        """Атомарно ставит кулдаун, только если его нет или он истёк.
+
+            False — кулдаун ещё активен. Защищает от двойного клика.
+        """
+
+        now = int(time.time())
+
+        stmt = (
+            insert(UserCooldownOrm)
+            .values(
+                telegram_id=telegram_id,
+                action=action,
+                expires_at=now + duration
+            )
+            .on_conflict_do_update(
+                constraint="uq_user_cooldown_action",
+                set_={"expires_at": now + duration},
+                where=UserCooldownOrm.expires_at <= now
+            )
+            .returning(UserCooldownOrm)
+        )
+
+        return await self.session.scalar(stmt) is not None
+
     async def delete(self, telegram_id: int, action: CooldownAction) -> None:
         stmt = delete(UserCooldownOrm).where(
             UserCooldownOrm.telegram_id == telegram_id,

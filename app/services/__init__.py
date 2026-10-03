@@ -31,6 +31,7 @@ from .chat.common.report import ReportService
 from .chat.common.list_admins import ListAdminsService
 from .chat.common.ai import AIChatService
 from .chat.common.fun_commands import FunService
+from .common.daily_bonus import DailyBonusService
 
 __all__ = [
     "BanService",
@@ -65,5 +66,6 @@ __all__ = [
     "ReportService",
     "ListAdminsService",
     "AIChatService",
-    "FunService"
+    "FunService",
+    "DailyBonusService",
 ]

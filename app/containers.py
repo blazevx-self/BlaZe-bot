@@ -55,6 +55,7 @@ from app.services import (
     ListAdminsService,
     AIChatService,
     FunService,
+    DailyBonusService,
 )
 
 session_context: ContextVar[AsyncSession] = ContextVar("session_context")
@@ -143,6 +144,13 @@ class Container(containers.DeclarativeContainer):
     profile_service = providers.Factory(ProfileService, bot=bot, chat_member_repo=chat_member_repo)
     rp_command_service = providers.Factory(RpCommandService, rp_repo=rp_repo)
     transfer_service = providers.Factory(TransferService, transfer_repo=transfer_repo, user_repo=user_repo)
+    daily_bonus_service = providers.Factory(
+        DailyBonusService,
+        user_repo=user_repo,
+        ghoul_repo=ghoul_repo,
+        quiz_repo=quiz_repo,
+        cooldown_service=cooldown_service
+    )
 
     wordle_service = providers.Singleton(WordleService)
     quiz_service = providers.Factory(QuizService, user_repo=user_repo, quiz_repo=quiz_repo)

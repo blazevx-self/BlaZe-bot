@@ -19,6 +19,7 @@ def orm_to_user(user: UserOrm) -> UserData:
         quiz_questions_left=user.quiz_questions_left,
 
         has_private_chat=user.has_private_chat,
+        effects=user.effects or {},
 
         created_at=user.created_at
     )

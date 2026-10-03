@@ -1,6 +1,7 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from app.core.enums import ResultStatus
+from app.core.enums.daily_bonus import BonusReward
 
 @dataclass
 class StartResult:
@@ -24,3 +25,11 @@ class TransferResult:
 @dataclass
 class WikipediaDescriptionResult:
     text: str
+
+@dataclass
+class DailyBonusResult:
+    status: ResultStatus
+    text: str | None = None
+    reward: BonusReward | None = None
+    others: list[BonusReward] = field
+    remaining: int = 0

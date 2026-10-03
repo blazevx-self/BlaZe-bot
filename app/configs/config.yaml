@@ -453,3 +453,10 @@ message:
     coin:
       - "{side}"
       - "Подкинул… {side}"
+
+  daily_bonus:
+    title: "<tg-emoji emoji-id=\"5877748751296106735\">🎁</tg-emoji> <b>Ежедневный бонус</b>"
+    choose: "<tg-emoji emoji-id=\"5877748751296106735\">🎁</tg-emoji> <b>Ежедневный бонус</b>\n\n<i>Выбери одну коробку — что внутри, узнаешь после открытия!</i>"
+    cooldown: "<tg-emoji emoji-id=\"5386341902075325415\">⏳</tg-emoji> <b>Бонус уже получен.</b>\n\n<i>Следующий через {time}.</i>"
+    cooldown_callback: "⏳ Бонус уже получен. Следующий через {time}."
+    others: "<i>В остальных коробках было:</i>"

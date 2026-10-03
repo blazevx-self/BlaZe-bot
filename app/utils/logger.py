@@ -82,6 +82,7 @@ error_logger = get_logger("errors", "errors")
 
 start_logger = get_logger("start", "game/start")
 transfer_logger = get_logger("transfer", "game/transfer")
+daily_bonus = get_logger("daily_bonus", "game/daily_bonus")
 
 quiz_logger = get_logger("quiz", "game/quiz")
 wordle_logger = get_logger("wordle", "game/wordle")

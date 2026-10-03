@@ -5,3 +5,4 @@ class CooldownAction(StrEnum):
     COFFEE = "coffee"
     COFFEE_OVERDOSE = "coffee_overdose"
     KAGUNE_GROW = "kagune_grow"
+    DAILY_BONUS = "daily_bonus"
