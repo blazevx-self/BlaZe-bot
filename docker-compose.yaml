@@ -75,7 +75,7 @@ services:
     volumes:
       - ./logs:/app/logs
       - ./app/assets/media:/app/app/assets/media
-      - ./app/assets/anime:/app/anime
+      - ./app/assets/anime:/app/app/assets/anime
 
     logging:
       driver: json-file
