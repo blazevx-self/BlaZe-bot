@@ -32,6 +32,8 @@ from .chat.common.list_admins import ListAdminsService
 from .chat.common.ai import AIChatService
 from .chat.common.fun_commands import FunService
 from .common.daily_bonus import DailyBonusService
+from .media import MediaService
+from .common.anime import AnimeService
 
 __all__ = [
     "BanService",
@@ -68,4 +70,6 @@ __all__ = [
     "AIChatService",
     "FunService",
     "DailyBonusService",
+    "MediaService",
+    "AnimeService",
 ]

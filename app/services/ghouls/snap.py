@@ -1,10 +1,9 @@
-import random
-
 from app.configs.yaml_loader import cfg
 from app.configs.game import game_cfg
 
 from app.core.enums import ResultStatus
 from app.core.enums.cooldown_action import CooldownAction
+from app.core.enums.daily_bonus import EffectKey
 
 from app.types.services_result.ghoul import SnapResult
 from app.types.entities.user import UserData
@@ -17,6 +16,7 @@ from app.database.repositories.common.user import UserRepository
 
 from app.utils.format_num import format_num
 from app.utils.logger import snap_logger
+from app.utils.effects import apply_effect
 
 class SnapService:
     def __init__(
@@ -32,7 +32,7 @@ class SnapService:
     async def snap_finger(self, user: UserData, ghoul: GhoulData) -> SnapResult:
         user_id = user.telegram_id
         reward = game_cfg.snap.award
-        cooldown = game_cfg.snap.cooldown
+        cooldown = apply_effect(user, EffectKey.SNAP_COOLDOWN, game_cfg.snap.cooldown)
 
         remaining = await self.cooldown_service.remaining(
             telegram_id=user_id,
@@ -77,6 +77,5 @@ class SnapService:
 
         return SnapResult(
             status=ResultStatus.SUCCESS,
-            text=text,
-            gif=random.choice(cfg['assets']['snap']['gifs'])
+            text=text
         )

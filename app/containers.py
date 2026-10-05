@@ -19,6 +19,7 @@ from app.database.repositories import (
     TransferRepository,
     ChatMemberRepository,
     ModeratorActionRepository,
+    MediaRepository,
 )
 
 from app.services import (
@@ -56,6 +57,8 @@ from app.services import (
     AIChatService,
     FunService,
     DailyBonusService,
+    MediaService,
+    AnimeService,
 )
 
 session_context: ContextVar[AsyncSession] = ContextVar("session_context")
@@ -78,6 +81,7 @@ class Container(containers.DeclarativeContainer):
     transfer_repo = providers.Factory(TransferRepository, session=db_session)
     chat_member_repo = providers.Factory(ChatMemberRepository, session=db_session)
     moderator_action_repo = providers.Factory(ModeratorActionRepository, session=db_session)
+    media_repo = providers.Factory(MediaRepository, session=db_session)
 
     # services
     cooldown_service = providers.Factory(CooldownService, user_cooldown_repo=user_cooldown_repo)
@@ -151,6 +155,7 @@ class Container(containers.DeclarativeContainer):
         quiz_repo=quiz_repo,
         cooldown_service=cooldown_service
     )
+    anime_service = providers.Singleton(AnimeService)
 
     wordle_service = providers.Singleton(WordleService)
     quiz_service = providers.Factory(QuizService, user_repo=user_repo, quiz_repo=quiz_repo)
@@ -188,3 +193,4 @@ class Container(containers.DeclarativeContainer):
     tops_service = providers.Factory(TopsService, tops_repo=tops_repo)
 
     wikipedia_service = providers.Factory(WikipediaService)
+    media_service = providers.Factory(MediaService, media_repo=media_repo)

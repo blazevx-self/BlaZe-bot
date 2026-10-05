@@ -23,3 +23,8 @@ logs/
 .gitignore
 
 backups/
+
+app/assets/media/
+
+app/assets/anime/
+*.session

@@ -1,7 +1,5 @@
-from html import escape
-
 from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery, InputMediaAnimation
+from aiogram.types import Message, CallbackQuery
 
 from dependency_injector.wiring import inject, Provide
 
@@ -13,6 +11,8 @@ from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 
 from app.services.ghouls.kagune import KaguneService
+from app.services.media import MediaService
+
 from app.bot.filters.owner import OwnerCallbackFilter
 
 from app.bot.keyboards.ghoul.kagune import get_grow_kagune_kb, get_open_kagune_kb
@@ -20,6 +20,7 @@ from app.bot.keyboards.ghoul.kagune import get_grow_kagune_kb, get_open_kagune_k
 from app.utils.format_num import format_num
 from app.utils.time import format_duration
 from app.utils.truncate_text import truncate_text
+from app.utils.send_media import reply_media, edit_media
 
 router = Router()
 
@@ -29,7 +30,8 @@ async def kagune_menu(
     message: Message,
     user: UserData,
     ghoul: GhoulData,
-    kagune_service: KaguneService = Provide[Container.kagune_service]
+    kagune_service: KaguneService = Provide[Container.kagune_service],
+    media_service: MediaService = Provide[Container.media_service]
 ):
     result = await kagune_service.upgrade_kagune(user=user, ghoul=ghoul)
 
@@ -56,7 +58,7 @@ async def kagune_menu(
         await message.reply(text=text)
         return
 
-    await message.reply_animation(animation=result.gif, caption=result.text,)
+    await reply_media(message, result.collection, media_service, caption=result.text)
 
 @router.callback_query(F.data.startswith("kagune_new_"), OwnerCallbackFilter())
 @inject
@@ -64,7 +66,8 @@ async def obtained_kagune(
     callback: CallbackQuery,
     user: UserData,
     ghoul: GhoulData,
-    kagune_service: KaguneService = Provide[Container.kagune_service]
+    kagune_service: KaguneService = Provide[Container.kagune_service],
+    media_service: MediaService = Provide[Container.media_service]
 ):
     result = await kagune_service.obtaining_kagune(user=user, ghoul=ghoul)
 
@@ -80,11 +83,11 @@ async def obtained_kagune(
         name=callback.from_user.first_name
     )
 
-    await callback.message.edit_media(
-        media=InputMediaAnimation(
-            media=result.gif,
-            caption=text,
-        ),
+    await edit_media(
+        callback.message,
+        result.collection,
+        media_service,
+        caption=text,
         reply_markup=get_grow_kagune_kb(user.telegram_id)
     )
     await callback.answer()
@@ -95,7 +98,8 @@ async def kagune_grow(
     callback: CallbackQuery,
     user: UserData,
     ghoul: GhoulData,
-    kagune_service: KaguneService = Provide[Container.kagune_service]
+    kagune_service: KaguneService = Provide[Container.kagune_service],
+    media_service: MediaService = Provide[Container.media_service]
 ):
     result = await kagune_service.upgrade_kagune(user=user, ghoul=ghoul)
 
@@ -115,11 +119,5 @@ async def kagune_grow(
         return
 
     if result.status == ResultStatus.SUCCESS:
-        await callback.message.edit_media(
-            media=InputMediaAnimation(
-                media=result.gif,
-                caption=result.text,
-            ),
-            reply_markup=None
-        )
+        await edit_media(callback.message, result.collection, media_service, caption=result.text)
         await callback.answer()

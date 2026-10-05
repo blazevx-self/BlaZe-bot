@@ -91,79 +91,6 @@ bot_responses:
   - "Сдурел совсем?"
   - "Слабоумный что-ли?"
 
-
-assets:
-  kagune:
-    gifs:
-      бикаку:
-        - "CgACAgIAAxkBAAIxB2qtMhMoCJuL2FBrysI4MfOTCoBkAAJApwAC5RxoSfSHUdAte_R_PQQ"
-        - "CgACAgIAAxkBAAIxCWqtMiaLgQYKHa6PqTk9sV3M9DeoAAJBpwAC5RxoSdbJw7vNZBKFPQQ"
-        - "CgACAgIAAxkBAAIxC2qtMi1IB8jfp7k3KhWfQiaokqdfAAJDpwAC5RxoSRa6g7uKPzHjPQQ"
-        - "CgACAgIAAxkBAAIxDWqtMjG0FejMga0Fj5Y8M4fyDm9xAAJEpwAC5RxoSUehwB8n3Uk6PQQ"
-        - "CgACAgIAAxkBAAIXOWogEZbP4gjJYXrxbv5Zb1wfZcrYAAIwmAACPWIAAUmKhp_uXnxO9DsE"
-      ринкаку:
-        - "CgACAgIAAxkBAAIWxWoeux6kvjTRf-AiDI2QZMLzd4JBAAL5mQACA1v5SNZJC66sSChFOwQ"
-        - "CgACAgIAAxkBAAIWxGoeux6SDoASRlEktXpmVdwXLBPqAAL4mQACA1v5SASBlMs5Fj9mOwQ"
-        - "CgACAgIAAxkBAAIWymoeux71REmEZdMOj9TZdsxX2Z5DAAOaAAIDW_lIM_ziCIMggg47BA"
-        - "CgACAgIAAxkBAAIWzGoeux4mc3_QqX5ob8ZQXRfKoUwKAAIDmgACA1v5SAvcSNEVXbr6OwQ"
-        - "CgACAgIAAxkBAAIWy2oeux6oNmXur6Cwl8i7KCfViAvtAAICmgACA1v5SLSR9Xtk_OHJOwQ"
-        - "CgACAgIAAxkBAAIXOmogEZl8oiBB92h-dfPmk8BDfhcaAAIxmAACPWIAAUml5ZPClu291jsE"
-        - "CgACAgIAAxkBAAIXOGogEYmMfnOPAAG4yRWcM_j5xgLFbAACLpgAAj1iAAFJt8uluSrQSf47BA"
-        - "CgACAgIAAxkBAAIxO2qtNoiayvsGKYHGnMkGhanoSZ1RAAJ7pwAC5RxoSZHCT_9lmO0DPQQ"
-        - "CgACAgIAAxkBAAIxPWqtNqtXPMHhpxvLjnEHZf9JHT8bAAKCpwAC5RxoSYPUOfclA8EmPQQ"
-        - "CgACAgIAAxkBAAIxQmqtODv696jJIcrddz7J6L3jaa1LAAKepwAC5RxoSdFFX7g8U542PQQ"
-        - "CgACAgIAAxkBAAIxRGqtOEOzQqkyLHvjX1HHtVPA6PkOAAKgpwAC5RxoSd5eYRwyO28VPQQ"
-        - "CgACAgIAAxkBAAIxRmqtOEpIL33iDnDYM2BU3DdUvb2JAAKhpwAC5RxoSYZSo6MhARd-PQQ"
-        - "CgACAgIAAxkBAAIxSGqtOE31cm1Cxp_DHzUdZirFleqSAAKjpwAC5RxoSbbcGN9vmoIEPQQ"
-        - "CgACAgIAAxkBAAIxSmqtOFCM3Zz7D8jm3T9r8y34ynPqAAKkpwAC5RxoSdtU9DO9zpiePQQ"
-        - "CgACAgIAAxkBAAIxTGqtOFcukSOxXvH1Ed_XJNCg3ZQFAAKlpwAC5RxoSUunMUdc_wS0PQQ"
-      коукаку:
-        - "CgACAgIAAxkBAAIWzWoeux6SMbqwn-25VF8ltkS_HhIiAAIPmgACA1v5SDr97giYqlHFOwQ"
-        - "CgACAgIAAxkBAAIxTmqtOSnr21tb1rh1HZofgfWbAAFnvAACqacAAuUcaElWdN6L6ZmSmD0E"
-        - "CgACAgIAAxkBAAIxUGqtO8jeVYwJH0sf8wboe1CZnb54AALHpwAC5RxoSRIi2gQAAWDkUT0E"
-        - "CgACAgIAAxkBAAIxUmqtO9RLryBp0yo0jS5RaUmZn98hAALIpwAC5RxoSdpSc8uWwAd5PQQ"
-      укаку:
-        - "CgACAgIAAxkBAAIWyWoeux7Af4ahvgkO1f4PZLrZXGf4AAL_mQACA1v5SIm4GHzJrBjOOwQ"
-        - "CgACAgIAAxkBAAIXN2ogEX3JuZqPlmUg-GbH2Gte9igFAAIsmAACPWIAAUm48SYAAeAobwc7BA"
-        - "CgACAgIAAxkBAAIxVWqtQEmoK3WHZAtzvzPTgq1bY661AAL5pwAC5RxoSeCNqdeS3lY1PQQ"
-        - "CgACAgIAAxkBAAIxVmqtQFH5b-BkM7p1ezjtWKLviLk0AAL6pwAC5RxoSR3tvyYSsFsRPQQ"
-        - "CgACAgIAAxkBAAIxWGqtQFcGxnF23qa5Lv-WL9ttVISDAAL7pwAC5RxoSZQI8Gy6aJOZPQQ"
-        - "CgACAgIAAxkBAAIxXWqtQHdLW_FrSa4AAVaCGad3JgLYXQAC_6cAAuUcaEkF_a9tgmiyrD0E"
-        - "CgACAgIAAxkBAAIxYGqtQOdhGR2dvJyVMlhXQbeF0RdTAAIEqAAC5RxoSXl0iHn0DMRxPQQ"
-
-    obtained_gif:
-      CgACAgIAAxkBAAIlNmqATGAcOxl8rN9FBU9SeYDAiMbhAAKLogACRhYJSBylRFc7drcqPQQ
-
-  snap:
-    gifs:
-      - "CgACAgIAAxkBAAIJE2nvcQg6K6XV4oUM6OFbMs0XgQABcgACX6EAArt4gUsiHJ440A5yNTsE"
-      - "CgACAgIAAxkBAAIJFGnvcQjFCaBiAjyab7E7OzzBylKSAAJhoQACu3iBS7AILJY3gOgwOwQ"
-      - "CgACAgIAAxkBAAIJFWnvcQha1L6ZypBvWUrz8K_wufTfAAJxoQACu3iBS00frqtC-5qrOwQ"
-      - "CgACAgIAAxkBAAIlPWqAZfEoaYvkN521OO6SdrX5RAV-AAJKowACRhYJSFzjKp-SmZoIPQQ"
-      - "CgACAgIAAxkBAAIlP2qAZiWYdmmTlFPhM-mMZcBLId_CAAJMowACRhYJSOdfc5WpbkixPQQ"
-      - "CgACAgIAAxkBAAIJEGnvcQhb9fVFUFRubGqggQLr24HWAAJZoQACu3iBS6Oa9K34CAZkOwQ"
-      - "CgACAgIAAxkBAAIJEWnvcQi3W98ohO4gulB6E3Z4iu-sAAJboQACu3iBSz5iv0olthBUOwQ"
-      - "CgACAgIAAxkBAAIJEmnvcQjSMjxnirXMAWUpYml6xPhvAAJeoQACu3iBSxV6nZG3-lRFOwQ"
-      - "CgACAgIAAxkBAAIw3GqtJElBR1gr-WKm1iu9oQ2O4elJAAKrpgAC5RxoSQ8LmLXyT6ALPQQ"
-      - "CgACAgIAAxkBAAIw3mqtMCu7hdHegpuGv5iw4e1M1PXqAAIkpwAC5RxoSV7MnuBcWDi9PQQ"
-      - "CgACAgIAAxkBAAIxOGqtNie93QpxsM5wSqb1nkdlkoS1AAJ2pwAC5RxoSb-h8lZEFrDBPQQ"
-      - "CgACAgIAAxkBAAIxP2qtOBYeLcCd0eSdNtR8Tvg8zPk5AAKapwAC5RxoSbO5ycZkciROPQQ"
-     
-  coffee:
-    gifs:
-      - "CgACAgIAAxkBAAIPXmoDLlhCMmzTEyUh_1xFXaNv54UoAAIQnwACmYgYSMJDIot88JyVOwQ"
-      - "CgACAgIAAxkBAAIPX2oDLl7EXRI1mbQ9qmklzcF87-ynAAIRnwACmYgYSJymgC1th9y2OwQ"
-      - "CgACAgIAAxkBAAIPYGoDLmAmA4nC9QNR_TRkr0CNZHagAAISnwACmYgYSIanErEfpdDaOwQ"
-      - "CgACAgIAAxkBAAIlVmqAb9mnim8XqGYpbGgvruRiHnX-AALhowACRhYJSJDsWwnCu-khPQQ"
-      - "CgACAgIAAxkBAAIlWGqAb-Z1J4mUNoeUUZ8WTrs8gpuZAALiowACRhYJSLbzChi4ZP00PQQ"
-      - "CgACAgIAAxkBAAIPYWoDLmerwyUhnpfJsYwxS2F64NXzAAIVnwACmYgYSGSY4JAYkWKKOwQ"
-      - "CgACAgIAAxkBAAIPYmoDLmy0TwVbVZtfwzuGNIuUBFNrAAIWnwACmYgYSHLeqLVu09u7OwQ"
-      - "CgACAgIAAxkBAAIw_2qtMaV55r2xpDKf9nC6hKZ3jsM2AAI6pwAC5RxoSetMeqZb2oSfPQQ"
-      - "CgACAgIAAxkBAAIxAWqtMah8DgNWRUErie3wW4n6PKvwAAI7pwAC5RxoSdWk-hWxqNYyPQQ"
-      - "CgACAgIAAxkBAAIxA2qtMauwlqJyCH-3J0SOa1lVdbdlAAI9pwAC5RxoSWCrwwy6OMJIPQQ"
-      - "CgACAgIAAxkBAAIxBWqtMayMvQ3vLQHgRZhxuCK_gXvaAAI-pwAC5RxoSbknVMqYo9RlPQQ"
-
-
 message:
   start: |
       <b>Добро пожаловать в BlaZe | Bot</b>
@@ -460,3 +387,21 @@ message:
     cooldown: "<tg-emoji emoji-id=\"5386341902075325415\">⏳</tg-emoji> <b>Бонус уже получен.</b>\n\n<i>Следующий через {time}.</i>"
     cooldown_callback: "⏳ Бонус уже получен. Следующий через {time}."
     others: "<i>В остальных коробках было:</i>"
+
+  media:
+    no_media: "<tg-emoji emoji-id='5258503720928288433'>ℹ️</tg-emoji> <b>Ответь этой командой на гифку или видео.</b>\n\n<i>Пример: /add_gif snap</i>"
+    no_collection: "<tg-emoji emoji-id='5258503720928288433'>ℹ️</tg-emoji> <b>Укажи коллекцию:</b>\n\n{collections}"
+    too_big: "<tg-emoji emoji-id='5386313314773002654'>⚠️</tg-emoji> <b>Файл больше 20 МБ</b> — бот не может его скачать. Сожми и отправь заново."
+    already_exists: "<tg-emoji emoji-id='5258503720928288433'>ℹ️</tg-emoji> Это медиа уже есть в коллекции."
+    added: "<tg-emoji emoji-id='5260416304224936047'>✅</tg-emoji> <b>Добавлено</b> в <code>{collection}</code>\n\n<i>{path}</i>"
+
+  anime:
+    usage: "<tg-emoji emoji-id='5375464961822695044'>🎬</tg-emoji> <b>Отрывок из Токийского гуля</b>\n\n<code>/anime 1 12 18:37 18:47</code> — видео (до 60 сек)\n<code>/anime 1 12 18:37 18:47 gif</code> — гифка (до 15 сек)"
+    caption: "<tg-emoji emoji-id='5375464961822695044'>🎬</tg-emoji> <b>{season} сезон, {episode} серия</b>\n<i>{start} — {end}</i>"
+    not_found: "<tg-emoji emoji-id='5260342697075416641'>❌</tg-emoji> Такой серии нет."
+    invalid_time: "<tg-emoji emoji-id='5260342697075416641'>❌</tg-emoji> Неверный таймкод. Пример: <code>18:37 18:47</code> — конец должен быть позже начала."
+    too_long: "<tg-emoji emoji-id='5260342697075416641'>❌</tg-emoji> Слишком длинный отрывок. Максимум — <b>{limit} сек</b>."
+    busy: "<tg-emoji emoji-id='5386341902075325415'>⏳</tg-emoji> Твой прошлый отрывок ещё режется, подожди."
+    error: "<tg-emoji emoji-id='5260342697075416641'>❌</tg-emoji> Не получилось нарезать. Проверь, что таймкод не выходит за конец серии."
+    cutting: "<tg-emoji emoji-id='5386341902075325415'>⏳</tg-emoji> <b>Нарезаю отрывок…</b>\n\n<i>Обычно это занимает несколько секунд.</i>"
+    uploading: "<tg-emoji emoji-id='6039573425268201570'>📤</tg-emoji> <b>Отправляю…</b>"

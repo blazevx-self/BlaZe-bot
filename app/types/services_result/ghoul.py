@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from app.core.enums import ResultStatus
 from aiogram.types import InlineKeyboardMarkup
 
+from app.core.enums.media import MediaCollection
+
 @dataclass
 class StatsResult:
     status: ResultStatus
@@ -22,7 +24,7 @@ class UpgradeCalcResult:
 class KaguneResult:
     status: ResultStatus
     text: str | None = None
-    gif: str | None = None
+    collection: MediaCollection | None = None
     remaining: int | None = None
     missing: int | None = None
     kagune_type: str | None = None
@@ -36,13 +38,11 @@ class RaceProfileResult:
 class CoffeeResult:
     status: ResultStatus
     text: str | None = None
-    gif: str | None = None
 
 @dataclass
 class SnapResult:
     status: ResultStatus
     text: str | None = None
-    gif: str | None = None
     remaining: int | None = 0
     last_snap: int | None = None
 

@@ -2,6 +2,7 @@ from app.configs.game import game_cfg
 
 from app.core.templates.game.quiz import quiz_result_text
 from app.core.enums import ResultStatus
+from app.core.enums.daily_bonus import EffectKey
 
 from app.types.entities.user import UserData
 from app.types.services_result.game import (
@@ -13,6 +14,7 @@ from app.database.repositories.game.quiz import QuizRepository
 from app.database.repositories.common.user import UserRepository
 
 from app.utils.logger import quiz_logger
+from app.utils.effects import apply_effect
 
 class QuizService:
     def __init__(self, quiz_repo: QuizRepository, user_repo: UserRepository):
@@ -98,7 +100,7 @@ class QuizService:
         if not updated_user:
             return QuizAnswerResult(status=ResultStatus.LIMIT)
 
-        reward = game_cfg.quiz.award if is_correct else 0
+        reward = apply_effect(user, EffectKey.QUIZ_REWARD, game_cfg.quiz.award) if is_correct else 0
 
         if reward:
             await self.user_repo.change_money(telegram_id=user_id, amount=reward)

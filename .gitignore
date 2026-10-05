@@ -15,3 +15,8 @@ logs/
 *.log
 
 backups/
+
+app/assets/media/
+
+app/assets/anime/
+*.session

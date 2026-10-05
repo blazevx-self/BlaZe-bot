@@ -1,10 +1,9 @@
-import random
-
 from app.configs.yaml_loader import cfg
 from app.configs.game import game_cfg
 
 from app.core.enums import ResultStatus
 from app.core.enums.cooldown_action import CooldownAction
+from app.core.enums.daily_bonus import EffectKey
 
 from app.types.services_result.ghoul import CoffeeResult
 from app.types.entities.user import UserData
@@ -18,6 +17,7 @@ from app.database.repositories.common.user import UserRepository
 from app.utils.format_num import format_num
 from app.utils.time import format_duration
 from app.utils.logger import coffee_logger
+from app.utils.effects import apply_effect
 
 class CoffeeService:
     def __init__(
@@ -85,7 +85,7 @@ class CoffeeService:
             await self.cooldown_service.set(
                 telegram_id=user_id,
                 action=CooldownAction.COFFEE,
-                duration=game_cfg.coffee.cooldown
+                duration=apply_effect(user, EffectKey.COFFEE_COOLDOWN, game_cfg.coffee.cooldown)
             )
         except Exception:
             coffee_logger.exception(f"[COFFEE] Drink coffee failed | user_id={user_id} | reward={reward}")
@@ -102,10 +102,7 @@ class CoffeeService:
             coffee_total=format_num(coffee_total)
         )
 
-        coffee_gif = random.choice(cfg['assets']['coffee']['gifs'])
-
         return CoffeeResult(
             status=ResultStatus.SUCCESS,
             text=text,
-            gif=coffee_gif
         )

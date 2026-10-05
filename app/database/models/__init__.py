@@ -11,6 +11,7 @@ from .common.transfer import TransferOrm
 from .chat.rp_commands import RpCommandOrm
 from .chat.chat_member import ChatMemberOrm
 from .chat.moderator_action import ModeratorActionOrm
+from .media import MediaOrm
 
 __all__ = [
     "Base",
@@ -24,5 +25,6 @@ __all__ = [
     "TransferOrm",
     "RpCommandOrm",
     "ChatMemberOrm",
-    "ModeratorActionOrm",
+   "ModeratorActionOrm",
+    "MediaOrm",
 ]

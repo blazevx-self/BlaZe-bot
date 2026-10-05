@@ -7,13 +7,18 @@ from app.containers import Container
 from app.configs.yaml_loader import cfg
 
 from app.core.enums import ResultStatus
+from app.core.enums.media import MediaCollection
+
 from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 
 from app.services.ghouls.snap import SnapService
+from app.services.media import MediaService
+
 from app.bot.filters.ghoul import GhoulRequired
 
 from app.utils.time import format_duration
+from app.utils.send_media import reply_media
 
 router = Router()
 
@@ -24,7 +29,8 @@ async def snap(
     message: Message,
     user: UserData,
     ghoul: GhoulData,
-    snap_service: SnapService = Provide[Container.snap_service]
+    snap_service: SnapService = Provide[Container.snap_service],
+    media_service: MediaService = Provide[Container.media_service]
 ):
     result = await snap_service.snap_finger(user=user, ghoul=ghoul)
 
@@ -36,4 +42,4 @@ async def snap(
         await message.reply(text=text)
         return
 
-    await message.reply_animation(animation=result.gif, caption=result.text)
+    await reply_media(message, MediaCollection.SNAP, media_service, caption=result.text)

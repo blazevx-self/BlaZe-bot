@@ -1,11 +1,10 @@
-import random
-
 from app.configs.game import game_cfg
-from app.configs.yaml_loader import cfg
 
 from app.core.constants.game.stats import POWER_FIELDS
 from app.core.constants.game.kagune import KAGUNE_MULTIPLIER
 from app.core.constants.game.ranks import DANGER_RANKS
+from app.core.constants.media import KAGUNE_COLLECTIONS
+from app.core.enums.media import MediaCollection
 
 from app.types.entities.ghoul import GhoulData
 
@@ -47,24 +46,11 @@ class GhoulService:
         return int(base * (multiplier ** (safe_level - 1)))
 
     @staticmethod
-    def get_kagune_gif(kagune_type: str) -> str:
-        """У каждого типа кагуне - своя гиф. (поиск без учёта регистра)."""
+    def get_kagune_collection(kagune_type: str | None) -> MediaCollection:
+        """Папка с гифками для типа кагуне (без учёта регистра)."""
 
-        gifs = cfg['assets']['kagune']['gifs']
-
-        lookup = {str(k).strip().lower(): v for k, v in gifs.items()}
         key = (kagune_type or "").strip().lower()
-
-        type_gifs = lookup.get(key)
-
-        if not type_gifs:
-            type_gifs = lookup.get("bikaku") or next(iter(gifs.values()))
-
-        return random.choice(type_gifs)
-
-    @staticmethod
-    def get_kagune_obtained_gif() -> str:
-        return cfg["assets"]["kagune"]["obtained_gif"]
+        return KAGUNE_COLLECTIONS.get(key, MediaCollection.KAGUNE_BIKAKU)
 
     @staticmethod
     def calculate_power(ghoul: GhoulData) -> int:

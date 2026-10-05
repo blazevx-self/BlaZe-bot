@@ -9,6 +9,7 @@ from .chat.rp_commands import RpCommandRepository
 from .common.transfer import TransferRepository
 from .chat.chat_member import ChatMemberRepository
 from .chat.moderator_action import ModeratorActionRepository
+from .media import MediaRepository
 
 __all__ = [
     "UserRepository",
@@ -22,4 +23,5 @@ __all__ = [
     "TransferRepository",
     "ChatMemberRepository",
     "ModeratorActionRepository",
+    "MediaRepository",
 ]

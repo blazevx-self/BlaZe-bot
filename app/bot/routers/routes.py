@@ -1,9 +1,8 @@
 from app.bot.routers.ghoul import kagune, snap, coffee, stats, race_profile
 from app.bot.routers.common import (
-    start, help, bot,
-    unknown_commands, profile, balance,
-    transfer, error, id_user, catch_all,
-    daily_bonus,
+    start, help, bot, unknown_commands,
+    profile, balance, transfer, error,
+    id_user, catch_all, daily_bonus, anime
 )
 
 from app.bot.routers.game import quiz, wordle, lottery
@@ -16,7 +15,10 @@ from app.bot.routers.chat.moderator import (
 from app.bot.routers.chat.chat_member_update import new_chat_member, left_chat_member
 from app.bot.routers.chat.common import rp_commands, report, list_admins, ai, fun_commands
 
-from app.bot.routers.admin import ban_bot, modify_balance, player_lookup, field_edit, reset, broadcast
+from app.bot.routers.admin import (
+    ban_bot, modify_balance, player_lookup,
+    field_edit, reset, broadcast, add_gif
+)
 
 all_routers = (
     start.router,
@@ -25,6 +27,7 @@ all_routers = (
     balance.router,
     transfer.router,
     daily_bonus.router,
+    anime.router,
 
     coffee.router,
     kagune.router,
@@ -52,6 +55,7 @@ all_routers = (
     field_edit.router,
     reset.router,
     broadcast.router,
+    add_gif.router,
 
     rules.router,
     goodbye_message.router,

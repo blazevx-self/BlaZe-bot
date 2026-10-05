@@ -3,6 +3,8 @@ from app.configs.yaml_loader import cfg
 
 from app.core.enums import ResultStatus
 from app.core.enums.cooldown_action import CooldownAction
+from app.core.enums.daily_bonus import EffectKey
+from app.core.enums.media import MediaCollection
 from app.core.exceptions.ghoul import KaguneInitializationError
 
 from app.types.services_result.ghoul import KaguneResult
@@ -17,6 +19,7 @@ from app.services.cooldown import CooldownService
 
 from app.utils.format_num import format_num
 from app.utils.logger import kagune_logger
+from app.utils.effects import apply_effect
 
 class KaguneService:
     def __init__(
@@ -58,7 +61,7 @@ class KaguneService:
         return KaguneResult(
             status=ResultStatus.SUCCESS,
             kagune_type=kagune_type,
-            gif=self.ghoul_service.get_kagune_obtained_gif()
+            collection=MediaCollection.KAGUNE_OBTAINED
         )
 
     async def upgrade_kagune(self, user: UserData, ghoul: GhoulData) -> KaguneResult:
@@ -81,7 +84,7 @@ class KaguneService:
             )
 
         level = ghoul.kagune_strength
-        price = self.ghoul_service.get_price_kagune(level)
+        price = apply_effect(user, EffectKey.KAGUNE_PRICE, self.ghoul_service.get_price_kagune(level))
 
         # проверка баланса перед апом
         if user.money < price:
@@ -106,7 +109,7 @@ class KaguneService:
             await self.cooldown_service.set(
                 telegram_id=user_id,
                 action=CooldownAction.KAGUNE_GROW,
-                duration=game_cfg.kagune.cooldown
+                duration=apply_effect(user, EffectKey.KAGUNE_COOLDOWN, game_cfg.kagune.cooldown)
             )
         except Exception:
             kagune_logger.exception(f"[KAGUNE] Upgrade kagune failed | user_id={user_id} | price={price}")
@@ -128,7 +131,5 @@ class KaguneService:
         return KaguneResult(
             status=ResultStatus.SUCCESS,
             text=text,
-            gif=self.ghoul_service.get_kagune_gif(
-                ghoul.kagune_type
-            )
+            collection=self.ghoul_service.get_kagune_collection(ghoul.kagune_type)
         )

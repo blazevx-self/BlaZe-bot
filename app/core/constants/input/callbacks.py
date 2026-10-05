@@ -11,5 +11,6 @@ ALLOWED_CALLBACK_PREFIXES = (
     "stat",
     "locked",
     "transfer",
-    "reset"
+    "reset",
+    "bonus"
 )

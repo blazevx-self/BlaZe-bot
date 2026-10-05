@@ -1,5 +1,7 @@
 from dataclasses import dataclass, field
 
+from pathlib import Path
+
 from app.core.enums import ResultStatus
 from app.core.enums.daily_bonus import BonusReward
 
@@ -33,3 +35,9 @@ class DailyBonusResult:
     reward: BonusReward | None = None
     others: list[BonusReward] = field
     remaining: int = 0
+
+@dataclass
+class AnimeClipResult:
+    status: ResultStatus
+    path: Path | None = None
+    limit: int = 0

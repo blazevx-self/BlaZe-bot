@@ -5,6 +5,7 @@ from app.configs.yaml_loader import cfg
 from app.core.templates.ghoul.stats import stats_text
 from app.core.constants.game.stats import STAT_NAMES
 from app.core.enums import ResultStatus
+from app.core.enums.daily_bonus import EffectKey
 
 from app.types.services_result.ghoul import StatsResult
 from app.types.entities.user import UserData
@@ -17,6 +18,7 @@ from app.services.ghouls.stats.calculate_stats import calculate_upgrade
 from app.bot.keyboards.ghoul.stats import builds_stats_keyboard
 
 from app.utils.logger import stats_logger
+from app.utils.effects import effect_multiplier
 
 UpgradeAmount = Literal[1, 3, 5]
 
@@ -76,7 +78,8 @@ class StatsService:
             stat=stat,
             current_stat=current_stat,
             amount=amount,
-            money=user.money
+            money=user.money,
+            price_multiplier=effect_multiplier(user, EffectKey.STATS_PRICE)
         )
 
         if calc_result.status != ResultStatus.SUCCESS:

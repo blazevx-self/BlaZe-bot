@@ -25,3 +25,7 @@ class ResultStatus(StrEnum):
     MAXED="maxed"
 
     ALREADY_ANSWERED = "already_answered"
+
+    INVALID_TIME = "invalid_time"
+    TOO_LONG = "too_long"
+    BUSY = "busy"

@@ -42,7 +42,8 @@ def calculate_upgrade(
     stat: str,
     current_stat: int,
     amount: UpgradeAmount,
-    money: int
+    money: int,
+    price_multiplier: float = 1.0
 ) -> UpgradeCalcResult:
     """Проверка лимитов, расчёт финальной стоимости и валидация баланса"""
 
@@ -63,11 +64,11 @@ def calculate_upgrade(
     remaining_points = stat_limit - current_stat
     upgrade_amount = min(int(amount), remaining_points)
 
-    price = calculate_price(
+    price = round(calculate_price(
         stat=stat,
         current_stat=current_stat,
         amount=upgrade_amount
-    )
+    ) * price_multiplier)
 
     if money < price:
         return UpgradeCalcResult(
