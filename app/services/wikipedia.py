@@ -27,6 +27,9 @@ class WikipediaService:
 
                     data = await response.json()
 
+                    if data.get("type") == "disambiguation":
+                        return None
+
         except (aiohttp.ClientError, TimeoutError):
             wikipedia_logger.exception(f"[WIKI] Failed to get description | word={word!r}")
             return None
