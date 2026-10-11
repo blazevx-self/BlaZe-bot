@@ -26,7 +26,7 @@ def race_profile_text(
 
 <tg-emoji emoji-id=\"5294078733177611926\">🦠</tg-emoji> <b>RC-клетки:</b> <code>0</code>
 
-<tg-emoji emoji-id="5294541717767218240">🧍‍♂</tg-emoji> <b><u>Статы:</u>:</b>
+<tg-emoji emoji-id="5294541717767218240">🧍‍♂</tg-emoji> <b><u>Статы</u>:</b>
   ┌ <tg-emoji emoji-id=\"5834929920219812289\">💪</tg-emoji> <b>Сила:</b> <code>{format_num(ghoul.strength)}/{STAT_LIMITS['strength']}</code>
   ├ <tg-emoji emoji-id=\"5276139556725350230\">🏃‍♀️</tg-emoji> <b>Скорость:</b> <code>{format_num(ghoul.speed)}/{STAT_LIMITS['speed']}</code>
   ├ <tg-emoji emoji-id=\"5834678930920969133\">️🦶</tg-emoji> <b>Ловкость:</b> <code>{format_num(ghoul.dexterity)}/{STAT_LIMITS['dexterity']}</code>

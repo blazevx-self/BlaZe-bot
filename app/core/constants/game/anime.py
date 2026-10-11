@@ -1,6 +1,6 @@
 from pathlib import Path
 
-ANIME_DIR = Path(__file__).resolve().parents[2] / "assets" / "anime"
+ANIME_DIR = Path(__file__).resolve().parents[3] / "assets" / "anime"
 
 MAX_VIDEO_SECONDS = 60
 MAX_GIF_SECONDS = 15

@@ -20,6 +20,7 @@ from app.utils.send_media import reply_media
 router = Router()
 
 @router.message(F.text.lower() == "сожрать человека", GhoulRequired())
+@inject
 async def eat_human(
     message: Message,
     ghoul: GhoulData,
