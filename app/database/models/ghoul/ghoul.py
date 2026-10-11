@@ -7,7 +7,7 @@ from sqlalchemy.types import BigInteger
 from app.database.models.base import Base
 
 class GhoulOrm(Base):
-    __tablename__ = 'ghoul'
+    __tablename__ = 'ghouls'
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     telegram_id: Mapped[int] = mapped_column(BigInteger, unique=True, index=True, nullable=False)
