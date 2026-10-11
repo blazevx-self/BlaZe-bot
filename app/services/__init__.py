@@ -10,12 +10,12 @@ from .cooldown import CooldownService
 from .game.quiz import QuizService
 from .game.wordle.wordle import WordleService
 from .game.lottery.lottery import LotteryService
-from .ghouls.coffee import CoffeeService
-from .ghouls.ghoul import GhoulService
-from .ghouls.kagune import KaguneService
-from .ghouls.race_profile import RaceProfileService
-from .ghouls.snap import SnapService
-from .ghouls.stats.stats import StatsService
+from .ghoul.coffee import CoffeeService
+from .ghoul.ghoul import GhoulService
+from .ghoul.kagune import KaguneService
+from .ghoul.race_profile import RaceProfileService
+from .ghoul.snap import SnapService
+from .ghoul.stats.stats import StatsService
 from .tops.tops import TopsService
 from .game.lottery.lottery_video_generator import LotteryVideoGenerator
 from .chat.common.rp_commands import RpCommandService
@@ -34,6 +34,8 @@ from .chat.common.fun_commands import FunService
 from .common.daily_bonus import DailyBonusService
 from .media import MediaService
 from .common.anime import AnimeService
+from .scheduled_notification import ScheduledNotificationService
+from .ghoul.hunger.hunger import HungerService
 
 __all__ = [
     "BanService",
@@ -72,4 +74,6 @@ __all__ = [
     "DailyBonusService",
     "MediaService",
     "AnimeService",
+    "ScheduledNotificationService",
+    "HungerService",
 ]

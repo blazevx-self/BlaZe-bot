@@ -3,7 +3,7 @@ from app.configs.yaml_loader import cfg
 from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 
-from app.services.ghouls.stats.calculate_stats import calculate_price, STAT_LIMITS
+from app.services.ghoul.stats.calculate_stats import calculate_price, STAT_LIMITS
 from app.utils.format_num import format_num
 
 def stats_text(user: UserData, ghoul: GhoulData) -> str:

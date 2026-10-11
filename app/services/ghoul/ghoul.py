@@ -8,7 +8,7 @@ from app.core.enums.media import MediaCollection
 
 from app.types.entities.ghoul import GhoulData
 
-from app.database.repositories.ghoul import GhoulRepository
+from app.database.repositories.ghoul.ghoul import GhoulRepository
 
 class GhoulService:
     """Общий сервис игровых механик гулей."""

@@ -9,7 +9,7 @@ from app.types.services_result.admin import FieldEditResult
 from app.services.cooldown import CooldownService
 
 from app.database.repositories.common.user import UserRepository
-from app.database.repositories.ghoul import GhoulRepository
+from app.database.repositories.ghoul.ghoul import GhoulRepository
 
 from app.utils.logger import admin_logger
 

@@ -14,7 +14,7 @@ from app.types.services_result.chat import RpCommandResult
 
 from app.services.chat.common.rp_commands import RpCommandService
 
-from app.bot.middlewares.rp_command import RpPrivateMiddleware
+from app.bot.middlewares.chat.rp_command import RpPrivateMiddleware
 from app.bot.filters.rp_commands import NewRpCommandOnMedia, RpCommandFilter
 
 router = Router()

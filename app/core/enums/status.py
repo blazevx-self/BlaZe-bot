@@ -29,3 +29,5 @@ class ResultStatus(StrEnum):
     INVALID_TIME = "invalid_time"
     TOO_LONG = "too_long"
     BUSY = "busy"
+
+    FULL = "full"

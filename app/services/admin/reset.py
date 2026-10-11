@@ -4,7 +4,7 @@ from app.types.entities.user import UserData
 from app.types.services_result.admin import ResetResult
 
 from app.database.repositories.common.user import UserRepository
-from app.database.repositories.ghoul import GhoulRepository
+from app.database.repositories.ghoul.ghoul import GhoulRepository
 
 from app.utils.logger import admin_logger
 

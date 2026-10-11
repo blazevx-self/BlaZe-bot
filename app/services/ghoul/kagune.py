@@ -11,11 +11,12 @@ from app.types.services_result.ghoul import KaguneResult
 from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 
-from app.database.repositories.ghoul import GhoulRepository
+from app.database.repositories.ghoul.ghoul import GhoulRepository
 from app.database.repositories.common.user import UserRepository
 
-from app.services.ghouls.ghoul import GhoulService
+from app.services.ghoul.ghoul import GhoulService
 from app.services.cooldown import CooldownService
+from app.services.ghoul.hunger.hunger import HungerService
 
 from app.utils.format_num import format_num
 from app.utils.logger import kagune_logger
@@ -27,12 +28,14 @@ class KaguneService:
         ghoul_repo: GhoulRepository,
         user_repo: UserRepository,
         ghoul_service: GhoulService,
-        cooldown_service: CooldownService
+        cooldown_service: CooldownService,
+        hunger_service: HungerService
     ):
         self.ghoul_repo = ghoul_repo
         self.user_repo = user_repo
         self.ghoul_service = ghoul_service
         self.cooldown_service = cooldown_service
+        self.hunger_service = hunger_service
 
     async def obtaining_kagune(self, user: UserData, ghoul: GhoulData | None) -> KaguneResult:
         if ghoul is not None and ghoul.kagune_was_obtained:
@@ -57,6 +60,8 @@ class KaguneService:
             return KaguneResult(status=ResultStatus.ERROR)
 
         kagune_logger.info(f"[KAGUNE] First kagune obtained | user_id={user_id} | type={kagune_type}")
+
+        await self.hunger_service.schedule_for(user_id)
 
         return KaguneResult(
             status=ResultStatus.SUCCESS,

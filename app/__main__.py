@@ -28,7 +28,10 @@ from app.bot.middlewares import (
 )
 
 from app.bot.routers.routes import all_routers
+
 from app.services.backup import daily_backup
+from app.services.scheduled_notification import scheduled_notification_loop
+
 from app.questions_loader import seed_quiz_questions
 
 from app.utils.logger import system_logger
@@ -102,6 +105,7 @@ async def main():
         system_logger.info("[SYSTEM] Loaded %d routers", len(all_routers))
 
         asyncio.create_task(daily_backup(bot))
+        asyncio.create_task(scheduled_notification_loop(container))
 
         system_logger.info("[SYSTEM] Starting polling...")
         await dp.start_polling(bot, on_startup=on_startup, on_shutdown=on_shutdown)

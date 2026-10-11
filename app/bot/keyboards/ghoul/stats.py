@@ -6,7 +6,7 @@ from aiogram.types import InlineKeyboardMarkup
 from app.core.constants.game.stats import STATS_KEYBOARD
 from app.types.entities.ghoul import GhoulData
 
-from app.services.ghouls.stats.calculate_stats import can_upgrade_amount
+from app.services.ghoul.stats.calculate_stats import can_upgrade_amount
 
 UpgradeAmount = Literal[1, 3, 5]
 UPGRADE_AMOUNTS: tuple[UpgradeAmount, ...] = (1, 3, 5)

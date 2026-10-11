@@ -20,10 +20,10 @@ from app.types.services_result.common import DailyBonusResult
 from app.services.cooldown import CooldownService
 
 from app.database.models.common.user import UserOrm
-from app.database.models.ghoul import GhoulOrm
+from app.database.models.ghoul.ghoul import GhoulOrm
 
 from app.database.repositories.common.user import UserRepository
-from app.database.repositories.ghoul import GhoulRepository
+from app.database.repositories.ghoul.ghoul import GhoulRepository
 from app.database.repositories.game.quiz import QuizRepository
 
 from app.utils.format_num import format_num

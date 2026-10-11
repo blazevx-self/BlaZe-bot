@@ -11,7 +11,8 @@ def race_profile_text(
     power: int,
     kagune_lvl: int,
     snap: int,
-    coffee: int
+    coffee: int,
+    eat_human: int
 ) -> str:
 
     return f"""
@@ -25,19 +26,20 @@ def race_profile_text(
 
 <tg-emoji emoji-id=\"5294078733177611926\">🦠</tg-emoji> <b>RC-клетки:</b> <code>0</code>
 
-<tg-emoji emoji-id=\"5834929920219812289\">💪</tg-emoji> <b>Сила:</b> <code>{format_num(ghoul.strength)}/{STAT_LIMITS['strength']}</code>
-<tg-emoji emoji-id=\"5276139556725350230\">🏃‍♀️</tg-emoji> <b>Скорость:</b> <code>{format_num(ghoul.speed)}/{STAT_LIMITS['speed']}</code>
-<tg-emoji emoji-id=\"5834678930920969133\">️🦶</tg-emoji> <b>Ловкость:</b> <code>{format_num(ghoul.dexterity)}/{STAT_LIMITS['dexterity']}</code>
-<tg-emoji emoji-id=\"5938368005611195877\">❤️</tg-emoji> <b>HP:</b> <code>{format_num(ghoul.hp)}/{STAT_LIMITS['hp']}</code>
-<tg-emoji emoji-id=\"5834967608557835277\">❣️</tg-emoji> <b>Регенерация:</b> <code>{ghoul.regen}/{STAT_LIMITS['regen']}</code>
+<tg-emoji emoji-id="5294541717767218240">🧍‍♂</tg-emoji> <b><u>Статы:</u>:</b>
+  ┌ <tg-emoji emoji-id=\"5834929920219812289\">💪</tg-emoji> <b>Сила:</b> <code>{format_num(ghoul.strength)}/{STAT_LIMITS['strength']}</code>
+  ├ <tg-emoji emoji-id=\"5276139556725350230\">🏃‍♀️</tg-emoji> <b>Скорость:</b> <code>{format_num(ghoul.speed)}/{STAT_LIMITS['speed']}</code>
+  ├ <tg-emoji emoji-id=\"5834678930920969133\">️🦶</tg-emoji> <b>Ловкость:</b> <code>{format_num(ghoul.dexterity)}/{STAT_LIMITS['dexterity']}</code>
+  ├ <tg-emoji emoji-id=\"5938368005611195877\">❤️</tg-emoji> <b>HP:</b> <code>{format_num(ghoul.hp)}/{STAT_LIMITS['hp']}</code>
+  └ <tg-emoji emoji-id=\"5834967608557835277\">❣️</tg-emoji> <b>Регенерация:</b> <code>{ghoul.regen}/{STAT_LIMITS['regen']}</code>
 
 <tg-emoji emoji-id=\"5323761960829862762\">⚡️</tg-emoji> <b>Суммарная мощь:</b> <code>{format_num(power)}</code>
 
-<tg-emoji emoji-id=\"5834596128246469018\">🫰</tg-emoji> <b>Сломано пальцев:</b> <code>{format_num(snap)}</code>
-<tg-emoji emoji-id=\"5386470514871003633\">☕️</tg-emoji> <b>Выпито кофе:</b> <code>{format_num(coffee)}</code>
-
-<tg-emoji emoji-id=\"5262604190630314198\">🍖</tg-emoji> <b>Съедено людей:</b> <code>0</code>
-<tg-emoji emoji-id=\"5294115682781261925\">🦴</tg-emoji> <b>Съедено гулей:</b> <code>0</code>
+<tg-emoji emoji-id="5936143551854285132">📊</tg-emoji> <b><u>Статистика</u>:</b>
+ ┌  <tg-emoji emoji-id=\"5834596128246469018\">🫰</tg-emoji> <b>Сломано пальцев:</b> <code>{format_num(snap)}</code>
+ ├ <tg-emoji emoji-id=\"5386470514871003633\">☕️</tg-emoji> <b>Выпито кофе:</b> <code>{format_num(coffee)}</code>
+ ├ <tg-emoji emoji-id=\"5262604190630314198\">🍖</tg-emoji> <b>Съедено людей:</b> <code>{format_num(eat_human)}</code>
+ └ <tg-emoji emoji-id=\"5294115682781261925\">🦴</tg-emoji> <b>Съедено гулей:</b> <code>0</code>
 
 <tg-emoji emoji-id=\"5294106989767452474\">🧬</tg-emoji> <b>Какуджа:</b> <code>Нет</code>
 """

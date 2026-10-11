@@ -9,6 +9,7 @@ class MediaCollection(StrEnum):
 
     SNAP = "snap"
     COFFEE = "coffee"
+    EAT_HUMAN = "eat_human"
 
     KAGUNE_UKAKU = "kagune/ukaku"
     KAGUNE_KOUKAKU = "kagune/koukaku"

@@ -11,10 +11,10 @@ from app.types.services_result.ghoul import StatsResult
 from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 
-from app.database.repositories.ghoul import GhoulRepository
+from app.database.repositories.ghoul.ghoul import GhoulRepository
 from app.database.repositories.common.user import UserRepository
 
-from app.services.ghouls.stats.calculate_stats import calculate_upgrade
+from app.services.ghoul.stats.calculate_stats import calculate_upgrade
 from app.bot.keyboards.ghoul.stats import builds_stats_keyboard
 
 from app.utils.logger import stats_logger

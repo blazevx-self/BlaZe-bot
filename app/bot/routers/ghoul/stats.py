@@ -11,7 +11,7 @@ from app.core.enums import ResultStatus
 from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 
-from app.services.ghouls.stats.stats import StatsService
+from app.services.ghoul.stats.stats import StatsService
 from app.bot.filters.ghoul import GhoulRequired
 
 router = Router()

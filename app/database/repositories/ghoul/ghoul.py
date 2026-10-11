@@ -3,7 +3,7 @@ from typing import Any
 from sqlalchemy import select, update, func, exists
 from sqlalchemy.dialects.postgresql import insert
 
-from app.database.models.ghoul import GhoulOrm
+from app.database.models.ghoul.ghoul import GhoulOrm
 from app.database.repositories.base import Base
 
 from app.core.constants.game.stats import ALLOWED_STATS

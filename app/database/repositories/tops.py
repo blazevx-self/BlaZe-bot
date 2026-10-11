@@ -3,7 +3,7 @@ from sqlalchemy import select, func
 from app.database.repositories.base import Base
 
 from app.database.models.common.user import UserOrm
-from app.database.models.ghoul import GhoulOrm
+from app.database.models.ghoul.ghoul import GhoulOrm
 
 from app.database.mappers.user import orm_to_user
 from app.database.mappers.ghoul import orm_to_ghoul

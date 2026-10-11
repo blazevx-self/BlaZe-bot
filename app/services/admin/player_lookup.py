@@ -6,7 +6,7 @@ from app.core.exceptions.user import UserNotFoundError
 from app.types.services_result.admin import AdminUserProfileResult
 
 from app.database.repositories.common.user import UserRepository
-from app.database.repositories.ghoul import GhoulRepository
+from app.database.repositories.ghoul.ghoul import GhoulRepository
 
 from app.utils.truncate_text import truncate_text
 from app.utils.format_num import format_num

@@ -10,7 +10,7 @@ from app.core.enums.media import MediaCollection
 from app.types.entities.ghoul import GhoulData
 from app.types.entities.user import UserData
 
-from app.services.ghouls.coffee import CoffeeService
+from app.services.ghoul.coffee import CoffeeService
 from app.services.media import MediaService
 
 from app.bot.filters.ghoul import GhoulRequired

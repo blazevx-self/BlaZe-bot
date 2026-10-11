@@ -7,7 +7,7 @@ from aiogram.enums import ChatType
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.repositories.common.user import UserRepository
-from app.database.repositories.ghoul import GhoulRepository
+from app.database.repositories.ghoul.ghoul import GhoulRepository
 from app.database.repositories.chat.chat import ChatRepository
 from app.database.repositories.chat.chat_member import ChatMemberRepository
 

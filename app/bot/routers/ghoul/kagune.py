@@ -10,7 +10,7 @@ from app.core.enums import ResultStatus
 from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 
-from app.services.ghouls.kagune import KaguneService
+from app.services.ghoul.kagune import KaguneService
 from app.services.media import MediaService
 
 from app.bot.filters.owner import OwnerCallbackFilter

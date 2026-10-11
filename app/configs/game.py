@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 
 from app.core.enums.daily_bonus import BonusReward
 from app.core.enums.lottery import LotteryColor
+from app.core.enums.hunger import HungerTier
 
 @dataclass(slots=True, frozen=True)
 class StartConfig:
@@ -227,6 +228,31 @@ class TransferConfig:
     max_received_per_day: int = 15
 
 @dataclass(slots=True, frozen=True)
+class HungerConfig:
+    max_hunger: int = 100
+    full_decay_hours: int = 120
+    eat_cooldown: int = 12 * 60 * 60
+    min_restore: int = 15
+    max_restore: int = 25
+
+    tiers: tuple = (
+        (75, HungerTier.NOT_HUNGRY),
+        (50, HungerTier.LIGHT),
+        (25, HungerTier.STRONG),
+        (0, HungerTier.DEADLY),
+    )
+
+    thresholds: tuple[int, ...] = (75, 50, 25, 0)
+
+    @property
+    def restore(self) -> int:
+        return randint(self.min_restore, self.max_restore)
+
+    @property
+    def per_hour(self) -> float:
+        return self.max_hunger / self.full_decay_hours
+
+@dataclass(slots=True, frozen=True)
 class GameConfig:
     start: StartConfig = field(default_factory=StartConfig)
     profile_statuses: ProfileStatusConfig = field(default_factory=ProfileStatusConfig)
@@ -240,5 +266,6 @@ class GameConfig:
     lottery: LotteryConfig = field(default_factory=LotteryConfig)
     transfer: TransferConfig = field(default_factory=TransferConfig)
     daily_bonus: DailyBonusConfig = field(default_factory=DailyBonusConfig)
+    hunger: HungerConfig = field(default_factory=HungerConfig)
 
 game_cfg = GameConfig()

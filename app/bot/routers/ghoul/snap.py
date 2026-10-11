@@ -12,7 +12,7 @@ from app.core.enums.media import MediaCollection
 from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 
-from app.services.ghouls.snap import SnapService
+from app.services.ghoul.snap import SnapService
 from app.services.media import MediaService
 
 from app.bot.filters.ghoul import GhoulRequired

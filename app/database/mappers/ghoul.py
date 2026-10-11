@@ -1,4 +1,4 @@
-from app.database.models.ghoul import GhoulOrm
+from app.database.models.ghoul.ghoul import GhoulOrm
 from app.types.entities.ghoul import GhoulData
 
 def orm_to_ghoul(ghoul: GhoulOrm) -> GhoulData:
@@ -23,6 +23,9 @@ def orm_to_ghoul(ghoul: GhoulOrm) -> GhoulData:
 
         eat_humans=ghoul.eat_humans,
         eat_ghouls=ghoul.eat_ghouls,
+
+        hunger=ghoul.hunger,
+        hunger_updated_at=ghoul.hunger_updated_at,
 
         is_kakuja=ghoul.is_kakuja
     )

@@ -6,7 +6,7 @@ from dependency_injector.wiring import Provide
 from app.configs.yaml_loader import cfg
 from app.containers import Container
 
-from app.services.ghouls.ghoul import GhoulService
+from app.services.ghoul.ghoul import GhoulService
 
 class GhoulRequired(BaseFilter):
     """Фильтр доступа.

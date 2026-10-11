@@ -1,13 +1,13 @@
 from datetime import datetime
 
-from sqlalchemy import func, String
+from sqlalchemy import func, String, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import BigInteger
 
 from app.database.models.base import Base
 
 class GhoulOrm(Base):
-    __tablename__ = 'ghouls'
+    __tablename__ = 'ghoul'
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     telegram_id: Mapped[int] = mapped_column(BigInteger, unique=True, index=True, nullable=False)
@@ -31,7 +31,10 @@ class GhoulOrm(Base):
 
     eat_humans: Mapped[int] = mapped_column(default=0)
     eat_ghouls: Mapped[int] = mapped_column(default=0)
-    
+
+    hunger: Mapped[int] = mapped_column(default=100)
+    hunger_updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
     is_kakuja: Mapped[bool] = mapped_column(default=False)
 
     became_ghoul_at: Mapped[datetime] = mapped_column(server_default=func.now())

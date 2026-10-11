@@ -1,8 +1,11 @@
 from dataclasses import dataclass
+from datetime import datetime
 
 @dataclass(slots=True)
 class GhoulData:    
     telegram_id: int
+
+    hunger_updated_at: datetime
 
     rc_money: int
     level: int = 1
@@ -22,5 +25,7 @@ class GhoulData:
 
     eat_humans: int = 0
     eat_ghouls: int = 0
+
+    hunger: int = 100
     
     is_kakuja: bool = False

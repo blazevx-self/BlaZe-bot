@@ -31,6 +31,8 @@ ALLOWED_GHOUL_FIELDS = {
     'eat_ghouls',
 
     'is_kakuja',
+
+    "hunger"
 }
 
 ALLOWED_COOLDOWN_FIELDS: dict[str, CooldownAction] = {
@@ -39,4 +41,5 @@ ALLOWED_COOLDOWN_FIELDS: dict[str, CooldownAction] = {
     "coffee_overdose_cooldown": CooldownAction.COFFEE_OVERDOSE,
     "kagune_cooldown": CooldownAction.KAGUNE_GROW,
     "daily_bonus_cooldown": CooldownAction.DAILY_BONUS,
+    "eat_human_cooldown": CooldownAction.EAT_HUMAN,
 }

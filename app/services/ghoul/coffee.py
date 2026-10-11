@@ -11,7 +11,7 @@ from app.types.entities.ghoul import GhoulData
 
 from app.services.cooldown import CooldownService
 
-from app.database.repositories.ghoul import GhoulRepository
+from app.database.repositories.ghoul.ghoul import GhoulRepository
 from app.database.repositories.common.user import UserRepository
 
 from app.utils.format_num import format_num

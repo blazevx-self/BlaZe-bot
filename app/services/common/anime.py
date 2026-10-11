@@ -5,7 +5,7 @@ import tempfile
 from pathlib import Path
 
 from app.core.enums import ResultStatus
-from app.core.constants.anime import (
+from app.core.constants.game.anime import (
     ANIME_DIR, MAX_VIDEO_SECONDS, MAX_GIF_SECONDS,
     CUT_TIMEOUT, VIDEO_ARGS, GIF_ARGS,
 )

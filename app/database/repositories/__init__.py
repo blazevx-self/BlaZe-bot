@@ -1,5 +1,5 @@
 from .chat.chat import ChatRepository
-from .ghoul import GhoulRepository
+from .ghoul.ghoul import GhoulRepository
 from .game.quiz import QuizRepository
 from .tops import TopsRepository
 from .common.user_cooldown import UserCooldownRepository
@@ -10,6 +10,7 @@ from .common.transfer import TransferRepository
 from .chat.chat_member import ChatMemberRepository
 from .chat.moderator_action import ModeratorActionRepository
 from .media import MediaRepository
+from .common.scheduled_notification import ScheduledNotificationRepository
 
 __all__ = [
     "UserRepository",
@@ -24,4 +25,5 @@ __all__ = [
     "ChatMemberRepository",
     "ModeratorActionRepository",
     "MediaRepository",
+    "ScheduledNotificationRepository",
 ]

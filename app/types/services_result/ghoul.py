@@ -46,3 +46,13 @@ class SnapResult:
     remaining: int | None = 0
     last_snap: int | None = None
 
+@dataclass
+class EatHumanResult:
+    status: ResultStatus
+    text: str | None = None
+    remaining: int | None = None
+
+@dataclass
+class HungerResult:
+    status: ResultStatus
+    text: str | None = None

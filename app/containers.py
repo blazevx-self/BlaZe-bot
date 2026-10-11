@@ -20,6 +20,7 @@ from app.database.repositories import (
     ChatMemberRepository,
     ModeratorActionRepository,
     MediaRepository,
+    ScheduledNotificationRepository,
 )
 
 from app.services import (
@@ -59,6 +60,8 @@ from app.services import (
     DailyBonusService,
     MediaService,
     AnimeService,
+    ScheduledNotificationService,
+    HungerService,
 )
 
 session_context: ContextVar[AsyncSession] = ContextVar("session_context")
@@ -82,6 +85,7 @@ class Container(containers.DeclarativeContainer):
     chat_member_repo = providers.Factory(ChatMemberRepository, session=db_session)
     moderator_action_repo = providers.Factory(ModeratorActionRepository, session=db_session)
     media_repo = providers.Factory(MediaRepository, session=db_session)
+    notify_repo = providers.Factory(ScheduledNotificationRepository, session=db_session)
 
     # services
     cooldown_service = providers.Factory(CooldownService, user_cooldown_repo=user_cooldown_repo)
@@ -168,12 +172,19 @@ class Container(containers.DeclarativeContainer):
     )
 
     ghoul_service = providers.Factory(GhoulService, ghoul_repo=ghoul_repo)
+    hunger_service = providers.Factory(
+        HungerService,
+        ghoul_repo=ghoul_repo,
+        cooldown_service=cooldown_service,
+        notify_repo=notify_repo
+    )
     kagune_service = providers.Factory(
         KaguneService,
         ghoul_repo=ghoul_repo,
         user_repo=user_repo,
         cooldown_service=cooldown_service,
-        ghoul_service=ghoul_service
+        ghoul_service=ghoul_service,
+        hunger_service=hunger_service
     )
     stats_service = providers.Factory(StatsService, ghoul_repo=ghoul_repo, user_repo=user_repo)
     coffee_service = providers.Factory(
@@ -194,3 +205,9 @@ class Container(containers.DeclarativeContainer):
 
     wikipedia_service = providers.Factory(WikipediaService)
     media_service = providers.Factory(MediaService, media_repo=media_repo)
+    scheduled_notification_service = providers.Factory(
+        ScheduledNotificationService,
+        notify_repo=notify_repo,
+        ghoul_repo=ghoul_repo,
+        hunger_service=hunger_service,
+    )

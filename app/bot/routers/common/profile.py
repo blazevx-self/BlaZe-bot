@@ -9,7 +9,7 @@ from app.types.entities.ghoul import GhoulData
 from app.types.entities.user import UserData
 
 from app.services.common.profile import ProfileService
-from app.services.ghouls.race_profile import RaceProfileService
+from app.services.ghoul.race_profile import RaceProfileService
 
 from app.bot.filters.ghoul import GhoulRequired
 from app.bot.filters.owner import OwnerCallbackFilter
