@@ -6,11 +6,8 @@ from aiogram import Bot
 from aiogram.exceptions import TelegramForbiddenError, TelegramRetryAfter
 
 from app.configs.yaml_loader import cfg
-from app.containers import session_context
-
 from app.core.enums.notification import NotificationType
 
-from app.database.database import session_factory
 from app.database.mappers.ghoul import orm_to_ghoul
 from app.database.repositories import GhoulRepository
 from app.database.repositories.common.scheduled_notification import (
@@ -92,6 +89,9 @@ class ScheduledNotificationService:
             hunger_logger.exception("[HUNGER] pm failed | user_id=%s", telegram_id)
 
 async def scheduled_notification_loop(container) -> None:
+    from app.containers import session_context
+    from app.database.database import session_factory
+
     bot = container.bot()
 
     while True:
