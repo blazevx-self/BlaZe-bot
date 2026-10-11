@@ -18,5 +18,5 @@ async def hunger_status(
     ghoul: GhoulData,
     hunger_service: HungerService = Provide[Container.hunger_service]
 ):
-    result = await hunger_service.status(ghoul=ghoul)
+    result = hunger_service.status(ghoul=ghoul)
     return await message.reply(text=result.text)
