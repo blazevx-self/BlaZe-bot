@@ -116,7 +116,7 @@ class PlayerLookupService:
                 f"└ <b>Съедено людей:</b> <code>{format_num(ghoul.eat_humans)}</code>\n"
                 f"└ <b>Съедено гулей:</b> <code>{format_num(ghoul.eat_ghouls)}</code>\n"
                 f"└ <b>Голод:</b> <code>{ghoul.hunger}</code>\n"
-                f"└ <b>Смертей:</b> <code>{format_num(ghoul.deaths)}</code>\т"
+                f"└ <b>Смертей:</b> <code>{format_num(ghoul.deaths)}</code>\n"
                 f"└ <b>Мёртв:</b> <code>{'да' if ghoul.is_dead else 'нет'}</code>\n"
                 f"└ <b>Причина:</b> <code>{ghoul.death_cause or '—'}</code>"
             )
