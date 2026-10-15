@@ -5,10 +5,12 @@ from app.configs.game import game_cfg
 
 from app.core.enums import ResultStatus
 from app.core.enums.cooldown_action import CooldownAction
+from app.core.enums.daily_bonus import EffectKey
 from app.core.enums.notification import NotificationType
 
-from app.types.services_result.ghoul import EatHumanResult, HungerResult
+from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
+from app.types.services_result.ghoul import EatHumanResult, HungerResult
 
 from app.services.cooldown import CooldownService
 from app.services.ghoul.hunger.calculate_hunger import (
@@ -28,6 +30,7 @@ from app.database.mappers.ghoul import orm_to_ghoul
 from app.utils.format_num import format_num
 from app.utils.logger import hunger_logger
 from app.utils.time import format_duration
+from app.utils.effects import apply_effect
 
 class HungerService:
     def __init__(
@@ -68,7 +71,7 @@ class HungerService:
 
         await self.reschedule(orm_to_ghoul(row))
 
-    async def eat_human(self, ghoul: GhoulData) -> EatHumanResult:
+    async def eat_human(self, user: UserData, ghoul: GhoulData) -> EatHumanResult:
         user_id = ghoul.telegram_id
         texts = cfg["message"]["hunger"]
 
@@ -107,7 +110,11 @@ class HungerService:
             await self.cooldown_service.set(
                 telegram_id=user_id,
                 action=CooldownAction.EAT_HUMAN,
-                duration=game_cfg.hunger.eat_cooldown,
+                duration=apply_effect(
+                    user,
+                    EffectKey.EAT_COOLDOWN,
+                    game_cfg.hunger.eat_cooldown
+                )
             )
         except Exception:
             hunger_logger.exception(f"[HUNGER] Eat human failed | user_id={user_id}")

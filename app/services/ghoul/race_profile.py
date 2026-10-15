@@ -32,7 +32,8 @@ class RaceProfileService:
             kagune_lvl=ghoul.kagune_strength,
             snap=ghoul.snap_count,
             coffee=ghoul.coffee_count,
-            eat_human=ghoul.eat_humans
+            eat_human=ghoul.eat_humans,
+            deaths=ghoul.deaths
         )
 
         return RaceProfileResult(

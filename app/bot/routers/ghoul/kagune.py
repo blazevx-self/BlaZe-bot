@@ -33,6 +33,14 @@ async def kagune_menu(
     kagune_service: KaguneService = Provide[Container.kagune_service],
     media_service: MediaService = Provide[Container.media_service]
 ):
+    if ghoul is not None and ghoul.is_dead:
+        text = cfg["message"]["kagune"]["rebirth_1"].format(
+            name=truncate_text(message.from_user.first_name)
+        )
+
+        await message.reply(text=text, reply_markup=get_open_kagune_kb(user.telegram_id))
+        return
+
     result = await kagune_service.upgrade_kagune(user=user, ghoul=ghoul)
 
     if result.status == ResultStatus.NO_KAGUNE:
@@ -69,6 +77,7 @@ async def obtained_kagune(
     kagune_service: KaguneService = Provide[Container.kagune_service],
     media_service: MediaService = Provide[Container.media_service]
 ):
+    was_dead = bool(ghoul and ghoul.is_dead)
     result = await kagune_service.obtaining_kagune(user=user, ghoul=ghoul)
 
     if result.status == ResultStatus.ALREADY_GHOUL:
@@ -78,7 +87,8 @@ async def obtained_kagune(
         )
         return
 
-    text = cfg['message']['kagune']['kagune_2'].format(
+    key = "rebirth_2" if was_dead else "kagune_2"
+    text = cfg["message"]["kagune"][key].format(
         chosen_type=result.kagune_type,
         name=callback.from_user.first_name
     )

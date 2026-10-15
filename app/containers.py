@@ -5,8 +5,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from dependency_injector import providers, containers
 
-from app.configs.settings import settings
-
 from app.database.repositories import (
     ChatRepository,
     GhoulRepository,
@@ -55,13 +53,13 @@ from app.services import (
     ChatHistoryService,
     ReportService,
     ListAdminsService,
-    AIChatService,
     FunService,
     DailyBonusService,
     MediaService,
     AnimeService,
-    ScheduledNotificationService,
     HungerService,
+    ScheduledNotificationService,
+    KillGhoulService,
 )
 
 session_context: ContextVar[AsyncSession] = ContextVar("session_context")
@@ -88,6 +86,7 @@ class Container(containers.DeclarativeContainer):
     notify_repo = providers.Factory(ScheduledNotificationRepository, session=db_session)
 
     # services
+    ghoul_service = providers.Factory(GhoulService, ghoul_repo=ghoul_repo)
     cooldown_service = providers.Factory(CooldownService, user_cooldown_repo=user_cooldown_repo)
 
     ban_service = providers.Factory(BanService, user_repo=user_repo)
@@ -101,6 +100,12 @@ class Container(containers.DeclarativeContainer):
     )
     reset_service = providers.Factory(ResetService, user_repo=user_repo, ghoul_repo=ghoul_repo)
     broadcast_service = providers.Factory(BroadcastService, user_repo=user_repo, chat_repo=chat_repo, bot=bot)
+    kill_ghoul_service = providers.Factory(
+        KillGhoulService,
+        user_repo=user_repo,
+        ghoul_repo=ghoul_repo,
+        ghoul_service=ghoul_service
+    )
 
     chat_service = providers.Factory(ChatService, chat_repo=chat_repo)
     chat_ban_service = providers.Factory(
@@ -141,11 +146,6 @@ class Container(containers.DeclarativeContainer):
     )
     report_service = providers.Factory(ReportService, bot=bot)
     list_admins_service = providers.Factory(ListAdminsService, bot=bot)
-    ai_chat_service = providers.Singleton(
-        AIChatService,
-        api_key = settings.API_KEY,
-        model = settings.AI_MODEL
-    )
     fun_command_service = providers.Factory(FunService, chat_member_repo=chat_member_repo)
 
     start_service = providers.Factory(StartService, user_repo=user_repo)
@@ -171,7 +171,6 @@ class Container(containers.DeclarativeContainer):
         video_generator=lottery_video_generator
     )
 
-    ghoul_service = providers.Factory(GhoulService, ghoul_repo=ghoul_repo)
     hunger_service = providers.Factory(
         HungerService,
         ghoul_repo=ghoul_repo,
@@ -210,4 +209,5 @@ class Container(containers.DeclarativeContainer):
         notify_repo=notify_repo,
         ghoul_repo=ghoul_repo,
         hunger_service=hunger_service,
+        ghoul_service=ghoul_service
     )

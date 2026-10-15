@@ -10,6 +10,7 @@ GHOUL_REWARDS: frozenset[BonusReward] = frozenset({
     R.RESET_SNAP, R.RESET_COFFEE, R.FAST_SNAP, R.FAST_COFFEE,
     R.PENALTY_SNAP, R.PENALTY_COFFEE, R.SNAP_COUNT, R.COFFEE_COUNT,
     R.RESET_ALL, R.FAST_ALL, R.STAT_UP, R.STATS_DISCOUNT, R.STATS_PRICE_UP,
+    R.HUNGER_RESTORE, R.EAT_COUNT, R.RESET_EAT, R.FAST_EAT, R.PENALTY_EAT,
 })
 
 KAGUNE_REWARDS: frozenset[BonusReward] = frozenset({
@@ -29,6 +30,7 @@ RESETS: dict[BonusReward, tuple[CooldownAction, ...]] = {
     R.RESET_SNAP: (CooldownAction.SNAP,),
     R.RESET_COFFEE: (CooldownAction.COFFEE, CooldownAction.COFFEE_OVERDOSE),
     R.RESET_KAGUNE: (CooldownAction.KAGUNE_GROW,),
+    R.RESET_EAT: (CooldownAction.EAT_HUMAN,),
     R.RESET_ALL: (
         CooldownAction.SNAP,
         CooldownAction.COFFEE,
@@ -42,6 +44,7 @@ PENALTIES: dict[BonusReward, CooldownAction] = {
     R.PENALTY_SNAP: CooldownAction.SNAP,
     R.PENALTY_COFFEE: CooldownAction.COFFEE,
     R.PENALTY_KAGUNE: CooldownAction.KAGUNE_GROW,
+    R.PENALTY_EAT: CooldownAction.EAT_HUMAN,
 }
 
 # награда -> (колонка гуля, поле диапазона в DailyBonusConfig)
@@ -49,6 +52,7 @@ COUNTERS: dict[BonusReward, tuple[str, str]] = {
     R.SNAP_COUNT: ("snap_count", "counts"),
     R.COFFEE_COUNT: ("coffee_count", "counts"),
     R.KAGUNE_LEVEL: ("kagune_strength", "kagune_levels"),
+    R.EAT_COUNT: ("eat_humans", "eat_counts"),
 }
 
 # награда -> (эффекты, поле диапазона множителя в DailyBonusConfig)
@@ -65,6 +69,7 @@ EFFECTS: dict[BonusReward, tuple[tuple[EffectKey, ...], str]] = {
     R.KAGUNE_PRICE_UP: ((EffectKey.KAGUNE_PRICE,), "price_up_multiplier"),
     R.STATS_PRICE_UP: ((EffectKey.STATS_PRICE,), "price_up_multiplier"),
     R.QUIZ_REWARD_BOOST: ((EffectKey.QUIZ_REWARD,), "quiz_boost_multiplier"),
+    R.FAST_EAT: ((EffectKey.EAT_COOLDOWN,), "fast_multiplier"),
 }
 
 # Короткие названия — для показа «что было в остальных коробках»
@@ -82,20 +87,25 @@ BONUS_LABELS: dict[BonusReward, str] = {
     BonusReward.RESET_COFFEE: "<tg-emoji emoji-id=\"5386470514871003633\">☕️</tg-emoji> Вторая чашка",
     BonusReward.RESET_KAGUNE: "<tg-emoji emoji-id=\"5442804822048780010\">😫</tg-emoji> Сброс кагуне",
     BonusReward.RESET_ALL: "<tg-emoji emoji-id=\"5260687119092817530\">🔄</tg-emoji> Сброс всего",
+    BonusReward.RESET_EAT: "<tg-emoji emoji-id=\"5386546333928682436\">🍴</tg-emoji> Сброс охоты",
 
     BonusReward.FAST_SNAP: "<tg-emoji emoji-id=\"5877203642636832557\">⏩</tg-emoji> Быстрый щелчок",
     BonusReward.FAST_COFFEE: "<tg-emoji emoji-id=\"5877203642636832557\">⏩</tg-emoji> Быстрый кофе",
     BonusReward.FAST_KAGUNE: "<tg-emoji emoji-id=\"5877203642636832557\">⏩</tg-emoji> Быстрое кагуне",
     BonusReward.FAST_ALL: "<tg-emoji emoji-id=\"5877203642636832557\">⏩</tg-emoji> Всё быстрее",
+    BonusReward.FAST_EAT: "<tg-emoji emoji-id=\"5877203642636832557\">⏩</tg-emoji> Быстрая охота",
 
     BonusReward.PENALTY_SNAP: "<tg-emoji emoji-id=\"5834571187371381456\">💢</tg-emoji> Штраф щелчка",
     BonusReward.PENALTY_COFFEE: "<tg-emoji emoji-id=\"5834571187371381456\">💢</tg-emoji> Штраф кофе",
     BonusReward.PENALTY_KAGUNE: "<tg-emoji emoji-id=\"5834571187371381456\">💢</tg-emoji> Штраф кагуне",
+    BonusReward.PENALTY_EAT: "<tg-emoji emoji-id=\"5834571187371381456\">💢</tg-emoji> Штраф охоты",
 
     BonusReward.SNAP_COUNT: "<tg-emoji emoji-id=\"5834596128246469018\">🫰</tg-emoji> + щелчки",
     BonusReward.COFFEE_COUNT: "<tg-emoji emoji-id=\"5386470514871003633\">☕️</tg-emoji> + кофе",
     BonusReward.KAGUNE_LEVEL: "<tg-emoji emoji-id=\"5442804822048780010\">😫</tg-emoji> + уровень кагуне",
     BonusReward.STAT_UP: "<tg-emoji emoji-id=\"5834929920219812289\">💪</tg-emoji> + стат",
+    BonusReward.HUNGER_RESTORE: "<tg-emoji emoji-id=\"5262604190630314198\">🍖</tg-emoji> + голод",
+    BonusReward.EAT_COUNT: "<tg-emoji emoji-id=\"5294115682781261925\">🦴</tg-emoji> + люди",
 
     BonusReward.KAGUNE_DISCOUNT: "<tg-emoji emoji-id=\"5888620056551625531\">🏷</tg-emoji> Скидка на кагуне",
     BonusReward.STATS_DISCOUNT: "<tg-emoji emoji-id=\"5888620056551625531\">🏷</tg-emoji> Скидка на статы",

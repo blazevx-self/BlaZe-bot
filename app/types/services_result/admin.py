@@ -45,3 +45,9 @@ class BroadcastResult:
     total: int
     success: int
     failed: int
+
+@dataclass
+class KillGhoulResult:
+    user: UserData
+    already_dead: bool
+    death_cause: str | None = None

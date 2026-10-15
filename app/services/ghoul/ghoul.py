@@ -1,10 +1,13 @@
 from app.configs.game import game_cfg
 
+from datetime import datetime, timezone
+
 from app.core.constants.game.stats import POWER_FIELDS
 from app.core.constants.game.kagune import KAGUNE_MULTIPLIER
 from app.core.constants.game.ranks import DANGER_RANKS
 from app.core.constants.media import KAGUNE_COLLECTIONS
 from app.core.enums.media import MediaCollection
+from app.core.enums.death_cause import DeathCause
 
 from app.types.entities.ghoul import GhoulData
 
@@ -34,6 +37,41 @@ class GhoulService:
         ghoul = await self.ghoul_repo.get(user_id)
 
         return bool(ghoul and ghoul.kagune_was_obtained)
+
+    async def apply_death(self, user_id: int, cause: DeathCause) -> None:
+        ghoul = await self.ghoul_repo.get(user_id)
+
+        if ghoul is None or ghoul.is_dead:
+            return
+
+        await self.ghoul_repo.change_data(
+            telegram_id=user_id,
+            deaths=ghoul.deaths + 1,
+            is_dead=True,
+            death_cause=cause.value
+        )
+
+    async def reset_for_rebirth(self, user_id: int, kagune_type: str) -> None:
+        await self.ghoul_repo.change_data(
+            telegram_id=user_id,
+            snap_count=0,
+            coffee_count=0,
+            kagune_type=kagune_type,
+            kagune_strength=1,
+            kagune_was_obtained=True,
+            strength=1,
+            dexterity=1,
+            speed=1,
+            hp=5,
+            regen=5,
+            eat_humans=0,
+            eat_ghouls=0,
+            hunger=100,
+            hunger_updated_at=datetime.now(timezone.utc),
+            is_dead=False,
+            death_cause=None,
+            is_kakuja=False,
+        )
 
     @staticmethod
     def get_price_kagune(level: int) -> int:

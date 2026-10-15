@@ -27,5 +27,9 @@ class GhoulData:
     eat_ghouls: int = 0
 
     hunger: int = 100
-    
+
+    deaths: int = 0
+    is_dead: bool = False
+    death_cause: str | None = None
+
     is_kakuja: bool = False

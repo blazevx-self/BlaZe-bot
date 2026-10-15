@@ -38,10 +38,23 @@ class KaguneService:
         self.hunger_service = hunger_service
 
     async def obtaining_kagune(self, user: UserData, ghoul: GhoulData | None) -> KaguneResult:
+        user_id = user.telegram_id
+
+        if ghoul is not None and ghoul.is_dead:
+            kagune_type = game_cfg.kagune.random_type()
+
+            await self.ghoul_service.reset_for_rebirth(user_id, kagune_type)
+            await self.hunger_service.schedule_for(user_id)
+
+            return KaguneResult(
+                status=ResultStatus.SUCCESS,
+                kagune_type=kagune_type,
+                collection=MediaCollection.KAGUNE_OBTAINED,
+            )
+
         if ghoul is not None and ghoul.kagune_was_obtained:
             return KaguneResult(status=ResultStatus.ALREADY_GHOUL)
 
-        user_id = user.telegram_id
         kagune_type = game_cfg.kagune.random_type()
 
         if ghoul is None:
@@ -71,6 +84,9 @@ class KaguneService:
 
     async def upgrade_kagune(self, user: UserData, ghoul: GhoulData) -> KaguneResult:
         user_id = user.telegram_id
+
+        if ghoul and ghoul.is_dead:
+            return KaguneResult(status=ResultStatus.NO_KAGUNE)
 
         if not ghoul or not ghoul.kagune_was_obtained:
             kagune_logger.debug(f"[KAGUNE] Upgrade denied | user_id={user_id} | reason=no_kagune")

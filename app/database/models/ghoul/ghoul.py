@@ -35,6 +35,10 @@ class GhoulOrm(Base):
     hunger: Mapped[int] = mapped_column(default=100)
     hunger_updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
+    deaths: Mapped[int] = mapped_column(default=0)
+    is_dead: Mapped[bool] = mapped_column(default=False)
+    death_cause: Mapped[str | None] = mapped_column(String(16), nullable=True)
+
     is_kakuja: Mapped[bool] = mapped_column(default=False)
 
     became_ghoul_at: Mapped[datetime] = mapped_column(server_default=func.now())

@@ -6,7 +6,9 @@ from aiogram import Bot
 from aiogram.exceptions import TelegramForbiddenError, TelegramRetryAfter
 
 from app.configs.yaml_loader import cfg
+
 from app.core.enums.notification import NotificationType
+from app.core.enums.death_cause import DeathCause
 
 from app.database.mappers.ghoul import orm_to_ghoul
 from app.database.repositories import GhoulRepository
@@ -14,8 +16,9 @@ from app.database.repositories.common.scheduled_notification import (
     ScheduledNotificationRepository,
 )
 
-from app.services.ghoul.hunger.calculate_hunger import current_hunger
 from app.services.ghoul.hunger.hunger import HungerService
+from app.services.ghoul.ghoul import GhoulService
+from app.services.ghoul.hunger.calculate_hunger import current_hunger
 
 from app.utils.logger import hunger_logger
 
@@ -27,10 +30,12 @@ class ScheduledNotificationService:
         ghoul_repo: GhoulRepository,
         notify_repo: ScheduledNotificationRepository,
         hunger_service: HungerService,
+        ghoul_service: GhoulService
     ):
         self.ghoul_repo = ghoul_repo
         self.notify_repo = notify_repo
         self.hunger_service = hunger_service
+        self.ghoul_service = ghoul_service
 
     async def process_due(self, bot: Bot) -> None:
         due = await self.notify_repo.get_due(datetime.now(timezone.utc))
@@ -60,6 +65,11 @@ class ScheduledNotificationService:
             return
 
         ghoul = orm_to_ghoul(ghoul_orm)
+
+        if ghoul.is_dead:
+            await self.notify_repo.delete(telegram_id, NotificationType.HUNGER)
+            return
+
         now = datetime.now(timezone.utc)
         hunger = current_hunger(ghoul.hunger, ghoul.hunger_updated_at, now)
 
@@ -67,12 +77,16 @@ class ScheduledNotificationService:
             await self.hunger_service.reschedule(ghoul)
             return
 
-        texts = cfg["message"]["hunger"]
-
         if threshold == 0:
-            text = texts["notify_hunger_zero"]
-        else:
-            text = texts["notify_hunger"][threshold]
+            text = cfg["message"]["death"]["notify"]["hunger"]
+
+            await self._send(bot, telegram_id, text)
+            await self.ghoul_service.apply_death(telegram_id, DeathCause.HUNGER)
+            await self.notify_repo.delete(telegram_id, NotificationType.HUNGER)
+
+            return
+
+        text = cfg["message"]["hunger"]["notify_hunger"][threshold]
 
         await self._send(bot, telegram_id, text)
         await self.hunger_service.reschedule(ghoul)

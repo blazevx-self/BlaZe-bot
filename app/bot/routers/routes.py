@@ -22,7 +22,8 @@ from app.bot.routers.chat.common import rp_commands, report, list_admins, ai, fu
 
 from app.bot.routers.admin import (
     ban_bot, modify_balance, player_lookup,
-    field_edit, reset, broadcast, add_gif
+    field_edit, reset, broadcast, add_gif,
+    kill_ghoul,
 )
 
 all_routers = (
@@ -68,6 +69,7 @@ all_routers = (
     reset.router,
     broadcast.router,
     add_gif.router,
+    kill_ghoul.router,
 
     # moderator
     rules.router,

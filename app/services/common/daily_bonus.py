@@ -1,6 +1,8 @@
 import random
 import time
 
+from datetime import datetime, timezone
+
 from app.configs.game import game_cfg
 
 from app.core.constants.game.daily_bonus import (
@@ -18,6 +20,8 @@ from app.types.entities.ghoul import GhoulData
 from app.types.services_result.common import DailyBonusResult
 
 from app.services.cooldown import CooldownService
+from app.services.ghoul.hunger.hunger import HungerService
+from app.services.ghoul.hunger.calculate_hunger import current_hunger, restore_hunger
 
 from app.database.models.common.user import UserOrm
 from app.database.models.ghoul.ghoul import GhoulOrm
@@ -36,12 +40,14 @@ class DailyBonusService:
         user_repo: UserRepository,
         ghoul_repo: GhoulRepository,
         quiz_repo: QuizRepository,
-        cooldown_service: CooldownService
+        cooldown_service: CooldownService,
+        hunger_service: HungerService
     ):
         self.user_repo = user_repo
         self.ghoul_repo = ghoul_repo
         self.quiz_repo = quiz_repo
         self.cooldown_service = cooldown_service
+        self.hunger_service = hunger_service
 
     async def remaining(self, user: UserData) -> int:
         return await self.cooldown_service.remaining(
@@ -182,6 +188,33 @@ class DailyBonusService:
             return {
                 "percent": round(abs(1 - multiplier) * 100),
                 "time": format_duration(duration, show_seconds=False)
+            }
+
+        if reward == R.HUNGER_RESTORE:
+            now = datetime.now(timezone.utc)
+            hunger = current_hunger(ghoul.hunger, ghoul.hunger_updated_at, now)
+            amount = random.choices(
+                [3, 4, 5],
+                weights=[50, 30, 20],
+                k=1,
+            )[0]
+
+            new_hunger = restore_hunger(hunger, amount)
+
+            await self.ghoul_repo.change_data(
+                user_id,
+                hunger=new_hunger,
+                hunger_updated_at=now
+            )
+
+            ghoul.hunger = new_hunger
+            ghoul.hunger_updated_at = now
+
+            await self.hunger_service.reschedule(ghoul)
+
+            return {
+                "amount": amount,
+                "hunger": new_hunger
             }
 
         return {} # EMPTY

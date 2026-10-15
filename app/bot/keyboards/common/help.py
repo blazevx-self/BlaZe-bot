@@ -7,6 +7,8 @@ def get_help_menu():
 
     builder.button(text="Лор проекта", url=game_cfg.start.telegraph_link, icon_custom_emoji_id='5258328383183396223')
     builder.button(text="Канал автора", url=game_cfg.start.channel_link, icon_custom_emoji_id="6039381989985882045")
+    builder.button(text="Сообщество", url=game_cfg.start.group_link, icon_custom_emoji_id="5778208881301787450")
+
     builder.adjust(1)
 
     return builder.as_markup()
@@ -16,6 +18,7 @@ def get_help_menu_back():
 
     builder.button(text="Лор проекта", url=game_cfg.start.telegraph_link, icon_custom_emoji_id='5258328383183396223')
     builder.button(text="Канал автора", url=game_cfg.start.channel_link, icon_custom_emoji_id="6039381989985882045")
+    builder.button(text="Сообщество", url=game_cfg.start.group_link, icon_custom_emoji_id="5778208881301787450")
     builder.button(text="Назад", callback_data="back", icon_custom_emoji_id="5258132936401624790")
 
     builder.adjust(1)

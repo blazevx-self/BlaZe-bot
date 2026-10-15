@@ -14,6 +14,7 @@ class StartConfig:
     guide_link: str = "https://t.me/+ChhN0j9eYMI3ODBi"
     telegraph_link: str = "https://telegra.ph/BlaZe--Bot--Pomoshch-08-18-2"
     channel_link: str = "https://t.me/+H67pSJL-qYU5Y2Qy"
+    group_link = "https://t.me/+HET8owLsLthkMDky"
 
 @dataclass(slots=True, frozen=True)
 class ProfileStatusWeights:
@@ -79,6 +80,12 @@ class DailyBonusConfig:
         BonusReward.KAGUNE_PRICE_UP: 10,
         BonusReward.STATS_PRICE_UP: 10,
 
+        BonusReward.HUNGER_RESTORE: 40,
+        BonusReward.EAT_COUNT: 30,
+        BonusReward.RESET_EAT: 15,
+        BonusReward.FAST_EAT: 20,
+        BonusReward.PENALTY_EAT: 12,
+
         BonusReward.EMPTY: 100,
     })
 
@@ -99,6 +106,13 @@ class DailyBonusConfig:
 
     effect_duration: tuple[int, int] = (2 * 60 * 60, 12 * 60 * 60)
     penalty_duration: tuple[int, int] = (10 * 60, 60 * 60)
+
+    hunger_restore_chances: tuple[tuple[int, int], ...] = (
+        (3, 50),
+        (4, 30),
+        (5, 20),
+    )
+    eat_counts: tuple[int, int] = (1, 3)
 
     def random_reward(self, allowed: set[BonusReward]) -> BonusReward:
         rewards = [reward for reward in self.weights if reward in allowed]

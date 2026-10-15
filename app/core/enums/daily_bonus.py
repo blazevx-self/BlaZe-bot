@@ -36,10 +36,17 @@ class BonusReward(StrEnum):
 
     EMPTY = "empty"
 
+    HUNGER_RESTORE = "hunger_restore"
+    EAT_COUNT = "eat_count"
+    RESET_EAT = "reset_eat"
+    FAST_EAT = "fast_eat"
+    PENALTY_EAT = "penalty_eat"
+
 class EffectKey(StrEnum):
     SNAP_COOLDOWN = "snap_cooldown"
     COFFEE_COOLDOWN = "coffee_cooldown"
     KAGUNE_COOLDOWN = "kagune_cooldown"
+    EAT_COOLDOWN = "eat_cooldown"
     KAGUNE_PRICE = "kagune_price"
     STATS_PRICE = "stats_price"
     QUIZ_REWARD = "quiz_reward"

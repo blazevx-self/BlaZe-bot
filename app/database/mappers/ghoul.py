@@ -27,5 +27,9 @@ def orm_to_ghoul(ghoul: GhoulOrm) -> GhoulData:
         hunger=ghoul.hunger,
         hunger_updated_at=ghoul.hunger_updated_at,
 
+        deaths=ghoul.deaths,
+        is_dead=ghoul.is_dead,
+        death_cause=ghoul.death_cause,
+
         is_kakuja=ghoul.is_kakuja
     )

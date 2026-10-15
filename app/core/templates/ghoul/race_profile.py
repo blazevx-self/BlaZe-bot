@@ -12,7 +12,8 @@ def race_profile_text(
     kagune_lvl: int,
     snap: int,
     coffee: int,
-    eat_human: int
+    eat_human: int,
+    deaths: int
 ) -> str:
 
     return f"""
@@ -36,10 +37,11 @@ def race_profile_text(
 <tg-emoji emoji-id=\"5323761960829862762\">⚡️</tg-emoji> <b>Суммарная мощь:</b> <code>{format_num(power)}</code>
 
 <tg-emoji emoji-id="5936143551854285132">📊</tg-emoji> <b><u>Статистика</u>:</b>
- ┌  <tg-emoji emoji-id=\"5834596128246469018\">🫰</tg-emoji> <b>Сломано пальцев:</b> <code>{format_num(snap)}</code>
+ ┌ <tg-emoji emoji-id=\"5834596128246469018\">🫰</tg-emoji> <b>Сломано пальцев:</b> <code>{format_num(snap)}</code>
  ├ <tg-emoji emoji-id=\"5386470514871003633\">☕️</tg-emoji> <b>Выпито кофе:</b> <code>{format_num(coffee)}</code>
  ├ <tg-emoji emoji-id=\"5262604190630314198\">🍖</tg-emoji> <b>Съедено людей:</b> <code>{format_num(eat_human)}</code>
  └ <tg-emoji emoji-id=\"5294115682781261925\">🦴</tg-emoji> <b>Съедено гулей:</b> <code>0</code>
 
 <tg-emoji emoji-id=\"5294106989767452474\">🧬</tg-emoji> <b>Какуджа:</b> <code>Нет</code>
+<tg-emoji emoji-id=\"5294342418399783851\">💀</tg-emoji> <b>Смертей:</b> <code>{deaths}</code>
 """
