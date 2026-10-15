@@ -156,6 +156,13 @@ class Container(containers.DeclarativeContainer):
         model=settings.AI_MODEL
     )
 
+    hunger_service = providers.Factory(
+        HungerService,
+        ghoul_repo=ghoul_repo,
+        cooldown_service=cooldown_service,
+        notify_repo=notify_repo
+    )
+
     start_service = providers.Factory(StartService, user_repo=user_repo)
     profile_service = providers.Factory(ProfileService, bot=bot, chat_member_repo=chat_member_repo)
     rp_command_service = providers.Factory(RpCommandService, rp_repo=rp_repo)
@@ -165,7 +172,8 @@ class Container(containers.DeclarativeContainer):
         user_repo=user_repo,
         ghoul_repo=ghoul_repo,
         quiz_repo=quiz_repo,
-        cooldown_service=cooldown_service
+        cooldown_service=cooldown_service,
+        hunger_service=hunger_service
     )
     anime_service = providers.Singleton(AnimeService)
 
@@ -177,13 +185,6 @@ class Container(containers.DeclarativeContainer):
         user_repo=user_repo,
         lottery_repo=lottery_repo,
         video_generator=lottery_video_generator
-    )
-
-    hunger_service = providers.Factory(
-        HungerService,
-        ghoul_repo=ghoul_repo,
-        cooldown_service=cooldown_service,
-        notify_repo=notify_repo
     )
     kagune_service = providers.Factory(
         KaguneService,
