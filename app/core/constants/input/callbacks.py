@@ -12,5 +12,7 @@ ALLOWED_CALLBACK_PREFIXES = (
     "locked",
     "transfer",
     "reset",
-    "bonus"
+    "bonus",
+    "kill",
+    "captcha"
 )

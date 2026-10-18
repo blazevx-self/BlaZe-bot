@@ -1,22 +1,30 @@
 from html import escape
 
 from aiogram import Router, F
-from aiogram.types import ChatMemberUpdated, LinkPreviewOptions, Message
+from aiogram.enums import ChatMemberStatus
+from aiogram.types import ChatMemberUpdated, LinkPreviewOptions, Message, CallbackQuery
+from aiogram.exceptions import TelegramAPIError
 from aiogram.filters.chat_member_updated import (
     ChatMemberUpdatedFilter,
     IS_MEMBER, IS_NOT_MEMBER,
 )
-from aiogram.exceptions import TelegramAPIError
 
 from dependency_injector.wiring import inject, Provide
 
+from app.bot.filters.owner import OwnerCallbackFilter
 from app.containers import Container
 from app.configs.game import game_cfg
+
+from app.core.constants.chat.captcha import CAPTCHA_TIMEOUT
+from app.core.exceptions.chat import CaptchaError
 
 from app.database.repositories.chat.chat import ChatRepository
 
 from app.services.chat.chat import ChatService
+from app.services.chat.common.captcha import CaptchaService
+
 from app.bot.keyboards.common.help import get_help_menu
+from app.bot.keyboards.chat.captcha import get_captcha_kb
 
 from app.utils.logger import bot_logger, error_logger
 
@@ -96,20 +104,87 @@ async def bot_removed(event: ChatMemberUpdated) -> None:
 @inject
 async def member_joined(
     event: ChatMemberUpdated,
-    chat_service: ChatService = Provide[Container.chat_service]
+    chat_repo: ChatRepository = Provide[Container.chat_repo],
+    chat_service: ChatService = Provide[Container.chat_service],
+    captcha_service: CaptchaService = Provide[Container.captcha_service]
 ) -> None:
     if event.chat.type not in ("group", "supergroup"):
         return
 
     member = event.new_chat_member.user
+
+    if member.is_bot:
+        return
+
+    if event.new_chat_member.status in (
+        ChatMemberStatus.CREATOR,
+        ChatMemberStatus.ADMINISTRATOR
+    ):
+        await _send_welcome(event, chat_service)
+        return
+
+    chat = await chat_repo.get_chat_by_telegram_id(event.chat.id)
+
+    if chat and chat.captcha_enabled:
+        text = (
+            f"{escape(member.first_name)}, нажми кнопку за {CAPTCHA_TIMEOUT} сек."
+        )
+
+        try:
+            await captcha_service.start(
+                chat_id=event.chat.id,
+                user=member,
+                reply_markup=get_captcha_kb(member.id),
+                text=text,
+            )
+        except CaptchaError:
+            return
+        return
+
+    await _send_welcome(event, chat_service)
+
+@router.callback_query(F.data.startswith("captcha_"), OwnerCallbackFilter())
+@inject
+async def captcha_passed(
+    callback: CallbackQuery,
+    chat_service: ChatService = Provide[Container.chat_service],
+    captcha_service: CaptchaService = Provide[Container.captcha_service]
+) -> None:
+    if callback.message is None:
+        await callback.answer()
+        return
+
+    chat_id = callback.message.chat.id
+
+    try:
+        await captcha_service.verify(chat_id, callback.from_user.id)
+    except CaptchaError as e:
+        await callback.answer(str(e), show_alert=False)
+        return
+
+    await callback.answer()
+
+    welcome = await chat_service.get_welcome_message(telegram_id=chat_id)
+
+    if not welcome:
+        return
+
+    text = welcome.replace("{name}", escape(callback.from_user.first_name))
+
+    try:
+        await callback.bot.send_message(chat_id=chat_id, text=text)
+    except TelegramAPIError as e:
+        error_logger.warning(f"[CHAT] Welcome message failed | chat_id={chat_id} | error={e}")
+
+async def _send_welcome(event: ChatMemberUpdated, chat_service: ChatService) -> None:
     welcome_message = await chat_service.get_welcome_message(telegram_id=event.chat.id)
 
     if not welcome_message:
         return
 
-    welcome_message = welcome_message.replace(
-        "{name}",
-        escape(member.first_name)
-    )
+    text = welcome_message.replace("{name}", escape(event.new_chat_member.user.first_name))
 
-    await event.bot.send_message(chat_id=event.chat.id, text=welcome_message)
+    try:
+        await event.bot.send_message(chat_id=event.chat.id, text=text)
+    except TelegramAPIError as e:
+        error_logger.warning(f"[CHAT] Welcome message failed | chat_id={event.chat.id} | error={e}")
