@@ -127,7 +127,10 @@ async def member_joined(
 
     if chat and chat.captcha_enabled:
         text = (
-            f"{escape(member.first_name)}, нажми кнопку за {CAPTCHA_TIMEOUT} сек."
+            f"<tg-emoji emoji-id=\"6043960760130868895\">🤔</tg-emoji> "
+            f"<b>{escape(member.first_name)}</b>, ты кто?\n\n"
+            "<i>Нажми кнопку, пока не выкинул.</i>\n\n"
+            f"На это <b>{CAPTCHA_TIMEOUT} сек.</b>"
         )
 
         try:
