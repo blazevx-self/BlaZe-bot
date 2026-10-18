@@ -2,7 +2,7 @@ from html import escape
 
 from aiogram import Router, F
 from aiogram.enums import ChatMemberStatus
-from aiogram.types import ChatMemberUpdated, LinkPreviewOptions, Message, CallbackQuery
+from aiogram.types import ChatMemberUpdated, LinkPreviewOptions, Message, CallbackQuery, ChatJoinRequest
 from aiogram.exceptions import TelegramAPIError
 from aiogram.filters.chat_member_updated import (
     ChatMemberUpdatedFilter,
@@ -175,6 +175,19 @@ async def captcha_passed(
         await callback.bot.send_message(chat_id=chat_id, text=text)
     except TelegramAPIError as e:
         error_logger.warning(f"[CHAT] Welcome message failed | chat_id={chat_id} | error={e}")
+
+@router.chat_join_request()
+async def approve_join_request(event: ChatJoinRequest) -> None:
+    if event.chat.type not in ("group", "supergroup"):
+        return
+
+    try:
+        await event.approve()
+    except TelegramAPIError as e:
+        error_logger.warning(
+            f"[CHAT] Join request approve failed | chat_id={event.chat.id} "
+            f"| user_id={event.from_user.id} | {e}"
+        )
 
 async def _send_welcome(event: ChatMemberUpdated, chat_service: ChatService) -> None:
     welcome_message = await chat_service.get_welcome_message(telegram_id=event.chat.id)
