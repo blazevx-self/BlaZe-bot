@@ -18,3 +18,6 @@ class ModerationError(ChatError):
 
 class ReportError(ChatError):
     pass
+
+class CaptchaError(ChatError):
+    pass

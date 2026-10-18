@@ -63,6 +63,7 @@ from app.services import (
     HungerService,
     ScheduledNotificationService,
     KillGhoulService,
+    CaptchaService
 )
 
 session_context: ContextVar[AsyncSession] = ContextVar("session_context")
@@ -155,6 +156,7 @@ class Container(containers.DeclarativeContainer):
         api_key=settings.API_KEY,
         model=settings.AI_MODEL
     )
+    captcha_service = providers.Singleton(CaptchaService, bot=bot)
 
     hunger_service = providers.Factory(
         HungerService,
