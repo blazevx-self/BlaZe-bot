@@ -37,6 +37,7 @@ from .common.anime import AnimeService
 from .scheduled_notification import ScheduledNotificationService
 from .ghoul.hunger.hunger import HungerService
 from .admin.kill_ghoul import KillGhoulService
+from .chat.common.captcha import CaptchaService
 
 __all__ = [
     "BanService",
@@ -78,4 +79,5 @@ __all__ = [
     "ScheduledNotificationService",
     "HungerService",
     "KillGhoulService",
+    "CaptchaService"
 ]
