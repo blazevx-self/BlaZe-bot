@@ -9,11 +9,11 @@ from app.core.exceptions.chat import ModerationError
 from app.core.exceptions.user import UserNotFoundError
 
 from app.services.chat.moderator.warn import ChatWarnService
-from app.bot.filters.group_only import GroupModeratorFilter
+from app.bot.filters.group_only import GroupModeratorFilter, GroupOnlyFilter
 
 router = Router()
 
-@router.message(Command("warn_chat"), GroupModeratorFilter())
+@router.message(Command("warn_chat"), GroupOnlyFilter(), GroupModeratorFilter())
 @inject
 async def warn_chat_cmd(
     message: Message,
@@ -22,16 +22,15 @@ async def warn_chat_cmd(
     if not message.text or not message.from_user:
         return
 
+    if message.sender_chat:
+        await message.reply(
+            "<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
+            "Отключи анонимность, чтобы использовать эту команду."
+        )
+        return
+
     if message.reply_to_message and message.reply_to_message.from_user:
         args = message.text.split(maxsplit=1)
-
-        if message.reply_to_message.from_user.is_bot:
-            await message.reply(
-                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
-                "Нельзя выдать предупреждение боту."
-            )
-            return
-
         query = message.reply_to_message.from_user.id
         reason = args[1] if len(args) > 1 else None
 
@@ -68,7 +67,7 @@ async def warn_chat_cmd(
 
     await message.reply(chat_warn_service.fmt_warn_result(result))
 
-@router.message(Command("unwarn_chat"), GroupModeratorFilter())
+@router.message(Command("unwarn_chat"), GroupOnlyFilter(), GroupModeratorFilter())
 @inject
 async def unwarn_chat_cmd(
     message: Message,
@@ -87,13 +86,6 @@ async def unwarn_chat_cmd(
     args = message.text.split(maxsplit=1)
 
     if message.reply_to_message and message.reply_to_message.from_user:
-        if message.reply_to_message.from_user.is_bot:
-            await message.reply(
-                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
-                "У ботов нет предупреждений."
-            )
-            return
-
         query = message.reply_to_message.from_user.id
 
     else:

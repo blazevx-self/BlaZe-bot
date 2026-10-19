@@ -9,11 +9,11 @@ from app.core.exceptions.chat import ModerationError
 from app.core.exceptions.user import UserNotFoundError
 
 from app.services.chat.moderator.mute import ChatMuteService
-from app.bot.filters.group_only import GroupModeratorFilter
+from app.bot.filters.group_only import GroupModeratorFilter, GroupOnlyFilter
 
 router = Router()
 
-@router.message(Command("mute_chat"), GroupModeratorFilter())
+@router.message(Command("mute_chat"), GroupOnlyFilter(), GroupModeratorFilter())
 @inject
 async def mute_chat_cmd(
     message: Message,
@@ -78,7 +78,7 @@ async def mute_chat_cmd(
 
     await message.reply(chat_mute_service.fmt_mute_result(result))
 
-@router.message(Command("unmute_chat"), GroupModeratorFilter())
+@router.message(Command("unmute_chat"), GroupOnlyFilter(), GroupModeratorFilter())
 @inject
 async def unmute_chat_cmd(
     message: Message,

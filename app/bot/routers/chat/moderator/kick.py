@@ -9,11 +9,11 @@ from app.core.exceptions.chat import ModerationError
 from app.core.exceptions.user import UserNotFoundError
 
 from app.services.chat.moderator.kick import ChatKickService
-from app.bot.filters.group_only import GroupModeratorFilter
+from app.bot.filters.group_only import GroupModeratorFilter, GroupOnlyFilter
 
 router = Router()
 
-@router.message(Command("kick_chat"), GroupModeratorFilter())
+@router.message(Command("kick_chat"), GroupOnlyFilter(), GroupModeratorFilter())
 @inject
 async def kick_chat_cmd(
     message: Message,

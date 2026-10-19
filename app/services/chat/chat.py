@@ -120,3 +120,23 @@ class ChatService:
     async def get_goodbye_message(self, telegram_id: int) -> str | None:
         chat = await self.chat_repo.get_chat_by_telegram_id(telegram_id)
         return chat.goodbye_message if chat else None
+
+    async def bind_admin_chat(self, main_telegram_id: int, admin_chat_id: int) -> ChatOrm:
+        # Основной чат должен быть в БД (бот туда добавляли)
+        await self._get_chat(telegram_id=main_telegram_id)
+        return await self.chat_repo.set_admin_chat_id(main_telegram_id, admin_chat_id)
+
+    async def unbind_admin_chat(self, main_telegram_id: int) -> ChatOrm:
+        chat = await self._get_chat(telegram_id=main_telegram_id)
+
+        if chat.admin_chat_id is None:
+            raise ChatStateError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "К этому чату админ-группа не привязана."
+            )
+
+        return await self.chat_repo.set_admin_chat_id(main_telegram_id, None)
+
+    async def set_captcha_enabled(self, telegram_id: int, enabled: bool) -> ChatOrm:
+        await self._get_chat(telegram_id)
+        return await self.chat_repo.set_captcha_enabled(telegram_id, enabled)

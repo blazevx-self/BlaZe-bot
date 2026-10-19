@@ -9,11 +9,11 @@ from app.core.exceptions.chat import ModerationError
 from app.core.exceptions.user import UserNotFoundError
 
 from app.services.chat.moderator.ban_chat import ChatBanService
-from app.bot.filters.group_only import GroupModeratorFilter
+from app.bot.filters.group_only import GroupModeratorFilter, GroupOnlyFilter
 
 router = Router()
 
-@router.message(Command("ban_chat"), GroupModeratorFilter())
+@router.message(Command("ban_chat"), GroupOnlyFilter(), GroupModeratorFilter())
 @inject
 async def ban_chat_cmd(
     message: Message,
@@ -78,7 +78,7 @@ async def ban_chat_cmd(
 
     await message.reply(chat_ban_service.fmt_ban_result(result))
 
-@router.message(Command("unban_chat"), GroupModeratorFilter())
+@router.message(Command("unban_chat"), GroupOnlyFilter(), GroupModeratorFilter())
 @inject
 async def unban_chat_cmd(
     message: Message,
