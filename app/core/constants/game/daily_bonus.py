@@ -36,6 +36,7 @@ RESETS: dict[BonusReward, tuple[CooldownAction, ...]] = {
         CooldownAction.COFFEE,
         CooldownAction.COFFEE_OVERDOSE,
         CooldownAction.KAGUNE_GROW,
+        CooldownAction.EAT_HUMAN,
     ),
 }
 
@@ -128,21 +129,26 @@ BONUS_TEXTS: dict[BonusReward, str] = {
     BonusReward.RESET_SNAP: "<tg-emoji emoji-id=\"5920515922505765329\">⚡️</tg-emoji> Кулдаун щелчка сброшен!",
     BonusReward.RESET_COFFEE: "<tg-emoji emoji-id=\"5386470514871003633\">☕️</tg-emoji> Можно выпить ещё одну чашку — кофе и передоз сброшены!",
     BonusReward.RESET_KAGUNE: "<tg-emoji emoji-id=\"5260687681733533075\">🔃</tg-emoji> Кулдаун кагуне сброшен!",
-    BonusReward.RESET_ALL: "<tg-emoji emoji-id=\"5260687119092817530\">🔄</tg-emoji> <b>Все кулдауны сброшены!</b> Щелчок, кофе, кагуне и викторина.",
+    BonusReward.RESET_EAT: "<tg-emoji emoji-id=\"5386546333928682436\">🍴</tg-emoji> Кулдаун охоты сброшен!",
+    BonusReward.RESET_ALL: "<tg-emoji emoji-id=\"5260687119092817530\">🔄</tg-emoji> <b>Все кулдауны сброшены!</b> Щелчок, кофе, кагуне, охота и викторина.",
 
     BonusReward.FAST_SNAP: "<tg-emoji emoji-id=\"5877203642636832557\">⏩</tg-emoji> Кулдаун щелчка <b>−{percent}%</b> на <b>{time}</b>!",
     BonusReward.FAST_COFFEE: "<tg-emoji emoji-id=\"5877203642636832557\">⏩</tg-emoji> Кулдаун кофе <b>−{percent}%</b> на <b>{time}</b>!",
     BonusReward.FAST_KAGUNE: "<tg-emoji emoji-id=\"5877203642636832557\">⏩</tg-emoji> Кулдаун кагуне <b>−{percent}%</b> на <b>{time}</b>!",
+    BonusReward.FAST_EAT: "<tg-emoji emoji-id=\"5877203642636832557\">⏩</tg-emoji> Кулдаун охоты <b>−{percent}%</b> на <b>{time}</b>!",
     BonusReward.FAST_ALL: "<tg-emoji emoji-id=\"5877203642636832557\">⏩</tg-emoji> <b>Все кулдауны −{percent}%</b> на <b>{time}</b>!",
 
     BonusReward.PENALTY_SNAP: "<tg-emoji emoji-id=\"5368469400695351161\">🐌</tg-emoji> Неудача! Щелчок недоступен ещё <b>{time}</b>.",
     BonusReward.PENALTY_COFFEE: "<tg-emoji emoji-id=\"5368469400695351161\">🐌</tg-emoji> Неудача! Кофе недоступен ещё <b>{time}</b>.",
     BonusReward.PENALTY_KAGUNE: "<tg-emoji emoji-id=\"5368469400695351161\">🐌</tg-emoji> Неудача! Кагуне недоступно ещё <b>{time}</b>.",
+    BonusReward.PENALTY_EAT: "<tg-emoji emoji-id=\"5368469400695351161\">🐌</tg-emoji> Неудача! Охота недоступна ещё <b>{time}</b>.",
 
     BonusReward.SNAP_COUNT: "<tg-emoji emoji-id=\"5834596128246469018\">🫰</tg-emoji> +<b>{amount}</b> к щелчкам!",
     BonusReward.COFFEE_COUNT: "<tg-emoji emoji-id=\"5386470514871003633\">☕️</tg-emoji> +<b>{amount}</b> к выпитому кофе!",
     BonusReward.KAGUNE_LEVEL: "<tg-emoji emoji-id=\"5442804822048780010\">😫</tg-emoji> Кагуне выросло на <b>{amount}</b> ур.!",
+    BonusReward.HUNGER_RESTORE: "<tg-emoji emoji-id=\"5262604190630314198\">🍖</tg-emoji> Голод <b>+{amount}</b> (сейчас {hunger}%).",
     BonusReward.STAT_UP: "<tg-emoji emoji-id=\"5834929920219812289\">💪</tg-emoji> {stat} <b>+1</b>!",
+    BonusReward.EAT_COUNT: "<tg-emoji emoji-id=\"5294115682781261925\">🦴</tg-emoji> +<b>{amount}</b> к сожранным людям!",
 
     BonusReward.KAGUNE_DISCOUNT: "<tg-emoji emoji-id=\"5888620056551625531\">🏷</tg-emoji> Прокачка кагуне <b>−{percent}%</b> на <b>{time}</b>!",
     BonusReward.STATS_DISCOUNT: "<tg-emoji emoji-id=\"5888620056551625531\">🏷</tg-emoji> Прокачка статов <b>−{percent}%</b> на <b>{time}</b>!",
