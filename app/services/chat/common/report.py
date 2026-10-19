@@ -3,10 +3,14 @@ from html import escape
 from aiogram import Bot
 from aiogram.enums import ChatMemberStatus
 from aiogram.types import User
+from aiogram.exceptions import TelegramAPIError
+
 from cachetools import TTLCache
 
-from app.core.constants.chat.report import REPORT_COOLDOWN, MAX_MENTIONS
+from app.core.constants.chat.report import REPORT_COOLDOWN
 from app.core.exceptions.chat import ReportError
+
+from app.database.repositories.chat.chat import ChatRepository
 
 from app.utils.logger import chat_logger
 from app.utils.truncate_text import truncate_text
@@ -14,10 +18,18 @@ from app.utils.truncate_text import truncate_text
 _cooldowns: TTLCache = TTLCache(maxsize=10_000, ttl=REPORT_COOLDOWN.total_seconds())
 
 class ReportService:
-    def __init__(self, bot: Bot):
+    def __init__(self, bot: Bot, chat_repo: ChatRepository):
         self.bot = bot
+        self.chat_repo = chat_repo
 
-    async def report(self, chat_id: int, reporter_id: int, target: User) -> list[User]:
+    async def report(
+        self,
+        chat_id: int,
+        reporter_id: int,
+        target: User,
+        reason: str | None,
+        message_id: int | None,
+    ) -> None:
         """Проверяет жалобу и возвращает модераторов, которых нужно упомянуть."""
 
         if target.id == reporter_id:
@@ -38,55 +50,97 @@ class ReportService:
                 "Жалобу можно отправлять раз в 5 минут."
             )
 
-        admins = await self.bot.get_chat_administrators(chat_id)
+        chat = await self.chat_repo.get_chat_by_telegram_id(chat_id)
 
-        if any(admin.user.id == target.id for admin in admins):
+        if not chat or not chat.admin_chat_id:
+            raise ReportError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Админ-чат не привязан."
+            )
+
+        try:
+            member = await self.bot.get_chat_member(chat_id, target.id)
+        except TelegramAPIError as e:
+            raise ReportError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Пользователь не найден в чате."
+            ) from e
+
+        if member.status in {
+            ChatMemberStatus.CREATOR,
+            ChatMemberStatus.ADMINISTRATOR
+        }:
             raise ReportError(
                 "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
                 "Нельзя пожаловаться на администратора."
             )
 
-        moderators = [
-            admin.user
-            for admin in admins
-            if not admin.user.is_bot
-            and not admin.is_anonymous
-            and (admin.status == ChatMemberStatus.CREATOR or admin.can_restrict_members)
-        ]
-
-        if not moderators:
+        try:
+            await self.bot.send_message(
+                chat_id=chat.admin_chat_id,
+                text=self._fmt_card(
+                    chat_id=chat_id,
+                    reporter_id=reporter_id,
+                    target=target,
+                    reason=reason,
+                    message_id=message_id,
+                ),
+            )
+        except TelegramAPIError as e:
+            chat_logger.warning(
+                f"[CHAT_REPORT] Send failed | chat_id={chat_id} "
+                f"| admin_chat_id={chat.admin_chat_id} | {e}"
+            )
             raise ReportError(
                 "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
-                "В чате нет модераторов, которых можно позвать."
-            )
+                "Не удалось отправить жалобу в админ-чат."
+            ) from e
 
         _cooldowns[(chat_id, reporter_id)] = True
 
         chat_logger.info(
             f"[CHAT_REPORT] Report sent | chat_id={chat_id} | "
-            f"reporter_id={reporter_id} | target_id={target.id}"
+            f"admin_chat_id={chat.admin_chat_id} | reporter_id={reporter_id} | "
+            f"target_id={target.id}"
         )
 
-        return moderators[:MAX_MENTIONS]
+    @staticmethod
+    def _message_link(chat_id: int, message_id: int) -> str:
+        return f"https://t.me/c/{str(chat_id).removeprefix('-100')}/{message_id}"
 
     @staticmethod
-    def _mention(user: User) -> str:
-        if user.username:
-            return f"@{user.username}"
+    def _mention(user_id: int, name: str) -> str:
+        return f"<a href=\"tg://user?id={user_id}\">{escape(truncate_text(name))}</a>"
 
-        return f"<a href=\"tg://user?id={user.id}\">{escape(truncate_text(user.full_name))}</a>"
-
-    def fmt_report(
-        self,
-        target: User,
-        moderators: list[User],
-        reason: str | None
-    ) -> str:
+    @staticmethod
+    def fmt_report(target: User, reason: str | None) -> str:
         return (
             "<tg-emoji emoji-id=\"5388947353791130731\">🚨</tg-emoji> "
             f"<b>Жалоба на</b> {escape(truncate_text(target.full_name))}\n\n"
             "<tg-emoji emoji-id=\"5778299625370817409\">📝</tg-emoji> "
             f"<b>Причина:</b> <i>{escape(reason) if reason else 'Не указана'}</i>\n\n"
+        )
+
+    def _fmt_card(
+            self,
+            chat_id: int,
+            reporter_id: int,
+            target: User,
+            reason: str | None,
+            message_id: int | None,
+    ) -> str:
+        link = (
+            f"\n<a href=\"{self._message_link(chat_id, message_id)}\">Сообщение</a>"
+            if message_id
+            else ""
+        )
+        return (
+            "<tg-emoji emoji-id=\"5388947353791130731\">🚨</tg-emoji> "
+            "<b>Новая жалоба</b>\n\n"
             "<tg-emoji emoji-id=\"6037622221625626773\">➡️</tg-emoji> "
-            f"<b>Модераторы:</b> {', '.join(self._mention(m) for m in moderators)}"
+            f"<b>На:</b> {self._mention(target.id, target.full_name)}\n"
+            f"<b>От:</b> {self._mention(reporter_id, str(reporter_id))}\n\n"
+            "<tg-emoji emoji-id=\"5778299625370817409\">📝</tg-emoji> "
+            f"<b>Причина:</b> <i>{escape(reason) if reason else 'Не указана'}</i>"
+            f"{link}"
         )

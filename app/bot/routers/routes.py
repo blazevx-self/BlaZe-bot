@@ -5,7 +5,7 @@ from app.bot.routers.ghoul import (
 
 from app.bot.routers.common import (
     start, help, bot, profile, balance,
-    transfer, id_user, daily_bonus, anime
+    transfer, daily_bonus, anime
 )
 
 from app.bot.routers.system import error, catch_all, unknown_commands
@@ -15,7 +15,8 @@ from app.bot.routers.tops import top_bal, top_click, top_kagune, top_coffee
 
 from app.bot.routers.chat.moderator import (
     rules, welcome_message, goodbye_message,
-    ban_chat, kick, mute, warn, history_moderator
+    ban_chat, kick, mute, warn, history_moderator,
+    admin_chat, captcha_enabled
 )
 from app.bot.routers.chat.chat_member_update import new_chat_member, left_chat_member
 from app.bot.routers.chat.common import rp_commands, report, list_admins, ai, fun_commands
@@ -85,7 +86,8 @@ all_routers = (
     list_admins.router,
     fun_commands.router,
     ai.router,
-    id_user.router,
+    admin_chat.router,
+    captcha_enabled.router,
 
     error.router,
 

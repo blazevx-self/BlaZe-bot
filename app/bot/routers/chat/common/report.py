@@ -6,7 +6,6 @@ from dependency_injector.wiring import inject, Provide
 
 from app.containers import Container
 from app.core.exceptions.chat import ReportError
-
 from app.services.chat.common.report import ReportService
 from app.bot.filters.group_only import GroupOnlyFilter
 
@@ -16,8 +15,8 @@ router = Router()
 @inject
 async def report_cmd(
     message: Message,
-    report_service: ReportService = Provide[Container.report_service]
-):
+    report_service: ReportService = Provide[Container.report_service],
+) -> None:
     if not message.text or not message.from_user:
         return
 
@@ -31,7 +30,6 @@ async def report_cmd(
         )
         return
 
-    # сообщение от имени самого чата = анонимный админ
     if reply.sender_chat and reply.sender_chat.id == message.chat.id:
         await message.reply(
             "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
@@ -43,13 +41,18 @@ async def report_cmd(
     reason = args[1] if len(args) > 1 else None
 
     try:
-        moderators = await report_service.report(
+        await report_service.report(
             chat_id=message.chat.id,
             reporter_id=message.from_user.id,
-            target=reply.from_user
+            target=reply.from_user,
+            reason=reason,
+            message_id=reply.message_id,
         )
     except ReportError as e:
         await message.reply(str(e))
         return
 
-    await message.reply(report_service.fmt_report(reply.from_user, moderators, reason))
+    await message.reply(
+        "<tg-emoji emoji-id=\"5260416304224936047\">✅</tg-emoji> "
+        "<b>Жалоба отправлена администраторам.</b>"
+    )
