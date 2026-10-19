@@ -18,6 +18,7 @@ class ChatOrm(Base):
     rules: Mapped[str | None] = mapped_column(nullable=True)
     welcome_message: Mapped[str | None] = mapped_column(nullable=True)
     goodbye_message: Mapped[str | None] = mapped_column(nullable=True)
+    admin_chat_id: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
     captcha_enabled: Mapped[bool] = mapped_column(default=False, nullable=False)
 
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())

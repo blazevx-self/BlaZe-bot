@@ -99,3 +99,41 @@ class ChatRepository(Base):
             .where(ChatOrm.telegram_id == old_telegram_id)
             .values(telegram_id=new_telegram_id)
         )
+
+    async def set_admin_chat_id(
+        self,
+        telegram_id: int,
+        admin_chat_id: int | None,
+    ) -> ChatOrm:
+        stmt = (
+            update(ChatOrm)
+            .where(ChatOrm.telegram_id == telegram_id)
+            .values(admin_chat_id=admin_chat_id)
+            .returning(ChatOrm)
+        )
+
+        chat = await self.session.scalar(stmt)
+
+        if chat is None:
+            raise ChatNotFoundError(f"Chat ({telegram_id}) not found")
+
+        return chat
+
+    async def set_captcha_enabled(
+        self,
+        telegram_id: int,
+        captcha_enabled: bool,
+    ) -> ChatOrm:
+        stmt = (
+            update(ChatOrm)
+            .where(ChatOrm.telegram_id == telegram_id)
+            .values(captcha_enabled=captcha_enabled)
+            .returning(ChatOrm)
+        )
+
+        chat = await self.session.scalar(stmt)
+
+        if chat is None:
+            raise ChatNotFoundError(f"Chat ({telegram_id}) not found")
+
+        return chat
