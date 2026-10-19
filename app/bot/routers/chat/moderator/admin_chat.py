@@ -6,6 +6,8 @@ from aiogram.exceptions import TelegramAPIError
 from dependency_injector.wiring import inject, Provide
 
 from app.containers import Container
+from app.core.exceptions.chat import ChatError
+
 from app.services.chat.chat import ChatService
 from app.bot.filters.group_only import GroupOnlyFilter, GroupModeratorFilter
 
@@ -43,7 +45,7 @@ async def bind_admin_chat(
             "<tg-emoji emoji-id=\"5260342697075416641\">❌</tg-emoji> "
             "<b>Не указан чат.</b>\n\n"
             "<tg-emoji emoji-id=\"5258503720928288433\">ℹ️</tg-emoji> "
-            "<i>Пиши из админ-группы, id основного чата после команды.</i>\n\n"
+            "<i>Пиши это в админ-группе.</i>\n\n"
             "<b>Пример:</b>\n"
             "<code>привязать чат -1001234567890</code>"
         )
@@ -76,10 +78,14 @@ async def bind_admin_chat(
         )
         return
 
-    await chat_service.bind_admin_chat(
-        main_telegram_id=main_id,
-        admin_chat_id=message.chat.id
-    )
+    try:
+        await chat_service.bind_admin_chat(
+            main_telegram_id=main_id,
+            admin_chat_id=message.chat.id
+        )
+    except ChatError as e:
+        await message.reply(str(e))
+        return
 
     await message.reply(
         "<tg-emoji emoji-id=\"5260416304224936047\">✅</tg-emoji> "
@@ -91,6 +97,7 @@ async def bind_admin_chat(
     GroupOnlyFilter(),
     GroupModeratorFilter(),
 )
+@inject
 async def unbind_admin_chat(
     message: Message,
     chat_service: ChatService = Provide[Container.chat_service]
@@ -109,7 +116,11 @@ async def unbind_admin_chat(
         )
         return
 
-    await chat_service.unbind_admin_chat(main_telegram_id=main_id)
+    try:
+        await chat_service.unbind_admin_chat(main_telegram_id=main_id)
+    except ChatError as e:
+        await message.reply(str(e))
+        return
 
     await message.reply(
         "<tg-emoji emoji-id=\"5258130763148172425\">🗑</tg-emoji> "

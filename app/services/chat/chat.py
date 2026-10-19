@@ -138,5 +138,12 @@ class ChatService:
         return await self.chat_repo.set_admin_chat_id(main_telegram_id, None)
 
     async def set_captcha_enabled(self, telegram_id: int, enabled: bool) -> ChatOrm:
-        await self._get_chat(telegram_id)
+        chat = await self._get_chat(telegram_id)
+
+        if chat.captcha_enabled == enabled:
+            raise ChatStateError(
+                "<tg-emoji emoji-id=\"6028435952299413210\">ℹ️</tg-emoji> "
+                "Капча уже включена." if enabled else "Капча уже выключена."
+            )
+
         return await self.chat_repo.set_captcha_enabled(telegram_id, enabled)

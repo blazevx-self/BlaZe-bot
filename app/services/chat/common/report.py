@@ -25,14 +25,14 @@ class ReportService:
     async def report(
         self,
         chat_id: int,
-        reporter_id: int,
+        reporter: User,
         target: User,
         reason: str | None,
         message_id: int | None,
     ) -> None:
         """Проверяет жалобу и возвращает модераторов, которых нужно упомянуть."""
 
-        if target.id == reporter_id:
+        if target.id == reporter.id:
             raise ReportError(
                 "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
                 "Нельзя пожаловаться на себя."
@@ -44,7 +44,7 @@ class ReportService:
                 "Нельзя пожаловаться на бота."
             )
 
-        if (chat_id, reporter_id) in _cooldowns:
+        if (chat_id, reporter.id) in _cooldowns:
             raise ReportError(
                 "<tg-emoji emoji-id=\"5258258882022612173\">⏲️</tg-emoji> "
                 "Жалобу можно отправлять раз в 5 минут."
@@ -80,7 +80,7 @@ class ReportService:
                 chat_id=chat.admin_chat_id,
                 text=self._fmt_card(
                     chat_id=chat_id,
-                    reporter_id=reporter_id,
+                    reporter=reporter,
                     target=target,
                     reason=reason,
                     message_id=message_id,
@@ -96,11 +96,11 @@ class ReportService:
                 "Не удалось отправить жалобу в админ-чат."
             ) from e
 
-        _cooldowns[(chat_id, reporter_id)] = True
+        _cooldowns[(chat_id, reporter.id)] = True
 
         chat_logger.info(
             f"[CHAT_REPORT] Report sent | chat_id={chat_id} | "
-            f"admin_chat_id={chat.admin_chat_id} | reporter_id={reporter_id} | "
+            f"admin_chat_id={chat.admin_chat_id} | reporter_id={reporter.id} | "
             f"target_id={target.id}"
         )
 
@@ -112,35 +112,27 @@ class ReportService:
     def _mention(user_id: int, name: str) -> str:
         return f"<a href=\"tg://user?id={user_id}\">{escape(truncate_text(name))}</a>"
 
-    @staticmethod
-    def fmt_report(target: User, reason: str | None) -> str:
-        return (
-            "<tg-emoji emoji-id=\"5388947353791130731\">🚨</tg-emoji> "
-            f"<b>Жалоба на</b> {escape(truncate_text(target.full_name))}\n\n"
-            "<tg-emoji emoji-id=\"5778299625370817409\">📝</tg-emoji> "
-            f"<b>Причина:</b> <i>{escape(reason) if reason else 'Не указана'}</i>\n\n"
-        )
-
     def _fmt_card(
             self,
             chat_id: int,
-            reporter_id: int,
+            reporter: User,
             target: User,
             reason: str | None,
             message_id: int | None,
     ) -> str:
-        link = (
-            f"\n<a href=\"{self._message_link(chat_id, message_id)}\">Сообщение</a>"
-            if message_id
-            else ""
-        )
         return (
-            "<tg-emoji emoji-id=\"5388947353791130731\">🚨</tg-emoji> "
-            "<b>Новая жалоба</b>\n\n"
-            "<tg-emoji emoji-id=\"6037622221625626773\">➡️</tg-emoji> "
-            f"<b>На:</b> {self._mention(target.id, target.full_name)}\n"
-            f"<b>От:</b> {self._mention(reporter_id, str(reporter_id))}\n\n"
-            "<tg-emoji emoji-id=\"5778299625370817409\">📝</tg-emoji> "
-            f"<b>Причина:</b> <i>{escape(reason) if reason else 'Не указана'}</i>"
-            f"{link}"
+                "<tg-emoji emoji-id=\"5388947353791130731\">🚨</tg-emoji> "
+                "<b>Жалоба</b>\n\n"
+                "<tg-emoji emoji-id=\"6037622221625626773\">➡️</tg-emoji> "
+                f"<b>Кого:</b> {self._mention(target.id, target.full_name)}\n"
+                "<tg-emoji emoji-id=\"6032693626394382504\">👤</tg-emoji> "
+                f"<b>Кто:</b> {self._mention(reporter.id, reporter.full_name)}\n"
+                "<tg-emoji emoji-id=\"5778299625370817409\">📝</tg-emoji> "
+                f"<b>Почему:</b> <i>{escape(reason) if reason else 'не сказали'}</i>"
+                + (
+                    f"\n\n<tg-emoji emoji-id=\"5258461531464539536\">📌</tg-emoji> "
+                    f"<a href=\"{self._message_link(chat_id, message_id)}\">открыть сообщение</a>"
+                    if message_id
+                    else ""
+                )
         )

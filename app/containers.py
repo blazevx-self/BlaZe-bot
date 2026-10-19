@@ -148,7 +148,7 @@ class Container(containers.DeclarativeContainer):
         chat_repo=chat_repo,
         moderator_action_repo=moderator_action_repo,
     )
-    report_service = providers.Factory(ReportService, bot=bot)
+    report_service = providers.Factory(ReportService, bot=bot, chat_repo=chat_repo)
     list_admins_service = providers.Factory(ListAdminsService, bot=bot)
     fun_command_service = providers.Factory(FunService, chat_member_repo=chat_member_repo)
     ai_chat_service = providers.Singleton(

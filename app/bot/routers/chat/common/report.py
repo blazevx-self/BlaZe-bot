@@ -6,6 +6,7 @@ from dependency_injector.wiring import inject, Provide
 
 from app.containers import Container
 from app.core.exceptions.chat import ReportError
+
 from app.services.chat.common.report import ReportService
 from app.bot.filters.group_only import GroupOnlyFilter
 
@@ -43,7 +44,7 @@ async def report_cmd(
     try:
         await report_service.report(
             chat_id=message.chat.id,
-            reporter_id=message.from_user.id,
+            reporter=message.from_user,
             target=reply.from_user,
             reason=reason,
             message_id=reply.message_id,
