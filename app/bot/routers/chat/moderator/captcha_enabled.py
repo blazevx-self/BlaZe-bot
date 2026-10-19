@@ -17,7 +17,7 @@ async def captcha_on(
     chat_service: ChatService = Provide[Container.chat_service],
 ) -> None:
     try:
-        await chat_service.set_captcha_enabled(message.chat.id, False)
+        await chat_service.set_captcha_enabled(message.chat.id, True)
         await message.reply(
             "<tg-emoji emoji-id=\"5260416304224936047\">✅</tg-emoji> "
             "<b>Капча включена.</b>\n\n"
