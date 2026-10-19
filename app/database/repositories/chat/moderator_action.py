@@ -51,7 +51,8 @@ class ModeratorActionRepository(Base):
         self,
         chat_id: int,
         user_id: int,
-        limit: int = 10
+        limit: int = 10,
+        offset: int = 0,
     ) -> list[tuple[ModeratorActionOrm, str | None]]:
         stmt = (
             select(ModeratorActionOrm, UserOrm.name)
@@ -62,6 +63,7 @@ class ModeratorActionRepository(Base):
             )
             .order_by(ModeratorActionOrm.created_at.desc())
             .limit(limit)
+            .offset(offset)
         )
 
         result = await self.session.execute(stmt)

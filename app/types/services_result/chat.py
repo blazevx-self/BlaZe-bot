@@ -35,3 +35,5 @@ class HistoryEntry:
 class HistoryResult:
     user: UserData
     entries: list[HistoryEntry]
+    offset: int = 0
+    has_next: bool = False
