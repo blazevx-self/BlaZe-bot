@@ -507,3 +507,78 @@ message:
         Администратор решил, что тебе пора сдохнуть и начать все заново.
 
         ℹ️ Чтобы снова стать гулем — напиши «растить кагуне»
+
+  family:
+    usage: "<tg-emoji emoji-id='5258503720928288433'>ℹ️</tg-emoji> Ответь на сообщение: <b>брак</b> или <b>пожениться</b>."
+    not_found: "<tg-emoji emoji-id='5386313314773002654'>⚠️</tg-emoji> Не нашёл такого."
+    bot: "<tg-emoji emoji-id='5258503720928288433'>ℹ️</tg-emoji> С ботом в брак? Я железка, у меня ведь даже документов нет."
+    ask: |
+      <tg-emoji emoji-id="5402100905883488232">💍</tg-emoji> <b>{initiator}</b> предлагает <b>{target}</b> семью.
+
+      <tg-emoji emoji-id='5258503720928288433'>ℹ️</tg-emoji> Брак стоит <b>{price}</b> BlaZeCoin с каждого. Спишутся, когда оба согласятся в течение 30 минут.
+    invite: |
+      <tg-emoji emoji-id="5402100905883488232">💍</tg-emoji> <b>{initiator}</b> зовёт <b>{target}</b> в семью.
+
+      {rows}
+
+      <tg-emoji emoji-id='5258258882022612173'>⏲️</tg-emoji> Брак заключится, если за 30 минут согласятся оба.
+    row_ok: "<tg-emoji emoji-id='5260416304224936047'>✅</tg-emoji> {name}"
+    row_wait: "<tg-emoji emoji-id='5386341902075325415'>⏳</tg-emoji> {name}"
+    married: |
+      <tg-emoji emoji-id="5402100905883488232">💍</tg-emoji> <b>Горько! Свершилось! </b>
+      
+      <tg-emoji emoji-id="6032609071373226027">👥</tg-emoji> Семья: {members}
+      <tg-emoji emoji-id="5258204546391351475">💰</tg-emoji> Общий баланс: <b>{balance}</b> BlaZeCoin
+    declined: "<tg-emoji emoji-id='5836847700426887322'>💔</tg-emoji> <b>{name}</b> против. Свадьбы не будет, деньги на месте."
+    expired: "<tg-emoji emoji-id='5386341902075325415'>⏳</tg-emoji> 30 минут вышли. Не дождались...Свадьбы не будет."
+    pm_vote: |
+      <tg-emoji emoji-id="5402100905883488232">💍</tg-emoji> Предложение семьи.
+
+      Согласен(на)?
+    toast_ok: "✅ Принято."
+    toast_wait: "⏳ Ждём второго."
+    toast_married: "💍 Горько."
+    toast_declined: "✅ Отказ принят."
+    toast_stale: "📭 Уже неактуально."
+    not_your_button: "❌ Это не твоя кнопка."
+    buttons:
+      pay: "Сделать предложение"
+      initiator: "Подтверждаю"
+      target: "Согласен(на)"
+      decline: "Отказаться"
+      pm: "Подтвердить в личке"
+    list_empty: "<tg-emoji emoji-id='5258389041006518073'>📂</tg-emoji> Ни одной семьи в чате. Позовите кого-нибудь в брак."
+    list: |
+      <tg-emoji emoji-id="6032609071373226027">👥</tg-emoji> <b>Семьи чата ({count}):</b>
+
+      {rows}
+    list_row: "{place}. {members}"
+    list_named: "{place}. «{name}»: {members}"
+    view: |
+      <b>{title}</b>
+
+      <tg-emoji emoji-id="5258204546391351475">💰</tg-emoji> Баланс: <b>{balance}</b> BlaZeCoin
+
+      {rows}
+    title: "Твоя семья"
+    title_named: "Семья «{name}»"
+    single: "<tg-emoji emoji-id='5258503720928288433'>ℹ️</tg-emoji> Ты не в семье. <b>«Брак»</b> реплаем на сообщение всё исправит."
+    rename:
+      usage: "<tg-emoji emoji-id='5258503720928288433'>ℹ️</tg-emoji> <b>имя семьи</b> и название. До 32 символов."
+      ask: |
+        <tg-emoji emoji-id="5875349694233710664">✏️</tg-emoji> <b>{initiator}</b> предлагает имя «<b>{name}</b>».
+
+        Имя сменится, если второй согласится.
+      done: "<tg-emoji emoji-id='5260416304224936047'>✅</tg-emoji> Теперь вы — «<b>{name}</b>»."
+      declined: "<tg-emoji emoji-id='5260342697075416641'>❌</tg-emoji> <b>{name}</b> против — имя не принято."
+      expired: "<tg-emoji emoji-id='5386341902075325415'>⏳</tg-emoji> Время вышло — имя не принято."
+      pm_vote: "Семья решает имя «{name}». Ты за?"
+      buttons:
+        agree: "Согласен(на)"
+        decline: "Против"
+        pm: "Ответить в личке"
+    divorce:
+      ask: "<tg-emoji emoji-id='5836847700426887322'>💔</tg-emoji> Уйти из семьи? Баланс остаётся второму."
+      button: "Развестись"
+      done: "<tg-emoji emoji-id='5836847700426887322'>💔</tg-emoji> <b>{name}</b> уходит. Семья распалась, <b>{heir}</b> забирает <b>{amount}</b> BlaZeCoin."
+      stale: "Уже неактуально."

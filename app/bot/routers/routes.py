@@ -5,7 +5,7 @@ from app.bot.routers.ghoul import (
 
 from app.bot.routers.common import (
     start, help, bot, profile, balance,
-    transfer, daily_bonus, anime
+    transfer, daily_bonus, anime, family
 )
 
 from app.bot.routers.system import error, catch_all, unknown_commands
@@ -37,6 +37,7 @@ all_routers = (
     transfer.router,
     daily_bonus.router,
     anime.router,
+    family.router,
 
     # ghoul
     coffee.router,
