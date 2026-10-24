@@ -552,8 +552,8 @@ message:
       <tg-emoji emoji-id="6032609071373226027">👥</tg-emoji> <b>Семьи чата ({count}):</b>
 
       {rows}
-    list_row: "{place}. {members}"
-    list_named: "{place}. «{name}»: {members}"
+    list_row: "{place}. {members} — с {since}, уже {age}"
+    list_named: "{place}. «{name}»: {members} — с {since}, уже {age}"
     view: |
       <b>{title}</b>
 
