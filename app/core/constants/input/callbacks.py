@@ -15,5 +15,6 @@ ALLOWED_CALLBACK_PREFIXES = (
     "bonus",
     "kill",
     "captcha",
-    "hist"
+    "hist",
+    "fam_"
 )

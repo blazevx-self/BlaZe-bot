@@ -91,14 +91,23 @@ class ChatRepository(Base):
         return list(result)
 
     async def migrate(self, old_telegram_id: int, new_telegram_id: int) -> None:
+        if old_telegram_id == new_telegram_id:
+            return
+
         if await self.get_chat_by_telegram_id(new_telegram_id):
             return
 
-        await self.session.execute(
+        stmt = (
             update(ChatOrm)
-            .where(ChatOrm.telegram_id == old_telegram_id)
+            .where(
+                ChatOrm.telegram_id == old_telegram_id,
+                ~select(ChatOrm.id)
+                .where(ChatOrm.telegram_id == new_telegram_id)
+                .exists(),
+            )
             .values(telegram_id=new_telegram_id)
         )
+        await self.session.execute(stmt)
 
     async def set_admin_chat_id(
         self,
