@@ -289,7 +289,7 @@ class FamilyService:
         await self.family_repo.dissolve(family_id)
         await self.family_repo.remove_member(heir_id)
 
-        leaver = await self._user(heir_id)
+        leaver = await self._user(user_id)
         heir = await self._user(heir_id)
 
         if taken:
