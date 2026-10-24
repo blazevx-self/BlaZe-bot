@@ -22,20 +22,20 @@ class TopsService:
         limit = game_cfg.tops.get_limit(top_type)
 
         leaderboard, rank = await asyncio.gather(
-            self.tops_repo.get_top(
-                top_type=top_type,
-                limit=limit
-            ),
-            self.tops_repo.get_rank(
-                telegram_id=user.telegram_id,
-                top_type=top_type
-            )
+            self.tops_repo.get_top(top_type=top_type, limit=limit),
+            self.tops_repo.get_rank(telegram_id=user.telegram_id, top_type=top_type),
         )
+
+        display = None
+
+        if top_type == "money":
+            display = await self.tops_repo.get_display_money(user.telegram_id)
 
         return TopResult(
             status=ResultStatus.SUCCESS,
             user=user,
             ghoul=ghoul,
             top_user=leaderboard,
-            rank=rank or 0
+            rank=rank or 0,
+            money=display
         )

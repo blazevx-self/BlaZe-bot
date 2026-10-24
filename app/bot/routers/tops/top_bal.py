@@ -9,15 +9,19 @@ from app.core.templates.common.balance import process_balance
 from app.core.templates.tops.top_bal import build_top_bal_text
 
 from app.types.entities.user import UserData
+from app.database.repositories import UserRepository
 
 from app.services.tops.tops import TopsService
-from app.bot.filters.owner import OwnerCallbackFilter
+from app.services import FamilyService
 
+from app.bot.filters.owner import OwnerCallbackFilter
 from app.bot.keyboards.tops.tops import (
     get_top_money_kb,
     get_balance_top_money_kb,
     get_back_to_top_kb
 )
+
+from app.bot.routers.common.balance import wallet
 
 router = Router()
 
@@ -125,8 +129,15 @@ async def back_to_balance(
     )
 
 @router.callback_query(F.data.startswith('back_balance_'), OwnerCallbackFilter())
-async def back_to_top(callback: CallbackQuery, user: UserData):
-    text = process_balance(user=user, from_top=True)
+async def back_to_top(
+    callback: CallbackQuery,
+    user: UserData,
+    user_repo: UserRepository = Provide[Container.user_repo],
+    family_service: FamilyService = Provide[Container.family_service],
+):
+    money = await wallet(user, user_repo, family_service)
+    text = process_balance(user=user, money=money, from_top=True)
+
     await callback.message.edit_text(
         text=text,
         reply_markup=get_back_to_top_kb(user.telegram_id)
