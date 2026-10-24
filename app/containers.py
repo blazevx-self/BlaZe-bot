@@ -21,6 +21,7 @@ from app.database.repositories import (
     ModeratorActionRepository,
     MediaRepository,
     ScheduledNotificationRepository,
+    FamilyRepository,
 )
 
 from app.services import (
@@ -63,7 +64,8 @@ from app.services import (
     HungerService,
     ScheduledNotificationService,
     KillGhoulService,
-    CaptchaService
+    CaptchaService,
+    FamilyService,
 )
 
 session_context: ContextVar[AsyncSession] = ContextVar("session_context")
@@ -88,6 +90,7 @@ class Container(containers.DeclarativeContainer):
     moderator_action_repo = providers.Factory(ModeratorActionRepository, session=db_session)
     media_repo = providers.Factory(MediaRepository, session=db_session)
     notify_repo = providers.Factory(ScheduledNotificationRepository, session=db_session)
+    family_repo = providers.Factory(FamilyRepository, session=db_session)
 
     # services
     ghoul_service = providers.Factory(GhoulService, ghoul_repo=ghoul_repo)
@@ -178,6 +181,7 @@ class Container(containers.DeclarativeContainer):
         hunger_service=hunger_service
     )
     anime_service = providers.Singleton(AnimeService)
+    family_service = providers.Factory(FamilyService, user_repo=user_repo, family_repo=family_repo)
 
     wordle_service = providers.Singleton(WordleService)
     quiz_service = providers.Factory(QuizService, user_repo=user_repo, quiz_repo=quiz_repo)

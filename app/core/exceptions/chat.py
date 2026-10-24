@@ -21,3 +21,9 @@ class ReportError(ChatError):
 
 class CaptchaError(ChatError):
     pass
+
+class FamilyError(ChatError):
+    pass
+
+class FamilyNotFoundError(ChatError):
+    pass

@@ -11,6 +11,7 @@ from .chat.chat_member import ChatMemberRepository
 from .chat.moderator_action import ModeratorActionRepository
 from .media import MediaRepository
 from .common.scheduled_notification import ScheduledNotificationRepository
+from .common.family import FamilyRepository
 
 __all__ = [
     "UserRepository",
@@ -26,4 +27,5 @@ __all__ = [
     "ModeratorActionRepository",
     "MediaRepository",
     "ScheduledNotificationRepository",
+    "FamilyRepository",
 ]

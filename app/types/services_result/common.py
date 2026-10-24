@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 
 from pathlib import Path
+from datetime import datetime
 
 from app.core.enums import ResultStatus
 from app.core.enums.daily_bonus import BonusReward
@@ -41,3 +42,20 @@ class AnimeClipResult:
     status: ResultStatus
     path: Path | None = None
     limit: int = 0
+
+@dataclass
+class ProposeResult:
+    proposal_id: int
+    expires_at: datetime
+
+@dataclass
+class ConsentResult:
+    stage: str
+    initiator_ok: bool
+    target_ok: bool
+    done: bool = False
+
+@dataclass
+class DivorceResult:
+    heir_id: int | None
+    inherited: int

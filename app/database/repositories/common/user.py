@@ -76,6 +76,9 @@ class UserRepository(Base):
 
         return user
 
+    async def get_by_id(self, user_id: int) -> UserOrm | None:
+        return await self.session.get(UserOrm, user_id)
+
     async def resolve(self, query: str | int) -> UserData | None:
         if isinstance(query, int):
             return await self.get(query)

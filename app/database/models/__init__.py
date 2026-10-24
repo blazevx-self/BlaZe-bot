@@ -13,6 +13,10 @@ from .chat.chat_member import ChatMemberOrm
 from .chat.moderator_action import ModeratorActionOrm
 from .media import MediaOrm
 from .common.scheduled_notification import ScheduledNotificationOrm
+from .common.family import (
+    FamilyOrm, FamilyProposalOrm,
+    FamilyRenameOrm, FamilyMemberOrm
+)
 
 __all__ = [
     "Base",
@@ -29,4 +33,8 @@ __all__ = [
     "ModeratorActionOrm",
     "MediaOrm",
     "ScheduledNotificationOrm",
+    "FamilyOrm",
+    "FamilyProposalOrm",
+    "FamilyRenameOrm",
+    "FamilyMemberOrm",
 ]
