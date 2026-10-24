@@ -274,22 +274,30 @@ class FamilyService:
                 "Ты не в семье."
             )
 
+        family = await self.family_repo.get(family_id)
+        total = family.money if family else 0
+        taken = total // 2
+        inherited = total - taken
+
         await self.family_repo.remove_member(user_id)
 
         if await self.family_repo.count_members(family_id) != 1:
-            return DivorceResult(heir_id=None, inherited=0)
+            return DivorceResult(heir_id=None, inherited=0, taken=0)
 
-        members = await self.family_repo.list_members(family_id)
-        heir_id = members[0].user_id
-        inherited = await self.family_repo.dissolve(family_id)
+        heir_id = (await self.family_repo.list_members(family_id))[0].user_id
 
+        await self.family_repo.dissolve(family_id)
         await self.family_repo.remove_member(heir_id)
 
+        leaver = await self._user(heir_id)
+        heir = await self._user(heir_id)
+
+        if taken:
+            await self.user_repo.change_money(leaver.telegram_id, taken)
         if inherited:
-            heir = await self._user(heir_id)
             await self.user_repo.change_money(heir.telegram_id, inherited)
 
-        return DivorceResult(heir_id=heir_id, inherited=inherited)
+        return DivorceResult(heir_id=heir_id, inherited=inherited, taken=taken)
 
     async def get_rename(self, rename_id: int) -> FamilyRenameOrm:
         rename = await self.family_repo.get_rename(rename_id)

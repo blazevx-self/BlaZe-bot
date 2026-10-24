@@ -525,7 +525,7 @@ message:
     row_ok: "<tg-emoji emoji-id='5260416304224936047'>✅</tg-emoji> {name}"
     row_wait: "<tg-emoji emoji-id='5386341902075325415'>⏳</tg-emoji> {name}"
     married: |
-      <tg-emoji emoji-id="5402100905883488232">💍</tg-emoji> <b>Горько! Свершилось! </b>
+      <tg-emoji emoji-id="5402100905883488232">💍</tg-emoji> <b>Горько! Свершилось!</b>
       
       <tg-emoji emoji-id="6032609071373226027">👥</tg-emoji> Семья: {members}
       <tg-emoji emoji-id="5258204546391351475">💰</tg-emoji> Общий баланс: <b>{balance}</b> BlaZeCoin
@@ -566,10 +566,10 @@ message:
     rename:
       usage: "<tg-emoji emoji-id='5258503720928288433'>ℹ️</tg-emoji> <b>имя семьи</b> и название. До 32 символов."
       ask: |
-        <tg-emoji emoji-id="5875349694233710664">✏️</tg-emoji> <b>{initiator}</b> предлагает имя «<b>{name}</b>».
+        <tg-emoji emoji-id="5875349694233710664">✏️</tg-emoji> <b>{initiator}</b> предлагает назвать семью «<b>{name}</b>».
 
-        Имя сменится, если второй согласится.
-      done: "<tg-emoji emoji-id='5260416304224936047'>✅</tg-emoji> Теперь вы — «<b>{name}</b>»."
+        Имя сменится, если второй согласится в течение 30 минут.
+      done: "<tg-emoji emoji-id='5875349694233710664'>✏️</tg-emoji> Единогласно! Отныне вы — «<b>{name}</b>»."
       declined: "<tg-emoji emoji-id='5260342697075416641'>❌</tg-emoji> <b>{name}</b> против — имя не принято."
       expired: "<tg-emoji emoji-id='5386341902075325415'>⏳</tg-emoji> Время вышло — имя не принято."
       pm_vote: "Семья решает имя «{name}». Ты за?"
@@ -580,5 +580,5 @@ message:
     divorce:
       ask: "<tg-emoji emoji-id='5836847700426887322'>💔</tg-emoji> Уйти из семьи? Баланс остаётся второму."
       button: "Развестись"
-      done: "<tg-emoji emoji-id='5836847700426887322'>💔</tg-emoji> <b>{name}</b> уходит. Семья распалась, <b>{heir}</b> забирает <b>{amount}</b> BlaZeCoin."
+      done: "<tg-emoji emoji-id='5836847700426887322'>💔</tg-emoji> <b>{name}</b> уходит. Семья распалась. {name} забирает <b>{taken}</b>, <b>{heir}</b> — <b>{amount}</b> BlaZeCoin."
       stale: "Уже неактуально."

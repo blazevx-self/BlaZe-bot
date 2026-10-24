@@ -59,3 +59,4 @@ class ConsentResult:
 class DivorceResult:
     heir_id: int | None
     inherited: int
+    taken: int = 0
