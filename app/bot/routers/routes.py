@@ -29,6 +29,7 @@ from app.bot.routers.admin import (
 
 all_routers = (
     # user
+    family.router,
     start.router,
     help.router,
     bot.router,
@@ -37,7 +38,6 @@ all_routers = (
     transfer.router,
     daily_bonus.router,
     anime.router,
-    family.router,
 
     # ghoul
     coffee.router,

@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 
 from app.core.constants.game.family import MARRIAGE_PRICE, PROPOSAL_TTL
 from app.core.exceptions.chat import FamilyError
+from app.database.models import FamilyRenameOrm
 
 from app.types.services_result.common import ConsentResult, DivorceResult, ProposeResult
 
@@ -289,3 +290,105 @@ class FamilyService:
             await self.user_repo.change_money(heir.telegram_id, inherited)
 
         return DivorceResult(heir_id=heir_id, inherited=inherited)
+
+    async def get_rename(self, rename_id: int) -> FamilyRenameOrm:
+        rename = await self.family_repo.get_rename(rename_id)
+
+        if rename is None:
+            raise FamilyError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Предложение имени не найдено."
+            )
+        return rename
+
+    async def set_rename_message_id(self, rename_id: int, message_id: int) -> None:
+        await self.family_repo.set_rename_message_id(rename_id, message_id)
+
+    async def propose_rename(
+        self,
+        user_id: int,
+        raw_name: str,
+        chat_id: int
+    ) -> FamilyRenameOrm:
+        name = " ".join(raw_name.split())
+
+        if not 0 < len(name) <= 32:
+            raise FamilyError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Имя семьи — от 1 до 32 символов."
+            )
+
+        family_id = await self.family_repo.family_id_of(user_id)
+
+        if family_id is None:
+            raise FamilyError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Ты не в семье."
+            )
+
+        if await self.family_repo.has_awaiting_rename(family_id):
+            raise FamilyError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Уже решают другое имя."
+            )
+
+        members = await self.family_repo.list_members(family_id)
+
+        if len(members) != 2:
+            raise FamilyError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Имя меняют вдвоём."
+            )
+
+        return await self.family_repo.create_rename(
+            family_id=family_id,
+            name=name,
+            proposer_user_id=user_id,
+            chat_id=chat_id,
+            expires_at=self._now() + PROPOSAL_TTL,
+        )
+
+    async def answer_rename(
+        self,
+        rename_id: int,
+        user_id: int,
+        agree: bool,
+    ) -> FamilyRenameOrm:
+        rename = await self.get_rename(rename_id)
+
+        if rename.stage != "awaiting":
+            raise FamilyError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Это предложение уже не актуально."
+            )
+
+        if rename.expires_at <= self._now():
+            raise FamilyError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Предложение истекло."
+            )
+
+        if user_id == rename.proposer_user_id:
+            raise FamilyError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Ты уже предложил имя."
+            )
+
+        members = await self.family_repo.list_members(rename.family_id)
+        if user_id not in {m.user_id for m in members}:
+            raise FamilyError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Это не твоя семья."
+            )
+
+        if not agree:
+            await self.family_repo.finish_rename(
+                rename_id, "declined", declined_by=user_id
+            )
+            return await self.get_rename(rename_id)
+
+        await self.family_repo.set_other_ok(rename_id)
+        await self.family_repo.set_name(rename.family_id, rename.name)
+        await self.family_repo.finish_rename(rename_id, "done")
+
+        return await self.get_rename(rename_id)
