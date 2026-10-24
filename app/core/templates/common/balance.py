@@ -9,14 +9,17 @@ from app.utils.truncate_text import truncate_text
 BAL_TEXT = cfg['message']['balance']['balance_text']
 TOP_BALANCE_TEXT = cfg['message']['balance']['top_balance_text']
 
-def process_balance(user: UserData, from_top: bool = False) -> str:
-    money = format_num(user.money)
+def process_balance(
+    user: UserData,
+    money: int | None = None,
+    from_top: bool = False,
+) -> str:
+    amount = user.money if money is None else money
 
     user_link = (
         f'<a href="tg://user?id={user.telegram_id}">'
         f'<b>{escape(truncate_text(user.name))}</b></a>'
     )
 
-    text_template = (TOP_BALANCE_TEXT if from_top else BAL_TEXT)
-
-    return text_template.format(user_link=user_link, money=money)
+    text_template = TOP_BALANCE_TEXT if from_top else BAL_TEXT
+    return text_template.format(user_link=user_link, money=format_num(amount))

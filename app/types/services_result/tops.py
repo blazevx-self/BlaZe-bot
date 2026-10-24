@@ -9,6 +9,8 @@ from app.types.entities.user import UserData
 class TopUser:
     user: UserData
     ghoul: GhoulData | None = None
+    partner: UserData | None = None
+    money: int | None = None
 
 @dataclass
 class TopResult:
@@ -17,3 +19,4 @@ class TopResult:
     top_user: list[TopUser]
     ghoul: GhoulData | None
     rank: int = 0
+    money: int | None = None
