@@ -64,6 +64,7 @@ async def divorce_cb(
         name=_mention(me),
         heir=_mention(heir) if heir else "—",
         amount=format_num(result.inherited),
+        taken=format_num(result.taken),
     )
 
     if not isinstance(callback.message, Message):
