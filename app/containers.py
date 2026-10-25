@@ -95,17 +95,33 @@ class Container(containers.DeclarativeContainer):
     # services
     ghoul_service = providers.Factory(GhoulService, ghoul_repo=ghoul_repo)
     cooldown_service = providers.Factory(CooldownService, user_cooldown_repo=user_cooldown_repo)
+    family_service = providers.Factory(FamilyService, user_repo=user_repo, family_repo=family_repo)
 
     ban_service = providers.Factory(BanService, user_repo=user_repo)
-    modify_balance_service = providers.Factory(ModifyBalanceService, user_repo=user_repo)
-    player_lookup_service = providers.Factory(PlayerLookupService, user_repo=user_repo, ghoul_repo=ghoul_repo)
+    modify_balance_service = providers.Factory(
+        ModifyBalanceService,
+        user_repo=user_repo,
+        family_service=family_service
+    )
+    player_lookup_service = providers.Factory(
+        PlayerLookupService,
+        user_repo=user_repo,
+        ghoul_repo=ghoul_repo,
+        family_service=family_service
+    )
     field_edit_service = providers.Factory(
         FieldEditService,
         user_repo=user_repo,
         ghoul_repo=ghoul_repo,
-        cooldown_service=cooldown_service
+        cooldown_service=cooldown_service,
+        family_service=family_service
     )
-    reset_service = providers.Factory(ResetService, user_repo=user_repo, ghoul_repo=ghoul_repo)
+    reset_service = providers.Factory(
+        ResetService,
+        user_repo=user_repo,
+        ghoul_repo=ghoul_repo,
+        family_service=family_service
+    )
     broadcast_service = providers.Factory(BroadcastService, user_repo=user_repo, chat_repo=chat_repo, bot=bot)
     kill_ghoul_service = providers.Factory(
         KillGhoulService,
@@ -168,7 +184,6 @@ class Container(containers.DeclarativeContainer):
         notify_repo=notify_repo
     )
 
-    family_service = providers.Factory(FamilyService, user_repo=user_repo, family_repo=family_repo)
     start_service = providers.Factory(StartService, user_repo=user_repo, family_service=family_service)
     profile_service = providers.Factory(
         ProfileService,

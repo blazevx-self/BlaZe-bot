@@ -26,6 +26,7 @@ class ModifyBalanceResult:
 class AdminUserProfileResult:
     user: UserData
     ghoul: GhoulData | None = None
+    money: int
 
 @dataclass
 class FieldEditResult:

@@ -426,3 +426,24 @@ class FamilyService:
                 "Не хватает денег на балансе семьи."
             )
         return await self.family_repo.change_balance(family.id, delta)
+
+    async def dissolve_on_user_delete(self, telegram_id: int) -> None:
+        user = await self.user_repo.get(telegram_id)
+        family_id = await self.family_repo.family_id_of(user.id)
+
+        if family_id is None:
+            return
+
+        await self.family_repo.remove_member(user.id)
+
+        if await self.family_repo.count_members(family_id) != 1:
+            return
+
+        heir_id = (await self.family_repo.list_members(family_id))[0].user_id
+        pot = await self.family_repo.dissolve(family_id)
+
+        await self.family_repo.remove_member(heir_id)
+
+        if pot:
+            heir = await self._user(heir_id)
+            await self.user_repo.change_money(heir.telegram_id, pot)

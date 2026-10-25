@@ -269,7 +269,7 @@ class FamilyRepository(Base):
 
         return result
 
-    async def remove_member(self, user_id: int) -> None:
+    async def remove_member(self, user_id) -> None:
         stmt = delete(FamilyMemberOrm).where(FamilyMemberOrm.user_id == user_id)
         await self.session.execute(stmt)
 

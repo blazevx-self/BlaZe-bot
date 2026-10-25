@@ -6,12 +6,19 @@ from app.types.services_result.admin import ResetResult
 from app.database.repositories.common.user import UserRepository
 from app.database.repositories.ghoul.ghoul import GhoulRepository
 
+from app.services.common.family import FamilyService
 from app.utils.logger import admin_logger
 
 class ResetService:
-    def __init__(self, user_repo: UserRepository, ghoul_repo: GhoulRepository):
+    def __init__(
+        self,
+        user_repo: UserRepository,
+        ghoul_repo: GhoulRepository,
+        family_service: FamilyService
+    ):
         self.user_repo = user_repo
         self.ghoul_repo = ghoul_repo
+        self.family_service = family_service
 
     async def resolve_user(self, query: str | int) -> UserData:
         user = await self.user_repo.resolve(query)
@@ -44,6 +51,8 @@ class ResetService:
 
     async def reset_user(self, query: str | int, admin_id: int) -> ResetResult:
         user = await self.resolve_user(query)
+
+        await self.family_service.dissolve_on_user_delete(user.telegram_id)
 
         ghoul_deleted = await self.ghoul_repo.delete(user.telegram_id)
         user_deleted = await self.user_repo.delete(user.telegram_id)

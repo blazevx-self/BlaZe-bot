@@ -8,13 +8,21 @@ from app.types.services_result.admin import AdminUserProfileResult
 from app.database.repositories.common.user import UserRepository
 from app.database.repositories.ghoul.ghoul import GhoulRepository
 
+from app.services.common.family import FamilyService
+
 from app.utils.truncate_text import truncate_text
 from app.utils.format_num import format_num
 
 class PlayerLookupService:
-    def __init__(self, user_repo: UserRepository, ghoul_repo: GhoulRepository):
+    def __init__(
+        self, user_repo:
+        UserRepository,
+        ghoul_repo: GhoulRepository,
+        family_service: FamilyService
+    ):
         self.user_repo = user_repo
         self.ghoul_repo = ghoul_repo
+        self.family_service = family_service
 
     async def get_profile(self, query: str | int) -> AdminUserProfileResult | None:
         user = await self.user_repo.resolve(query)
@@ -26,11 +34,9 @@ class PlayerLookupService:
             )
 
         ghoul = await self.ghoul_repo.get(telegram_id=user.telegram_id)
+        money = await self.family_service.balance_of(user.telegram_id)
 
-        return AdminUserProfileResult(
-            user=user,
-            ghoul=ghoul
-        )
+        return AdminUserProfileResult(user=user, ghoul=ghoul, money=money)
 
     @staticmethod
     def fmt_profile_user(profile: AdminUserProfileResult) -> str:
@@ -52,7 +58,7 @@ class PlayerLookupService:
             f"└ <b>Username:</b> <code>@{user.username or '—'}</code>\n\n"
             
             "<tg-emoji emoji-id=\"5864068125112144897\">💸</tg-emoji> "
-            f"<b>Баланс:</b> <code>{format_num(user.money)} BlazeCoin</code>\n\n"
+            f"<b>Баланс:</b> <code>{format_num(profile.money)} BlazeCoin</code>\n\n"
             
             "<tg-emoji emoji-id=\"6030445631921721471\">🛡</tg-emoji> "
             f"<b>Состояние:</b>\n"
