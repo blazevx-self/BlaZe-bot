@@ -14,15 +14,22 @@ from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 
 from app.database.repositories.chat.chat_member import ChatMemberRepository
+from app.services.common.family import FamilyService
 
 from app.utils.format_num import format_num
 from app.utils.truncate_text import truncate_text
 from app.utils.time import days_since_registration
 
 class ProfileService:
-    def __init__(self, bot: Bot, chat_member_repo: ChatMemberRepository):
+    def __init__(
+        self,
+        bot: Bot,
+        chat_member_repo: ChatMemberRepository,
+        family_service: FamilyService
+    ):
         self.bot = bot
         self.chat_member_repo = chat_member_repo
+        self.family_service = family_service
 
     @staticmethod
     def get_status(days_in_project: int) -> str:
@@ -67,8 +74,8 @@ class ProfileService:
             f"└ <b>В чате с:</b> <code>{since}</code>\n"
         )
 
-    @staticmethod
     async def build_profile(
+        self,
         user: UserData,
         ghoul: GhoulData,
         chat_block: str = ""
@@ -83,13 +90,14 @@ class ProfileService:
         status = ProfileService.get_status(days_in_project=days_in_project)
         
         race = "Гуль" if ghoul.kagune_was_obtained else "Человек"
+        money = await self.family_service.balance_of(user.telegram_id)
 
         text = profile_text(
             user_link=link,
             user_id=user_id,
             race=race,
             status=status,
-            money=format_num(user.money),
+            money=format_num(money),
             registered_at=user.created_at.strftime("%d.%m.%Y %H:%M"),
             days_in_project=days_in_project,
             chat_block=chat_block

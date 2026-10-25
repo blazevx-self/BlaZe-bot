@@ -14,6 +14,7 @@ from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 
 from app.services.game.lottery.lottery import LotteryService
+from app.services.common.family import FamilyService
 
 from app.utils.logger import lottery_logger
 
@@ -35,7 +36,8 @@ async def dep_cmd(
     message: Message,
     user: UserData,
     ghoul: GhoulData,
-    lottery_service: LotteryService = Provide[Container.lottery_service]
+    lottery_service: LotteryService = Provide[Container.lottery_service],
+    family_service: FamilyService = Provide[Container.family_service]
 ):
     if not message.from_user or not message.text:
         return
@@ -59,7 +61,8 @@ async def dep_cmd(
             user=user,
             ghoul=ghoul,
             chosen_color=chosen_color,
-            bet_amount=bet_amount
+            bet_amount=bet_amount,
+            family_service=family_service
         )
 
     except ValueError as e:

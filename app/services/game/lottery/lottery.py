@@ -13,6 +13,7 @@ from app.database.repositories.common.user import UserRepository
 from app.database.repositories.game.lottery import LotteryRepository
 
 from app.services.game.lottery.lottery_video_generator import LotteryVideoGenerator
+from app.services.common.family import FamilyService
 
 from app.utils.logger import lottery_logger
 from app.utils.format_num import format_num
@@ -64,7 +65,8 @@ class LotteryService:
         user: UserData,
         ghoul: GhoulData,
         chosen_color: LotteryColor,
-        bet_amount: int
+        bet_amount: int,
+        family_service: FamilyService
     ) -> LotteryResult:
         """Выполняет ставку и определяет результат"""
 
@@ -95,10 +97,7 @@ class LotteryService:
         )
 
         try:
-            new_balance = await self.user_repo.change_money(
-                telegram_id=user_id,
-                amount=earned,
-            )
+            new_balance = await family_service.change_wallet(user_id, earned)
 
             await self.lottery_repo.insert(
                 telegram_id=user_id,

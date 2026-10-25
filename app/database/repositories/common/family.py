@@ -33,7 +33,7 @@ class FamilyRepository(Base):
         )
         await self.session.execute(stmt)
 
-    async def family_id_of(self, user_id: int) -> int | None:
+    async def family_id_of(self, user_id) -> int | None:
         stmt = select(FamilyMemberOrm.family_id).where(
             FamilyMemberOrm.user_id == user_id
         )
@@ -254,7 +254,7 @@ class FamilyRepository(Base):
         rows = await self.session.scalars(stmt)
         return list(rows)
 
-    async def change_balance(self, family_id: int, delta: int) -> int:
+    async def change_balance(self, family_id, delta: int) -> int:
         stmt = (
             update(FamilyOrm)
             .where(FamilyOrm.id == family_id)

@@ -9,10 +9,11 @@ from app.types.services_result.ghoul import SnapResult
 from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 
-from app.services.cooldown import CooldownService
-
 from app.database.repositories.ghoul.ghoul import GhoulRepository
 from app.database.repositories.common.user import UserRepository
+
+from app.services.cooldown import CooldownService
+from app.services.common.family import FamilyService
 
 from app.utils.format_num import format_num
 from app.utils.logger import snap_logger
@@ -24,10 +25,12 @@ class SnapService:
         ghoul_repo: GhoulRepository,
         user_repo: UserRepository,
         cooldown_service: CooldownService,
+        family_service: FamilyService
     ):
         self.ghoul_repo = ghoul_repo
         self.user_repo = user_repo
         self.cooldown_service = cooldown_service
+        self.family_service = family_service
 
     async def snap_finger(self, user: UserData, ghoul: GhoulData) -> SnapResult:
         user_id = user.telegram_id
@@ -48,10 +51,7 @@ class SnapService:
         try:
            await self.ghoul_repo.increment_snap_count(telegram_id=user_id)
 
-           new_balance = await self.user_repo.change_money(
-               telegram_id=user_id,
-               amount=reward
-           )
+           new_balance = await self.family_service.change_wallet(user_id, reward)
 
            await self.cooldown_service.set(
                telegram_id=user_id,

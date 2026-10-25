@@ -14,7 +14,7 @@ from app.types.entities.user import UserData
 
 from app.services.game.wordle.wordle import WordleService
 from app.services.wikipedia import WikipediaService
-from app.database.repositories import UserRepository
+from app.services.common.family import FamilyService
 
 from app.bot.filters.wordle import WordleGameFilter
 
@@ -156,9 +156,9 @@ async def wordle_guess(
     message: Message,
     bot: Bot,
     user: UserData,
-    user_repo: UserRepository = Provide[Container.user_repo],
     wordle_service: WordleService = Provide[Container.wordle_service],
-    wikipedia_service: WikipediaService = Provide[Container.wikipedia_service]
+    wikipedia_service: WikipediaService = Provide[Container.wikipedia_service],
+    family_service: FamilyService = Provide[Container.family_service]
 ):
     if not message.from_user or not message.text:
         return
@@ -173,7 +173,7 @@ async def wordle_guess(
             telegram_id=user_id,
             word=word,
             user=user,
-            user_repo=user_repo,
+            family_service=family_service,
         )
     except ValueError as e:
         await message.reply(str(e))

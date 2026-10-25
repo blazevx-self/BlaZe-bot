@@ -400,3 +400,29 @@ class FamilyService:
         await self.family_repo.finish_rename(rename_id, "done")
 
         return await self.get_rename(rename_id)
+
+    async def balance_of(self, telegram_id: int):
+        user = await self.user_repo.get(telegram_id)
+        family_id = await self.family_repo.family_id_of(user.id)
+
+        if family_id is None:
+            return user.money
+
+        family = await self.family_repo.get(family_id)
+        return family.money if family else 0
+
+    async def change_wallet(self, telegram_id: int, delta: int):
+        user = await self.user_repo.get(telegram_id)
+        family_id = await self.family_repo.family_id_of(user.id)
+
+        if family_id is None:
+            return await self.user_repo.change_money(telegram_id, delta)
+
+        family = await self.family_repo.get(family_id)
+
+        if family.money + delta < 0:
+            raise FamilyError(
+                "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
+                "Не хватает денег на балансе семьи."
+            )
+        return await self.family_repo.change_balance(family.id, delta)

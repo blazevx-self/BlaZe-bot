@@ -15,6 +15,8 @@ from app.database.repositories.ghoul.ghoul import GhoulRepository
 from app.database.repositories.common.user import UserRepository
 
 from app.services.ghoul.stats.calculate_stats import calculate_upgrade
+from app.services.common.family import FamilyService
+
 from app.bot.keyboards.ghoul.stats import builds_stats_keyboard
 
 from app.utils.logger import stats_logger
@@ -23,12 +25,17 @@ from app.utils.effects import effect_multiplier
 UpgradeAmount = Literal[1, 3, 5]
 
 class StatsService:
-    def __init__(self, ghoul_repo: GhoulRepository, user_repo: UserRepository):
+    def __init__(
+        self,
+        ghoul_repo: GhoulRepository,
+        user_repo: UserRepository,
+        family_service: FamilyService
+    ):
         self.ghoul_repo = ghoul_repo
         self.user_repo = user_repo
+        self.family_service = family_service
 
-    @staticmethod
-    async def get_stats_menu(user: UserData, ghoul: GhoulData | None) -> StatsResult:
+    async def get_stats_menu(self, user: UserData, ghoul: GhoulData | None) -> StatsResult:
         """Формирует меню характеристик игрока.
 
         Получает текущие характеристики пользователя и возвращает текст вместе с клавиатурой
@@ -41,7 +48,8 @@ class StatsService:
                 notification="Статы не найдены"
             )
 
-        text = stats_text(user, ghoul)
+        money = await self.family_service.balance_of(user.telegram_id)
+        text = stats_text(user, ghoul, money)
 
         return StatsResult(
             status=ResultStatus.SUCCESS,
@@ -50,11 +58,11 @@ class StatsService:
         )
 
     async def stats_upgrade(
-            self,
-            user: UserData,
-            ghoul: GhoulData | None,
-            stat: str,
-            amount: UpgradeAmount
+        self,
+        user: UserData,
+        ghoul: GhoulData | None,
+        stat: str,
+        amount: UpgradeAmount
     ) -> StatsResult:
         """Обрабатывает улучшения выбранной характеристики.
 
@@ -105,10 +113,8 @@ class StatsService:
                 amount=calc_result.upgrade_amount,
             )
 
-            new_balance = await self.user_repo.change_money(
-                telegram_id=user_id,
-                amount=-calc_result.price
-            )
+            new_balance = await self.family_service.change_wallet(user_id, -calc_result.price)
+
         except Exception:
             stats_logger.exception(
                 f"[STATS] Stats upgrade failed | user_id={user_id} | "

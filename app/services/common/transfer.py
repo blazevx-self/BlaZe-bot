@@ -19,6 +19,8 @@ from app.types.services_result.common import TransferResult
 from app.database.repositories import UserRepository
 from app.database.repositories.common.transfer import TransferRepository
 
+from app.services.common.family import FamilyService
+
 from app.utils.logger import transfer_logger
 from app.utils.format_num import format_num
 
@@ -27,9 +29,11 @@ class TransferService:
         self,
         user_repo: UserRepository,
         transfer_repo: TransferRepository,
+        family_service: FamilyService
     ):
         self.user_repo = user_repo
         self.transfer_repo = transfer_repo
+        self.family_service = family_service
 
     async def resolve_user(self, query: str | int) -> UserData:
         user = await self.user_repo.resolve(query)
@@ -107,10 +111,7 @@ class TransferService:
         )
 
         try:
-            new_sender_balance = await self.user_repo.change_money(
-                telegram_id=sender_id,
-                amount=-amount
-            )
+            new_sender_balance = await self.family_service.change_wallet(sender_id, -amount)
 
             if new_sender_balance < 0:
                 raise InsufficientBalanceError(

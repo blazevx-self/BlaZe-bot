@@ -19,16 +19,16 @@ from app.types.entities.user import UserData
 from app.types.entities.ghoul import GhoulData
 from app.types.services_result.common import DailyBonusResult
 
-from app.services.cooldown import CooldownService
-from app.services.ghoul.hunger.hunger import HungerService
-from app.services.ghoul.hunger.calculate_hunger import current_hunger, restore_hunger
-
 from app.database.models.common.user import UserOrm
 from app.database.models.ghoul.ghoul import GhoulOrm
-
 from app.database.repositories.common.user import UserRepository
 from app.database.repositories.ghoul.ghoul import GhoulRepository
 from app.database.repositories.game.quiz import QuizRepository
+
+from app.services.cooldown import CooldownService
+from app.services.ghoul.hunger.hunger import HungerService
+from app.services.ghoul.hunger.calculate_hunger import current_hunger, restore_hunger
+from app.services.common.family import FamilyService
 
 from app.utils.format_num import format_num
 from app.utils.time import format_duration
@@ -41,13 +41,15 @@ class DailyBonusService:
         ghoul_repo: GhoulRepository,
         quiz_repo: QuizRepository,
         cooldown_service: CooldownService,
-        hunger_service: HungerService
+        hunger_service: HungerService,
+        family_service: FamilyService
     ):
         self.user_repo = user_repo
         self.ghoul_repo = ghoul_repo
         self.quiz_repo = quiz_repo
         self.cooldown_service = cooldown_service
         self.hunger_service = hunger_service
+        self.family_service = family_service
 
     async def remaining(self, user: UserData) -> int:
         return await self.cooldown_service.remaining(
@@ -118,14 +120,13 @@ class DailyBonusService:
 
         if reward in MONEY_RANGES:
             amount = random.randint(*getattr(bonus_cfg, MONEY_RANGES[reward]))
-            user.money = await self.user_repo.change_money(user_id, amount)
+            user.money = await self.family_service.change_wallet(user_id, amount)
             return {"amount": format_num(amount)}
 
         if reward == R.MONEY_LOSS:
-            amount = min(random.randint(*bonus_cfg.money_loss), user.money)
-
-            user.money = await self.user_repo.change_money(user_id, -amount)
-
+            wallet = await self.family_service.balance_of(user_id)
+            amount = min(random.randint(*bonus_cfg.money_loss), wallet)
+            user.money = await self.family_service.change_wallet(user_id, -amount)
             return {"amount": format_num(amount)}
 
         if reward == R.QUIZ_QUESTIONS:

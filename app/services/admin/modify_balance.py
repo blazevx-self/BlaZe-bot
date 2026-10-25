@@ -7,14 +7,16 @@ from app.types.services_result.admin import ModifyBalanceResult
 from app.types.entities.user import UserData
 
 from app.database.repositories.common.user import UserRepository
+from app.services import FamilyService
 
 from app.utils.logger import admin_logger
 from app.utils.format_num import format_num
 from app.utils.truncate_text import truncate_text
 
 class ModifyBalanceService:
-    def __init__(self, user_repo: UserRepository):
+    def __init__(self, user_repo: UserRepository, family_service: FamilyService):
         self.user_repo = user_repo
+        self.family_service = family_service
 
     async def _resolve_user(self, query: str | int) -> UserData:
         user = await self.user_repo.resolve(query)
@@ -40,15 +42,16 @@ class ModifyBalanceService:
             )
 
         user = await self._resolve_user(query)
+        wallet = await self.family_service.balance_of(user.telegram_id)
 
-        if user.money + amount < 0:
+        if wallet + amount < 0:
             raise ValueError(
                 "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
                 f"Нельзя списать больше, чем есть на балансе "
-                f"({format_num(user.money)} BC)."
+                f"({format_num(wallet)} BC)."
             )
 
-        balance = await self.user_repo.change_money(telegram_id=user.telegram_id, amount=amount)
+        balance = await self.family_service.change_wallet(user.telegram_id, amount)
 
         admin_logger.info(
             f"[MODIFY_BALANCE] Balance changed | "

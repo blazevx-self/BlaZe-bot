@@ -168,23 +168,39 @@ class Container(containers.DeclarativeContainer):
         notify_repo=notify_repo
     )
 
-    start_service = providers.Factory(StartService, user_repo=user_repo)
-    profile_service = providers.Factory(ProfileService, bot=bot, chat_member_repo=chat_member_repo)
+    family_service = providers.Factory(FamilyService, user_repo=user_repo, family_repo=family_repo)
+    start_service = providers.Factory(StartService, user_repo=user_repo, family_service=family_service)
+    profile_service = providers.Factory(
+        ProfileService,
+        bot=bot,
+        chat_member_repo=chat_member_repo,
+        family_service=family_service
+    )
     rp_command_service = providers.Factory(RpCommandService, rp_repo=rp_repo)
-    transfer_service = providers.Factory(TransferService, transfer_repo=transfer_repo, user_repo=user_repo)
+    transfer_service = providers.Factory(
+        TransferService,
+        transfer_repo=transfer_repo,
+        user_repo=user_repo,
+        family_service=family_service
+    )
     daily_bonus_service = providers.Factory(
         DailyBonusService,
         user_repo=user_repo,
         ghoul_repo=ghoul_repo,
         quiz_repo=quiz_repo,
         cooldown_service=cooldown_service,
-        hunger_service=hunger_service
+        hunger_service=hunger_service,
+        family_service=family_service
     )
     anime_service = providers.Singleton(AnimeService)
-    family_service = providers.Factory(FamilyService, user_repo=user_repo, family_repo=family_repo)
 
     wordle_service = providers.Singleton(WordleService)
-    quiz_service = providers.Factory(QuizService, user_repo=user_repo, quiz_repo=quiz_repo)
+    quiz_service = providers.Factory(
+        QuizService,
+        user_repo=user_repo,
+        quiz_repo=quiz_repo,
+        family_service=family_service
+    )
     lottery_video_generator = providers.Singleton(LotteryVideoGenerator)
     lottery_service = providers.Factory(
         LotteryService,
@@ -198,20 +214,28 @@ class Container(containers.DeclarativeContainer):
         user_repo=user_repo,
         cooldown_service=cooldown_service,
         ghoul_service=ghoul_service,
-        hunger_service=hunger_service
+        hunger_service=hunger_service,
+        family_service=family_service
     )
-    stats_service = providers.Factory(StatsService, ghoul_repo=ghoul_repo, user_repo=user_repo)
+    stats_service = providers.Factory(
+        StatsService,
+        ghoul_repo=ghoul_repo,
+        user_repo=user_repo,
+        family_service=family_service
+    )
     coffee_service = providers.Factory(
         CoffeeService,
         ghoul_repo=ghoul_repo,
         user_repo=user_repo,
-        cooldown_service=cooldown_service
+        cooldown_service=cooldown_service,
+        family_service=family_service
     )
     snap_service = providers.Factory(
         SnapService,
         ghoul_repo=ghoul_repo,
         user_repo=user_repo,
-        cooldown_service=cooldown_service
+        cooldown_service=cooldown_service,
+        family_service=family_service
     )
     race_profile_service = providers.Factory(RaceProfileService, ghoul_service=ghoul_service)
 

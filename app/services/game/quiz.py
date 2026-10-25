@@ -13,13 +13,21 @@ from app.types.services_result.game import (
 from app.database.repositories.game.quiz import QuizRepository
 from app.database.repositories.common.user import UserRepository
 
+from app.services.common.family import FamilyService
+
 from app.utils.logger import quiz_logger
 from app.utils.effects import apply_effect
 
 class QuizService:
-    def __init__(self, quiz_repo: QuizRepository, user_repo: UserRepository):
+    def __init__(
+        self,
+        quiz_repo: QuizRepository,
+        user_repo: UserRepository,
+        family_service: FamilyService
+    ):
         self.quiz_repo = quiz_repo
         self.user_repo = user_repo
+        self.family_service = family_service
 
     async def quiz_start(self, user: UserData) -> QuizStartResult:
         """Подготавливает новую викторину для пользователя.
@@ -61,10 +69,10 @@ class QuizService:
         )
 
     async def quiz_answer(
-            self,
-            user: UserData,
-            question_id: int,
-            user_choice: str
+        self,
+        user: UserData,
+        question_id: int,
+        user_choice: str
     ) -> QuizAnswerResult:
         """Обрабатывает ответ пользователя.
 
@@ -103,7 +111,7 @@ class QuizService:
         reward = apply_effect(user, EffectKey.QUIZ_REWARD, game_cfg.quiz.award) if is_correct else 0
 
         if reward:
-            await self.user_repo.change_money(telegram_id=user_id, amount=reward)
+            await self.family_service.change_wallet(user_id, reward)
 
         await self.quiz_repo.process_answer(
             telegram_id=user_id,

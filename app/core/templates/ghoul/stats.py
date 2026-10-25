@@ -6,9 +6,11 @@ from app.types.entities.ghoul import GhoulData
 from app.services.ghoul.stats.calculate_stats import calculate_price, STAT_LIMITS
 from app.utils.format_num import format_num
 
-def stats_text(user: UserData, ghoul: GhoulData) -> str:
+def stats_text(user: UserData, ghoul: GhoulData, money: int | None = None) -> str:
+    amount = user.money if money is None else money
+
     return cfg['message']['stats']['stats_text'].format(
-        money=format_num(user.money),
+        money=format_num(amount),
 
         strength=ghoul.strength,
         dexterity=ghoul.dexterity,

@@ -13,11 +13,14 @@ from app.types.services_result.common import StartResult
 from app.types.entities.user import UserData
 
 from app.database.repositories.common.user import UserRepository
+from app.services.common.family import FamilyService
+
 from app.utils.logger import start_logger
 
 class StartService:
-    def __init__(self, user_repo: UserRepository):
+    def __init__(self, user_repo: UserRepository, family_service: FamilyService):
         self.user_repo = user_repo
+        self.family_service = family_service
 
     async def start(self, user: UserData, bot: Bot) -> StartResult:
         """Проверяет подписку пользователя и выдаёт стартовый бонус.
@@ -55,9 +58,11 @@ class StartService:
             bonus = game_cfg.start.bonus_amount
 
             try:
-                await self.user_repo.activate_subscribed_bonus(telegram_id=user_id, bonus=bonus)
+                await self.family_service.change_wallet(user_id, bonus)
+                await self.user_repo.change_data(user_id, is_subscribed=True)
             except UserNotFoundError:
                 pass
+
             else:
                 start_logger.info(f"[START] Subscription bonus issued | user_id={user_id} | bonus={bonus}")
 

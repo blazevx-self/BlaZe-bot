@@ -14,8 +14,10 @@ from app.types.entities.user import UserData
 from app.types.services_result.game import GuessResult, WordleResult
 from app.types.services_result.game import WordleSession
 
-from app.services.game.wordle.renderer import render_board
 from app.database.repositories.common.user import UserRepository
+
+from app.services.game.wordle.renderer import render_board
+from app.services.common.family import FamilyService
 
 from app.utils.logger import wordle_logger
 
@@ -109,7 +111,7 @@ class WordleService:
         telegram_id: int,
         word: str,
         user: UserData,
-        user_repo: UserRepository
+        family_service: FamilyService
     ) -> WordleResult | None:
         """Обрабатывает попытку пользователя и возвращает результат игры."""
 
@@ -137,7 +139,7 @@ class WordleService:
             if session.is_win: 
                 earned = game_cfg.wordle.award
 
-                await user_repo.change_money(telegram_id=user_id, amount=earned)
+                await family_service.change_wallet(user_id, earned)
 
                 wordle_logger.info(
                     f"[WORDLE] Win | user_id={user_id} | "
@@ -161,7 +163,7 @@ class WordleService:
             is_game_over=session.is_game_over,
             target_word=session.target_word if session.is_game_over else None,
             board_message_id=session.board_message_id,
-            earned=earned
+            earned=earned,
         )
 
     def set_board_message_id(self, telegram_id: int, message_id: int) -> None:

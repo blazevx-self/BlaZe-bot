@@ -6,10 +6,12 @@ from app.core.constants.admin.fields import (
 from app.core.exceptions.user import UserNotFoundError
 
 from app.types.services_result.admin import FieldEditResult
-from app.services.cooldown import CooldownService
 
 from app.database.repositories.common.user import UserRepository
 from app.database.repositories.ghoul.ghoul import GhoulRepository
+
+from app.services.cooldown import CooldownService
+from app.services.common.family import FamilyService
 
 from app.utils.logger import admin_logger
 
@@ -19,10 +21,12 @@ class FieldEditService:
         user_repo: UserRepository,
         ghoul_repo: GhoulRepository,
         cooldown_service: CooldownService,
+        family_service: FamilyService,
     ):
         self.user_repo = user_repo
         self.ghoul_repo = ghoul_repo
         self.cooldown_service = cooldown_service
+        self.family_service = family_service
 
     @staticmethod
     def _resolve_field(field: str) -> tuple[bool, bool, bool]:
@@ -49,11 +53,11 @@ class FieldEditService:
         return user
 
     async def set_field(
-        self,
-        query: str | int,
-        field: str,
-        value: int,
-        admin_id: int
+            self,
+            query: str | int,
+            field: str,
+            value: int,
+            admin_id: int
     ) -> FieldEditResult:
         is_valid, is_ghoul_valid, is_cooldown = self._resolve_field(field)
 
@@ -66,6 +70,7 @@ class FieldEditService:
         if is_cooldown:
             user = await self._resolve_user(query)
             action = ALLOWED_COOLDOWN_FIELDS[field]
+
             await self.cooldown_service.reset(
                 telegram_id=user.telegram_id,
                 action=action
@@ -88,7 +93,12 @@ class FieldEditService:
         user = await self._resolve_user(query)
 
         if not is_ghoul_valid:
-            updated = await self.user_repo.change_data(user.telegram_id, **{field: value})
+            if field == "money":
+                current = await self.family_service.balance_of(user.telegram_id)
+                await self.family_service.change_wallet(user.telegram_id, value - current)
+                updated = user
+            else:
+                updated = await self.user_repo.change_data(user.telegram_id, **{field: value})
 
             return FieldEditResult(
                 target=updated,
@@ -105,7 +115,7 @@ class FieldEditService:
                 "У пользователя нет профиля гуля."
             )
 
-        updated = await self.ghoul_repo.change_data(user.telegram_id,**{field: value})
+        updated = await self.ghoul_repo.change_data(user.telegram_id, **{field: value})
 
         admin_logger.info(
             f"[SET_FIELD] Admin changed field | "

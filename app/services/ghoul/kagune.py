@@ -17,6 +17,7 @@ from app.database.repositories.common.user import UserRepository
 from app.services.ghoul.ghoul import GhoulService
 from app.services.cooldown import CooldownService
 from app.services.ghoul.hunger.hunger import HungerService
+from app.services.common.family import FamilyService
 
 from app.utils.format_num import format_num
 from app.utils.logger import kagune_logger
@@ -29,13 +30,15 @@ class KaguneService:
         user_repo: UserRepository,
         ghoul_service: GhoulService,
         cooldown_service: CooldownService,
-        hunger_service: HungerService
+        hunger_service: HungerService,
+        family_service: FamilyService
     ):
         self.ghoul_repo = ghoul_repo
         self.user_repo = user_repo
         self.ghoul_service = ghoul_service
         self.cooldown_service = cooldown_service
         self.hunger_service = hunger_service
+        self.family_service = family_service
 
     async def obtaining_kagune(self, user: UserData, ghoul: GhoulData | None) -> KaguneResult:
         user_id = user.telegram_id
@@ -122,10 +125,7 @@ class KaguneService:
                 new_strength=new_level
             )
 
-            new_balance = await self.user_repo.change_money(
-                telegram_id=user_id,
-                amount=-price
-            )
+            new_balance = await self.family_service.change_wallet(user_id, -price)
 
             await self.cooldown_service.set(
                 telegram_id=user_id,
