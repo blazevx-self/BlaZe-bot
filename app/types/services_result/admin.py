@@ -25,8 +25,8 @@ class ModifyBalanceResult:
 @dataclass
 class AdminUserProfileResult:
     user: UserData
-    ghoul: GhoulData | None = None
     money: int
+    ghoul: GhoulData | None = None
 
 @dataclass
 class FieldEditResult:
