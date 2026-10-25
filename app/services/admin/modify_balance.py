@@ -7,7 +7,7 @@ from app.types.services_result.admin import ModifyBalanceResult
 from app.types.entities.user import UserData
 
 from app.database.repositories.common.user import UserRepository
-from app.services import FamilyService
+from app.services.common.family import FamilyService
 
 from app.utils.logger import admin_logger
 from app.utils.format_num import format_num
