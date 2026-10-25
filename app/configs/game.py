@@ -130,10 +130,10 @@ class KaguneConfig:
     cooldown: int = 15 * 60
 
     types_chance: dict[str, int] = field(default_factory=lambda: {
-        "Укаку": 45,
-        "Коукаку": 30,
-        "Ринкаку": 10,
-        "Бикаку": 15,
+        "Укаку": 48,
+        "Коукаку": 28,
+        "Ринкаку": 16,
+        "Бикаку": 8,
     })
 
     def random_type(self) -> str:

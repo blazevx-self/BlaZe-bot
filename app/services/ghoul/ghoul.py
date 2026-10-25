@@ -97,7 +97,8 @@ class GhoulService:
         """
 
         base_power = sum(getattr(ghoul, field, 0) for field in POWER_FIELDS)
-        base_power += ghoul.kagune_strength
+        k = ghoul.kagune_strength
+        power = base_power * 4 + int(k * (8 + k * 0.08))
 
         # Определяем тип кагуне.
         kagune_type = (ghoul.kagune_type or "").lower().strip()
@@ -107,7 +108,7 @@ class GhoulService:
         if ghoul.is_kakuja:
             multiplier += 0.50
 
-        return int(base_power * multiplier)
+        return int(power * multiplier)
 
     @staticmethod
     def get_danger_rank(power: int) -> str:
