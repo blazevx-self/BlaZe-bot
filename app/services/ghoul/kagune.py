@@ -110,8 +110,10 @@ class KaguneService:
         level = ghoul.kagune_strength
         price = apply_effect(user, EffectKey.KAGUNE_PRICE, self.ghoul_service.get_price_kagune(level))
 
+        wallet = await self.family_service.balance_of(user_id)
+
         # проверка баланса перед апом
-        if user.money < price:
+        if wallet < price:
             return KaguneResult(
                 status=ResultStatus.NOT_ENOUGH_MONEY,
                 missing=price - user.money
