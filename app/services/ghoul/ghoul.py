@@ -98,7 +98,7 @@ class GhoulService:
 
         base_power = sum(getattr(ghoul, field, 0) for field in POWER_FIELDS)
         k = ghoul.kagune_strength
-        power = base_power * 4 + int(k * (8 + k * 0.08))
+        power = base_power * 3 + int(k * (7 + k * 0.06))
 
         # Определяем тип кагуне.
         kagune_type = (ghoul.kagune_type or "").lower().strip()
