@@ -36,22 +36,30 @@ class BanMiddleware(BaseMiddleware):
             return await handler(event, data)
 
         if user.banned_until is None:
+            reason = user.ban_reason or "Не указана"
+
             text = (
                 "<tg-emoji emoji-id=\"5258318620722733379\">🚫</tg-emoji> "
                 f"<b>Вы заблокированы навсегда.</b>\n\n"
                 "<tg-emoji emoji-id=\"5778299625370817409\">📝</tg-emoji> "
                 f"<b>Причина:</b> "
-                f"<i>{escape(user.ban_reason or 'Не указана')}</i>"
+                f"<i>{escape(reason)}</i>"
+            )
+
+            alert = (
+                f"🚫 Вы заблокированы навсегда.\n\n"
+                f"📝 Причина: {reason}"
             )
 
             if isinstance(event, Message):
-                await event.reply(text)
+                text_value = event.text or ""
+                is_command = text_value.startswith("/")
+
+                if is_command:
+                    await event.reply(text)
 
             elif isinstance(event, CallbackQuery):
-                await event.answer(
-                    text,
-                    show_alert=True,
-                )
+                await event.answer(alert, show_alert=True)
 
             return None
 
@@ -68,14 +76,22 @@ class BanMiddleware(BaseMiddleware):
             show_seconds=remaining_seconds < 60
         )
 
+        reason = user.ban_reason or "Не указана"
+
         text = (
             "<tg-emoji emoji-id=\"5258318620722733379\">🚫</tg-emoji> "
             f"<b>Вы заблокированы.</b>\n\n"
             "<tg-emoji emoji-id=\"5778299625370817409\">📝</tg-emoji> "
             f"<b>Причина:</b> "
-            f"<i>{escape(user.ban_reason or 'Не указана')}</i>\n\n"
+            f"<i>{escape(reason)}</i>\n\n"
             "<tg-emoji emoji-id=\"5258258882022612173\">⏲️</tg-emoji> "
             f"До разблокировки: <b>{duration}</b>"
+        )
+
+        alert = (
+            f"🚫 Вы заблокированы.\n\n"
+            f"📝 Причина: {reason}\n\n"
+            f"⏲️ До разблокировки: {duration}"
         )
 
         if isinstance(event, Message):
@@ -85,9 +101,7 @@ class BanMiddleware(BaseMiddleware):
             if is_command:
                 await event.reply(text)
 
-            await event.reply(text)
-
         elif isinstance(event, CallbackQuery):
-            await event.answer(text, show_alert=True)
+            await event.answer(alert, show_alert=True)
 
         return None
