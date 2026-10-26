@@ -79,6 +79,12 @@ class BanMiddleware(BaseMiddleware):
         )
 
         if isinstance(event, Message):
+            text_value = event.text or ""
+            is_command = text_value.startswith("/")
+
+            if is_command:
+                await event.reply(text)
+
             await event.reply(text)
 
         elif isinstance(event, CallbackQuery):

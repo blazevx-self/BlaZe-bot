@@ -56,6 +56,7 @@ async def setup_middlewares(dp: Dispatcher) -> None:
     dp.callback_query.middleware(LoggingMiddleware())
 
     dp.message.middleware(BanMiddleware())
+    dp.callback_query.middleware(BanMiddleware())
 
     dp.callback_query.middleware(AntiSpamGhoulMiddleware(time_limit=1.0))
 
