@@ -9,9 +9,29 @@ from aiogram.types import TelegramObject, CallbackQuery, Message
 from dependency_injector.wiring import Provide
 
 from app.containers import Container
-from app.database.repositories.common.user import UserRepository
+from app.core.constants.input.commands import TEXT_COMMANDS, TEXT_PREFIXES
 
+from app.database.repositories.common.user import UserRepository
 from app.utils.time import format_duration
+
+def _is_bot_command(message: Message) -> bool:
+    text = (message.text or message.caption or "").strip()
+
+    if not text:
+        return False
+
+    if text.startswith("/"):
+        return True
+
+    lowered = text.lower()
+
+    if lowered in TEXT_COMMANDS:
+        return True
+
+    return any(
+        lowered == prefix or lowered.startswith(prefix + " ")
+        for prefix in TEXT_PREFIXES
+    )
 
 class BanMiddleware(BaseMiddleware):
     async def __call__(
@@ -52,10 +72,7 @@ class BanMiddleware(BaseMiddleware):
             )
 
             if isinstance(event, Message):
-                text_value = event.text or ""
-                is_command = text_value.startswith("/")
-
-                if is_command:
+                if _is_bot_command(event):
                     await event.reply(text)
 
             elif isinstance(event, CallbackQuery):
@@ -95,10 +112,7 @@ class BanMiddleware(BaseMiddleware):
         )
 
         if isinstance(event, Message):
-            text_value = event.text or ""
-            is_command = text_value.startswith("/")
-
-            if is_command:
+            if _is_bot_command(event):
                 await event.reply(text)
 
         elif isinstance(event, CallbackQuery):
