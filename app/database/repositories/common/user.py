@@ -180,3 +180,29 @@ class UserRepository(Base):
         result = await self.session.scalars(stmt)
 
         return list(result)
+
+    async def get_birthdays(self, day: int, month: int):
+        stmt = select(UserOrm.telegram_id, UserOrm.name).where(
+            UserOrm.birthday_day == day,
+            UserOrm.birthday_month == month,
+            UserOrm.is_banned.is_(False),
+            UserOrm.has_private_chat.is_(True)
+        )
+        return (await self.session.execute(stmt)).all()
+
+    async def set_birthday(
+        self,
+        telegram_id: int,
+        day: int | None,
+        month: int | None,
+        year: int | None
+    ) -> None:
+        await self.session.execute(
+            update(UserOrm)
+            .where(UserOrm.telegram_id == telegram_id)
+            .values(
+                birthday_day=day,
+                birthday_month=month,
+                birthday_year=year
+            )
+        )

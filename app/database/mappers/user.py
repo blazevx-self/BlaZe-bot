@@ -21,5 +21,9 @@ def orm_to_user(user: UserOrm) -> UserData:
         has_private_chat=user.has_private_chat,
         effects=user.effects or {},
 
+        birthday_day=user.birthday_day,
+        birthday_month=user.birthday_month,
+        birthday_year=user.birthday_year,
+
         created_at=user.created_at
     )

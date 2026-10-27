@@ -1,6 +1,6 @@
 from datetime import datetime, date
 
-from sqlalchemy import func, DateTime, text
+from sqlalchemy import func, DateTime, text, SmallInteger
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import BigInteger
 from sqlalchemy.dialects.postgresql import JSONB
@@ -34,6 +34,10 @@ class UserOrm(Base):
         server_default=text("'{}'::jsonb"),
         nullable=False
     )
+
+    birthday_day: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
+    birthday_month: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
+    birthday_year: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now())

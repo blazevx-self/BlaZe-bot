@@ -25,4 +25,8 @@ class UserData:
 
     has_private_chat: bool = False
 
+    birthday_day:  int | None = None
+    birthday_month: int | None = None
+    birthday_year: int | None = None
+
     effects: dict = field(default_factory=dict)

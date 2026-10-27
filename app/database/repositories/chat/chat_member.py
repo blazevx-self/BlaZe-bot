@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from sqlalchemy import select, update, func
 from sqlalchemy.dialects.postgresql import insert
 
@@ -6,8 +8,6 @@ from app.database.repositories.base import Base
 from app.database.models.chat.chat_member import ChatMemberOrm
 from app.database.models.chat.chat import ChatOrm
 from app.database.models.common.user import UserOrm
-
-from app.types.entities.user import UserData
 
 class ChatMemberRepository(Base):
     async def upsert(self, chat_id: int, user_id: int) -> ChatMemberOrm:
@@ -104,3 +104,22 @@ class ChatMemberRepository(Base):
         )
 
         return await self.session.scalar(stmt)
+
+    async def get_birthdays_by_chat(self, day: int, month: int) -> dict[int, list[str]]:
+        stmt = (
+            select(ChatOrm.telegram_id, UserOrm.name)
+            .join(ChatMemberOrm, ChatMemberOrm.chat_id == ChatOrm.id)
+            .join(UserOrm, UserOrm.id == ChatMemberOrm.user_id)
+            .where(
+                UserOrm.birthday_day == day,
+                UserOrm.birthday_month == month,
+                UserOrm.is_banned.is_(False),
+            )
+        )
+
+        result: dict[int, list[str]] = defaultdict(list)
+
+        for chat_id, name in (await self.session.execute(stmt)).all():
+            result[chat_id].append(name)
+
+        return result
