@@ -66,6 +66,7 @@ from app.services import (
     KillGhoulService,
     CaptchaService,
     FamilyService,
+    BirthdayService,
 )
 
 session_context: ContextVar[AsyncSession] = ContextVar("session_context")
@@ -208,6 +209,12 @@ class Container(containers.DeclarativeContainer):
         family_service=family_service
     )
     anime_service = providers.Singleton(AnimeService)
+    birthday_service = providers.Factory(
+        BirthdayService,
+        bot=bot,
+        user_repo=user_repo,
+        chat_member_repo=chat_member_repo
+    )
 
     wordle_service = providers.Singleton(WordleService)
     quiz_service = providers.Factory(

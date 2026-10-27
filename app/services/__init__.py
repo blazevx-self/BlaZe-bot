@@ -39,6 +39,7 @@ from .ghoul.hunger.hunger import HungerService
 from .admin.kill_ghoul import KillGhoulService
 from .chat.common.captcha import CaptchaService
 from .common.family import FamilyService
+from .common.birthday import BirthdayService
 
 __all__ = [
     "BanService",
@@ -82,4 +83,5 @@ __all__ = [
     "KillGhoulService",
     "CaptchaService",
     "FamilyService",
+    "BirthdayService",
 ]

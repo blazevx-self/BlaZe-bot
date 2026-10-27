@@ -589,3 +589,26 @@ message:
       button: "Развестись"
       done: "<tg-emoji emoji-id='5836847700426887322'>💔</tg-emoji> <b>{name}</b> уходит. Семья распалась. {name} забирает <b>{taken}</b>, <b>{heir}</b> — <b>{amount}</b> BlaZeCoin."
       stale: "Уже неактуально."
+
+  birthday:
+    chat: |
+      <tg-emoji emoji-id="5370999492914976897">🎂</tg-emoji> Сегодня день рождения у {people}!
+
+      Поздравляем! <tg-emoji emoji-id="6041731551845159060">🎉</tg-emoji>
+    pm: |
+      <tg-emoji emoji-id="5370999492914976897">🎂</tg-emoji> С днём рождения, <b>{name}</b>!
+
+      Поздравляем! <tg-emoji emoji-id="6041731551845159060">🎉</tg-emoji>
+    usage: |
+      <tg-emoji emoji-id="5258503720928288433">ℹ️</tg-emoji> <b>Использование:</b> /birthday ДД.ММ
+      Например: <code>/birthday 15.03</code>
+    current: |
+      <tg-emoji emoji-id="5370999492914976897">🎂</tg-emoji> <b>Твой день рождения:</b> <code>{date}</code>
+      Удалить: /birthday off
+    saved: |
+      <tg-emoji emoji-id="5370999492914976897">🎂</tg-emoji> Запомнил: <code>{date}</code>
+      Поздравлю в чатах и в лс.
+    removed: |
+      <tg-emoji emoji-id="5370999492914976897">🎂</tg-emoji> День рождения удалён.
+    invalid: |
+      <tg-emoji emoji-id="5386313314773002654">⚠️</tg-emoji> Неверная дата. Формат: <code>ДД.ММ</code>, например <code>15.03</code>.
