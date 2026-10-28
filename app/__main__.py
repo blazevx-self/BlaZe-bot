@@ -12,7 +12,7 @@ from app.database.database import (
     session_factory,
     create_tables,
     engine,
-    reset_session
+    reset_database
 )
 
 from app.bot.middlewares import (
@@ -67,7 +67,7 @@ async def setup_middlewares(dp: Dispatcher) -> None:
 
 async def init_database(reset: bool = False):
     if reset:
-        await reset_session(engine)
+        await reset_database(engine)
         database_logger.info("[DB] Database reset")
     else:
         await create_tables(engine)
