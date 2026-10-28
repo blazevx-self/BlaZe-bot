@@ -65,7 +65,7 @@ class BirthdayService:
 
     async def congratulate(self, day: int, month: int) -> None:
         texts = cfg["message"]["birthday"]
-        birthdays = await self.user_repo.get_birthdays(day, month)
+        birthdays = await self.chat_member_repo.get_birthdays_by_chat(day, month)
 
         for chat_id, names in birthdays.items():
             people = ", ".join(

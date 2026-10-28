@@ -22,7 +22,7 @@ async def birthday_cmd(
     texts = cfg["message"]["birthday"]
     args = message.text.split(maxsplit=1)
 
-    if len(args) < 0:
+    if len(args) < 2:
         if user.birthday_day:
             await message.reply(
                 texts["current"].format(

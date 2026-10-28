@@ -592,23 +592,32 @@ message:
 
   birthday:
     chat: |
-      <tg-emoji emoji-id="5370999492914976897">🎂</tg-emoji> Сегодня день рождения у {people}!
-
-      Поздравляем! <tg-emoji emoji-id="6041731551845159060">🎉</tg-emoji>
+      <tg-emoji emoji-id="5370999492914976897">🎂</tg-emoji> Сегодня др у {people}.
+      
+      Не забудьте поздравить, а то обидится.
     pm: |
       <tg-emoji emoji-id="5370999492914976897">🎂</tg-emoji> С днём рождения, <b>{name}</b>!
 
       Поздравляем! <tg-emoji emoji-id="6041731551845159060">🎉</tg-emoji>
     usage: |
-      <tg-emoji emoji-id="5258503720928288433">ℹ️</tg-emoji> <b>Использование:</b> /birthday ДД.ММ
-      Например: <code>/birthday 15.03</code>
+      <tg-emoji emoji-id="5258503720928288433">ℹ️</tg-emoji> <b>День рождения</b>
+      
+      Поставить: <code>/birthday 15.03</code>
+      С годом: <code>/birthday 15.03.2005</code>
+      Удалить: <code>/birthday off</code>
     current: |
-      <tg-emoji emoji-id="5370999492914976897">🎂</tg-emoji> <b>Твой день рождения:</b> <code>{date}</code>
-      Удалить: /birthday off
+      <tg-emoji emoji-id="5370999492914976897">🎂</tg-emoji> Твой др: <code>{date}</code>
+      
+      Сменить — снова <code>/birthday ДД.ММ</code>
+      Убрать — <code>/birthday off</code>
     saved: |
       <tg-emoji emoji-id="5370999492914976897">🎂</tg-emoji> Запомнил: <code>{date}</code>
-      Поздравлю в чатах и в лс.
+      
+      В этот день напишу тебе в лс и в чаты, где ты есть.
     removed: |
-      <tg-emoji emoji-id="5370999492914976897">🎂</tg-emoji> День рождения удалён.
+      <tg-emoji emoji-id="5370999492914976897">🎂</tg-emoji> Дату стёр. Больше не поздравляю.
     invalid: |
-      <tg-emoji emoji-id="5386313314773002654">⚠️</tg-emoji> Неверная дата. Формат: <code>ДД.ММ</code>, например <code>15.03</code>.
+      <tg-emoji emoji-id="5386313314773002654">⚠️</tg-emoji> Это не дата.
+      
+      Нужно <code>ДД.ММ</code> или <code>ДД.ММ.ГГГГ</code>
+      Например <code>/birthday 15.03</code>
