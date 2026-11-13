@@ -22,10 +22,10 @@ class SyncEntitiesMiddleware(BaseMiddleware):
     Загружает пользователя и, если он уже гуль, его сущность."""
 
     async def __call__(
-            self,
-            handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
-            event: TelegramObject,
-            data: Dict[str, Any],
+        self,
+        handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+        event: TelegramObject,
+        data: Dict[str, Any],
     ) -> Any:
         tg_user = data.get('event_from_user')
         tg_chat = data.get('event_chat')

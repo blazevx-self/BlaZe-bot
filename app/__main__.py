@@ -17,7 +17,7 @@ from app.database.database import (
 
 from app.bot.middlewares import (
     BanMiddleware,
-    AntiSpamGhoulMiddleware,
+    AntiSpamMiddleware,
     LoggingMiddleware,
     AntifloodMiddleware,
     DatabaseMiddleware,
@@ -58,7 +58,7 @@ async def setup_middlewares(dp: Dispatcher) -> None:
     dp.message.middleware(BanMiddleware())
     dp.callback_query.middleware(BanMiddleware())
 
-    dp.callback_query.middleware(AntiSpamGhoulMiddleware(time_limit=1.0))
+    dp.callback_query.middleware(AntiSpamMiddleware(time_limit=1.0))
 
     dp.message.middleware(AntifloodMiddleware(limit_seconds=5, max_requests=15))
     dp.callback_query.middleware(AntifloodMiddleware(limit_seconds=5, max_requests=15))

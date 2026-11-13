@@ -7,7 +7,7 @@ from cachetools import TTLCache
 from app.configs.yaml_loader import cfg
 from app.utils.logger import security_logger
 
-class AntiSpamGhoulMiddleware(BaseMiddleware):
+class AntiSpamMiddleware(BaseMiddleware):
     """Middleware защиты от спама callback-кнопками.
 
     Блокирует слишком частые повторные нажатия
