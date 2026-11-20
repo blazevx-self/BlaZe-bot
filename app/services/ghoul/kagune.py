@@ -116,7 +116,7 @@ class KaguneService:
         if wallet < price:
             return KaguneResult(
                 status=ResultStatus.NOT_ENOUGH_MONEY,
-                missing=price - user.money
+                missing=price - wallet
             )
 
         new_level = level + 1

@@ -71,10 +71,11 @@ class LotteryService:
         """Выполняет ставку и определяет результат"""
 
         user_id = user.telegram_id
-
         self._validate_bet(bet_amount)
 
-        if user.money < bet_amount:
+        wallet = await family_service.balance_of(user_id)
+
+        if wallet < bet_amount:
             raise ValueError(
                 "<tg-emoji emoji-id=\"5386313314773002654\">⚠️</tg-emoji> "
                 "Недостаточно денег для такой ставки."
