@@ -129,6 +129,7 @@ async def back_to_balance(
     )
 
 @router.callback_query(F.data.startswith('back_balance_'), OwnerCallbackFilter())
+@inject
 async def back_to_top(
     callback: CallbackQuery,
     user: UserData,
